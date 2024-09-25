@@ -35,7 +35,7 @@ const CustomHeader = ( {color, titleSize} : Props) => {
       },
     });
   }, [navigation, backColor, titleSize, adjustedHeaderHeight]);
-/* */
+
   return null; 
 };
 
