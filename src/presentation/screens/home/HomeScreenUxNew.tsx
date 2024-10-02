@@ -17,6 +17,8 @@ import { QuaternaryButton2 } from '../../components/shared/QuaternaryButton2';
 import { SecondaryButton2 } from '../../components/shared/SecondaryButton2';
 import { IonIcon } from '../../components/shared/IonIcon';
 import CredencialNew from '../../components/shared/CredencialNew';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 interface Props {
   onPress: () => void;
@@ -130,6 +132,7 @@ export const HomeScreenUxNew = () => {
   /* definicion de estilos de boton para mejorar su control respecto a la pantalla */
 
   /* const backColor = disabled ? globalColors.disabled : (color ? color : globalColors.background); */
+  
 
   const renderSecondaryButton = ({ onPress, label, color, disabled, iconName, description, textSize,
     descriptionSize, textOverflow, }: Props) => {
@@ -211,6 +214,9 @@ export const HomeScreenUxNew = () => {
         <View style={styles.bigContentContainer}>
 
           <View style={styles.buttonsContainer}>
+
+        
+
             <View style={styles.rowContainer1}>
               {renderSecondaryButton({
                 onPress: () => navigation.navigate('Perfil'),
