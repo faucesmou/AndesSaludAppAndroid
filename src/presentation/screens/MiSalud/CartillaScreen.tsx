@@ -23,16 +23,16 @@ export const CartillaScreen = () => {
 
   const { height } = Dimensions.get('window');
 
-  let headerHeight = hp('12%'); // Ajusta el tamaño de la cabecera según el alto de la pantalla
+  let headerHeight = hp('16%'); // Ajusta el tamaño de la cabecera según el alto de la pantalla
   let adjustedHeaderHeight = headerHeight + top
   let buttonTextFontSize = wp('5%');
   let buttonDescriptionFontSize = wp('4.5%');
   let cardTitleFontSize: number = hp('2.5%');
  let cardDescriptionFontSize: number = hp('2%');
  let iconNotificationFontSize: number = wp('8%');
- let titleMarginBottom: number  = hp('1%'); 
- let iconMarginBottom: number  = hp('3%');  
- let arrowMarginBottom: number  = hp('1%');  
+ let titleMarginBottom: number  = hp('4%'); 
+ let iconMarginBottom: number  = hp('7%');  
+ let arrowMarginBottom: number  = hp('4%');  
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
     headerHeight = hp('17%'); // Ajuste para pantallas más pequeñas
     adjustedHeaderHeight = headerHeight + top;
@@ -144,7 +144,7 @@ export const CartillaScreen = () => {
 
       <View style={styles.cardContainer} >
         <View style={styles.card}>
-          <Text style={{ fontSize: cardTitleFontSize, fontWeight: 'normal', textAlign: 'center', marginBottom: wp('2%') }}/* style={styles.cardTitle} */>Tu Prepaga Digital</Text>
+          <Text style={{ fontSize: cardTitleFontSize, fontWeight: 'normal', textAlign: 'center', marginBottom: wp('2%'), color: 'black' }}/* style={styles.cardTitle} */>Tu Prepaga Digital</Text>
           <Text style={{ fontSize: cardDescriptionFontSize,
     textAlign: 'center',
     color: 'black',}}/* style={styles.cardSubtitle} */>Accedé a todos los centros de atención</Text>
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     position: 'absolute',
-    top: hp('12%'),
+    top: hp('9%'),
     /*   top: 120,  */
     /*  width: '100%', */
     width: wp('95%'),

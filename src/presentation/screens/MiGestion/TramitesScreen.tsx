@@ -28,15 +28,15 @@ export const TramitesScreen = () => {
  /* mejorando responsividad: */
  const { height } = Dimensions.get('window');
 
- let headerHeight = hp('12%'); // Ajusta el tamaño de la cabecera según el alto de la pantalla
+ let headerHeight = hp('16%'); // Ajusta el tamaño de la cabecera según el alto de la pantalla
  let buttonTextFontSize = wp('5%');
  let buttonDescriptionFontSize = wp('4.5%');
  let cardTitleFontSize: number = hp('2.5%');
 let cardDescriptionFontSize: number = hp('2%');
 let iconNotificationFontSize: number = wp('8%');
-let titleMarginBottom: number  = hp('1%'); 
-let iconMarginBottom: number  = hp('3%');  
-let arrowMarginBottom: number  = hp('1%');  
+let titleMarginBottom: number  = hp('4%'); 
+let iconMarginBottom: number  = hp('7%');  
+let arrowMarginBottom: number  = hp('4%');  
  let adjustedHeaderHeight = headerHeight + top 
  if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
   headerHeight = hp('17%'); // Ajuste para pantallas más pequeñas
@@ -62,21 +62,23 @@ let arrowMarginBottom: number  = hp('1%');
     <View style={styles.screenContainer}
     >
 
-      <View style={[styles.headerContainer, 
-        { height: adjustedHeaderHeight,
-          display: 'flex',
-          flexDirection: 'row' }
-        ]}>
+      <View style={[styles.headerContainer,
+      {
+        height: adjustedHeaderHeight,
+        display: 'flex',
+        flexDirection: 'row'
+      }
+      ]}>
 
-<Pressable onPress={() => {
-            console.log('presiono el boton ');
-            navigation.navigate('HomeScreenUxNew')
-          }}
-            style={{ marginLeft: wp('3%'), marginBottom: arrowMarginBottom, }}
-          >
-          
-           <IonIcon name='arrow-back' color= { 'white' } size = {30}/> 
-          </Pressable>
+        <Pressable onPress={() => {
+          console.log('presiono el boton ');
+          navigation.navigate('HomeScreenUxNew')
+        }}
+          style={{ marginLeft: wp('3%'), marginBottom: arrowMarginBottom, }}
+        >
+
+          <IonIcon name='arrow-back' color={'white'} size={30} />
+        </Pressable>
 
 
 
@@ -89,7 +91,7 @@ let arrowMarginBottom: number  = hp('1%');
             fontWeight:'bold',
             color: 'white',
             marginLeft: wp('0%'),
-            marginBottom: hp('1%')
+            marginBottom: hp('1%'),
           }} >
             Mi Gestión
           </Text>
@@ -117,7 +119,7 @@ let arrowMarginBottom: number  = hp('1%');
 
       <View style={styles.cardContainer} >
         <View style={styles.card}>
-          <Text style={{ fontSize: cardTitleFontSize, fontWeight: 'normal', textAlign: 'center', marginBottom: wp('2%') }}>Autorizaciones</Text>
+          <Text style={{ fontSize: cardTitleFontSize, fontWeight: 'normal', textAlign: 'center', marginBottom: wp('2%'), color: 'black' }}>Autorizaciones</Text>
 
           <Text style={{ fontSize: cardDescriptionFontSize,
     textAlign: 'center',
@@ -213,7 +215,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     position: 'absolute',
-    top: hp('12%'), 
+    top: hp('9%'), 
     width: wp('97%'),
    alignSelf:'center',
     alignItems: 'center',
