@@ -15,7 +15,7 @@ const CustomHeader = ( {color, titleSize} : Props) => {
 
 
   const { top, bottom } = useSafeAreaInsets();
-  const headerHeight = 70; // Altura inicial del encabezado
+  const headerHeight = hp('13%'); // Altura inicial del encabezado
   const adjustedHeaderHeight = headerHeight + top; // Ajusta la altura para tener en cuenta los márgenes seguros
   const backColor = color ? color : '#e1a159'/* '#7ba1c3' *//* globalColors.profile2 */
 
@@ -30,9 +30,10 @@ const CustomHeader = ( {color, titleSize} : Props) => {
       headerTintColor: 'white',
       headerTitleStyle: {
         fontSize: titleSize? titleSize : 35, // tamaño título del header
-        marginBottom: 25, fontWeight:'bold',
-        
+        marginBottom: 25, fontWeight:'bold', 
+        marginTop: wp('6%'),       
       },
+      headerTitleAlign: 'center',
     });
   }, [navigation, backColor, titleSize, adjustedHeaderHeight]);
 

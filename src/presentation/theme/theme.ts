@@ -319,12 +319,14 @@ export const globalStyles = StyleSheet.create({
     fontFamily: 'Quicksand-Light',
     margin: 0,
     marginTop: 0,
+    color: 'black',
   },
   resultText3: {
     fontSize: 18,
     fontFamily: 'Quicksand-Light',
     margin: 0,
     marginTop: 10,
+    color: 'black',
   },
 
   primaryButton2: {

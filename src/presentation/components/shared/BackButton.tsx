@@ -2,6 +2,7 @@ import { DrawerActions, useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Pressable, Text } from 'react-native';
 import { IonIcon } from './IonIcon';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 interface BackButtonProps {
   goToPage?: string;
@@ -31,7 +32,7 @@ const handlePress = () => {
         navigation.setOptions({
           headerLeft: () => (
             <Pressable onPress={handlePress}
-            style={{marginLeft:20, marginBottom: 20}}
+            style={{marginLeft:20, marginBottom: 20, marginTop: wp('6%')}}
             >
            <IonIcon name='arrow-back' color= { 'white' } size = {Size || 35}/> 
             </Pressable>

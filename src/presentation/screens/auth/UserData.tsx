@@ -8,7 +8,7 @@ import { useAuthStore } from "../../store/auth/useAuthStore";
 import { useState, useEffect, useRef } from "react";
 import { RootStackParams } from "../../routes/StackNavigator";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 interface Props extends StackScreenProps<RootStackParams, 'RegisterScreen'> { }
 
 
@@ -79,7 +79,9 @@ export const UserData = ( ) => {
 
   return (
     <Layout style={{ flex: 1 }}>
-      <ScrollView style={{ marginHorizontal: 50}}>
+      <ScrollView style={{ marginHorizontal: wp('5%'), flexGrow: 1}}>
+     
+
         <Layout style={{ paddingTop: height * 0.20, /* alignItems:'center'  */ }}>
           
           <Text category="h1"
@@ -155,28 +157,31 @@ export const UserData = ( ) => {
               {showUser ? currentUser : '******'}
             </Text>
             <Icon
-              style={styles.passwordIcon}
+            style={[styles.passwordIcon, { width: wp('10%'), height: wp('10%') }]}
+             /*  style={styles.passwordIcon} */
               name={showUser ? 'eye-off' : 'eye'}
               fill="#8F9BB3"
               onPress={toggleUserVisibility}
             />
           </View>
           <View style={styles.passwordContainer}>
+
             <Text style={styles.passwordText}>
-              Contraseña:{' '}
-              {showPassword ? currentPass : '******'}
-            </Text>
-            <Icon
-              style={styles.passwordIcon}
-              name={showPassword ? 'eye-off' : 'eye'}
-              fill="#8F9BB3"
-              onPress={togglePasswordVisibility}
-            />
-          </View>
+                    Contraseña:{' '}
+                    {showPassword ? currentPass : '******'}
+                  </Text>
+                  <Icon
+                    style={[styles.passwordIcon, { width: wp('10%'), height: wp('10%') }]}
+                    /* style={styles.passwordIcon} */
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    fill="#8F9BB3"
+                    onPress={togglePasswordVisibility}
+                  />
+                </View>
 
     </View>
         {/* informacion para crear cuenta */}
-        <Layout style={{ height: 50 }} />
+        <Layout style={{ height: wp('20%') }} />
 
         <Layout style={{
           alignItems: 'flex-end',

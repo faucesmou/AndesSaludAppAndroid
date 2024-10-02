@@ -443,7 +443,9 @@ export const Buzon = () => {
         <View style={{ /* marginBottom: 30,  */marginTop: 10,   /* backgroundColor: 'green', */ maxHeight:'80%',minHeight:'40%', width: '100%'}}>
 
                  
-            <ScrollView>
+            <ScrollView 
+            contentContainerStyle={{ flexGrow: 1 }}
+            >
 
             {isConsulting ?
               (
@@ -558,7 +560,7 @@ export const Buzon = () => {
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
                     <Text style={styles.textStyletTitle}>Estudios autorizados: </Text>
-                  <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                    <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
                      {/*  {modalData.map((data, index) => ( */}
                      {modalData && modalData.map((data, index) => (
                         <>
@@ -619,7 +621,7 @@ export const Buzon = () => {
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
                     <Text style={styles.textStyletTitle}>Estudio rechazado: </Text>
-                  <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                    <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
                       {rechazoData.map((data, index) => (
                         <>
                           <View key={index}  style={{ marginTop: 10, marginBottom: 20 }}>

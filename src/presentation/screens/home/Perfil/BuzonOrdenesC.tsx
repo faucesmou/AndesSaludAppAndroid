@@ -342,7 +342,7 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
         (
           <View style={{ marginBottom: 40, marginTop: 5, /* backgroundColor: 'blue', */ maxHeight: '80%', minHeight: '40%', width: '100%', marginHorizontal: 30, }}>
 
-          <ScrollView>
+<ScrollView nestedScrollEnabled={true}>
             
             {isConsulting ?
               (
@@ -472,7 +472,7 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
                   <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                       <Text style={styles.textStyletTitle}>Órdenes autorizadas: </Text>
-                      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                      <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
 
                         {modalData.map((data, index) => (
                           <>
@@ -530,7 +530,7 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
                     <Text style={styles.textStyletTitle}>Órden rechazada: </Text>
-                  <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                    <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
                       {rechazoData.map((data, index) => (
                         <>
                           <View style={{ marginTop: 10, marginBottom: 20 }}>

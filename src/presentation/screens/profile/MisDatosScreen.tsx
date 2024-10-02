@@ -77,7 +77,7 @@ export const MisDatosScreen = () => {
 <BackButton Size={hp('4%')}/>
 
 
-      <Text style={{ marginBottom: hp('1%'), fontSize: hp('3%'), textAlign: 'center' }}>Mis Datos</Text>
+      <Text style={{ marginBottom: hp('1%'), fontSize: hp('3%'), textAlign: 'center', color: 'black' }}>Mis Datos</Text>
 
       {/*    <BackButton onPress={() => navigation.navigate('home')} /> */}
       {
@@ -86,7 +86,7 @@ export const MisDatosScreen = () => {
           <View
             style={{
               flex: 0.5,
-              marginTop: top - hp('0%'),
+              marginTop: top - hp('-4%'),
               marginBottom: hp('6%'),
             }}
           >
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 18,
     textAlign: 'left',
+    color: 'black'
    
   },
   container: {

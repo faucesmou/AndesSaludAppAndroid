@@ -74,7 +74,7 @@ export const Afiliados = () => {
       <CustomHeader /* color={globalColors.gray2} */ titleSize={hp('4%')} />
 
       <BackButton Size={hp('4%')}/>
-      <Text style={{ marginBottom: 5, fontSize: 25, textAlign: 'center', }}>Afiliados a Cargo</Text>
+      <Text style={{ marginBottom: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Afiliados a Cargo</Text>
 
       <View
         style={{
@@ -88,6 +88,7 @@ export const Afiliados = () => {
             marginTop: 10,
             padding: 0,
             marginHorizontal: 10,
+            color: 'black'
           }}
         >Selecciona un familiar para ver su credencial</Text>
 

@@ -125,11 +125,11 @@ export const RecoverData = ({ navigation }: Props) => {
 
   const { height } = useWindowDimensions();
  /*  let paddingTopNumber = hp('18%'); */
- let paddingTopNumber = hp('8.5%');
+ let paddingTopNumber = hp('1%');
   let paddingHorizontalNumber = wp('7%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
     /* paddingTopNumber = hp('12%'); */
-    paddingTopNumber = hp('5%');
+    paddingTopNumber = hp('1%');
     paddingHorizontalNumber = wp('6%'); 
   }
 

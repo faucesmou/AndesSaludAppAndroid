@@ -159,7 +159,7 @@ export const PagosScreen = () => {
 
       <BackButton Size={hp('4%')}/>
 
-      <Text style={{ marginBottom: 0, marginTop: 5, fontSize: 25, textAlign: 'center', }}>Estado de Pagos</Text>
+      <Text style={{ marginBottom: 0, marginTop: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Estado de Pagos</Text>
       <ScrollView >
 
         <View style={globalStyles.containerEstudiosMedicosEnv2}>
@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Light',
     margin: 0,
     marginTop: 10,
+    color: 'black',
   },
 });
 

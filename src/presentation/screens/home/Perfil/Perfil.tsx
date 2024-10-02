@@ -65,10 +65,15 @@ const { height } = Dimensions.get('window');
       flex: 1,
       paddingHorizontal: 20,
       marginTop: 20 ,
-/*       backgroundColor: 'green' */
+      
     }}
     >
+      <View
+      style={{ alignItems:'center'}}
+      >
+
       <CustomHeader  /* color={globalColors.black}  */ />
+      </View>
        <BackButton /> 
      {/*    <Text style={{marginBottom: 10}}> Settings Screen</Text> */}
 

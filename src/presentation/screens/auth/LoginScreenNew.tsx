@@ -97,15 +97,17 @@ export const LoginScreenNew = ({ navigation }: Props) => {
     }
   };
 
-  let paddingTopNumber = hp('8.5%');
+  let paddingTopNumber = hp('1%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
-    paddingTopNumber = hp('5%');
+    paddingTopNumber = hp('1%');
 
   }
 
   return (
     <Layout style={{ flex: 1, }}>
-      <ScrollView style={{ marginHorizontal: hp('0.7%') }}>
+      <ScrollView style={{ marginHorizontal: hp('0.7%') }} 
+      contentContainerStyle={{ flexGrow: 1 }}
+      >
         <Layout style={{ paddingTop: paddingTopNumber, backgroundColor: 'white', }}>
 
           <View style={styles.container}>

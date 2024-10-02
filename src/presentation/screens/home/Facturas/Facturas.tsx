@@ -333,7 +333,9 @@ export const Facturas = () => {
       <BackButton Size={hp('4%')}/>
 
 {/*       <Text style={{ marginBottom: 0, marginTop: 5, fontSize: 25, textAlign: 'center', }}>Tus Facturas</Text> */}
-      <ScrollView>
+      <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      >
 
         <View style={{...globalStyles.containerEstudiosMedicosEnv2, marginTop: 0}}>
           {error ? (

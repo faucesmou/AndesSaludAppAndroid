@@ -166,6 +166,7 @@ export const HomeScreenUxNew = () => {
   return (
     <View style={styles.screenContainer}>
       <ScrollView   
+      contentContainerStyle={{ flexGrow: 1 }}
   /*    scrollToOverflowEnabled={false}  
      snapToInterval={2} 
      bounces={false}  */

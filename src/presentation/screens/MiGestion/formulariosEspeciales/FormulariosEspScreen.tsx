@@ -112,7 +112,9 @@ export const FormulariosEspScreen = () => {
       <CustomHeader /* color={globalColors.black}  */titleSize={hp('4%')}  />
 
       <BackButton Size={hp('4%')} />
- <ScrollView>    
+ <ScrollView
+ contentContainerStyle={{ flexGrow: 1 }}
+ >    
       <Text style={{ marginBottom: 5, marginTop: 5, fontSize: 25, textAlign: 'center', }}>Formularios Especiales</Text>
 
       <View style={{ /* backgroundColor: 'green', */  flex: 1, marginBottom: 30, marginTop: 15 }}>
