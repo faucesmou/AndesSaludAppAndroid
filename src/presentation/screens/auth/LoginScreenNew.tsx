@@ -75,7 +75,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
       if (loginExitoso) {
         /* const idAfiliadoActual = idAfiliado */
         const { idAfiliado } = useAuthStore.getState();
-
+        console.error('idAfiliado es---->', idAfiliado);
         if (idAfiliado) {
           // Llama a guardarDatosLoginEnContext con el idAfiliado actualizado
           const datosGuardados = await guardarDatosLoginEnContext(idAfiliado);

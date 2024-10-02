@@ -185,7 +185,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
       if (resultadoMensaje === 'Usuario y pass correctos') {
         console.log('Ingreso aprobado');
-        set({ /* status: 'authenticated', */ idAfiliado: resultadoIdAfiliado, });
+        /* cambio esto para abrir la app solucion temporal--------------- descomente el status authenticated-------------->>>  */
+        set({ status: 'authenticated', idAfiliado: resultadoIdAfiliado, });
         return true; // Devuelve true si el login es exitoso
       } else {
         console.error('Usuario o contraseña incorrectos.');
@@ -202,7 +203,11 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
 
     try {
-      console.log('Iniciando consulta para recabar datos---> el idAfiliado es:');
+      console.log('Iniciando consulta para recabar datos---> ');
+   /*    console.log('USUARIO----------------->', USUARIO);
+      console.log('--> el PASSWORD es:', PASSWORD);
+      console.log('--> el ADMINISTRADORA es:', ADMINISTRADORA);
+      console.log('--> el idAfiliado es:', idAfiliado); */
 
       /* consulta para recabar informacion y guardar en el context: */
 
@@ -219,7 +224,10 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
    /*      const dniAfiliado = respuestaFrancoMejorada.data[0].nroDocumento;
         const usuarioAfiliado = respuestaFrancoMejorada.data[0].usuAPP;
         const passAfiliado = respuestaFrancoMejorada.data[0].passAPP; */
-
+        console.log('idAfiliado----------------->', idAfiliado);
+        console.log('--> el idAfiliadoTitular es:', idAfiliadoTitular);
+        console.log('--> el cuilTitular es:', cuilTitular);
+        console.log('--> el nombrePila es:', nombrePila);
      
 
         /* Logica para establecer usuario y contraseña:  */
@@ -232,7 +240,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
           return true;
         }
         else {
-          console.log('no se pudo obtener el idAfiliado, idAfiliadoTitular y cuilTitular');
+          console.error('no se pudo obtener el idAfiliado, idAfiliadoTitular y cuilTitular');
           return false
         }
       }

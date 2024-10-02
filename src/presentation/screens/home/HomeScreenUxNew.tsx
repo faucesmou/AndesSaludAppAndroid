@@ -189,7 +189,7 @@ export const HomeScreenUxNew = () => {
 
       <View style={styles.cardContainer}>
        {/*  <Credencial /> */}
-        <CredencialNew />
+     {/*    <CredencialNew /> */}
       </View>
 
       <View style={styles.imageContainer}>
@@ -200,7 +200,7 @@ export const HomeScreenUxNew = () => {
           )
         :
         (
-          <Text style={styles.text2New}>¡Te estábamos esperando!</Text>
+          <Text style={styles.text2New}>¡Te va estábamos esperando!</Text>
         )
         }
        
