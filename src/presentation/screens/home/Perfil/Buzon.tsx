@@ -410,12 +410,15 @@ export const Buzon = () => {
 
       <View
         style={{
-          marginBottom: 30, marginTop: 10,
+          /* marginBottom: 30, */
+          marginBottom: wp('1%'),
+           marginTop: 10,
           alignItems: 'center',
-          /*     backgroundColor: 'orange', */
+              /* backgroundColor: 'orange', */
              maxHeight:'80%',
              minHeight:'80%',
-             marginHorizontal:20
+             marginHorizontal:wp('1%')
+             /* wp('2%') */
         }}>
           
         <View style={styles.ContainerMainTitle} >
@@ -440,7 +443,7 @@ export const Buzon = () => {
 
 
         { listadoEstMedicosVisible? (
-        <View style={{ /* marginBottom: 30,  */marginTop: 10,   /* backgroundColor: 'green', */ maxHeight:'80%',minHeight:'40%', width: '100%'}}>
+        <View style={{ /* marginBottom: 30,  */marginTop: wp('1%'),   /* backgroundColor: 'green', */ maxHeight:'80%',minHeight:'40%', width: '100%'}}>
 
                  
             <ScrollView 
@@ -457,7 +460,7 @@ export const Buzon = () => {
               error ? (
                 <>
                   <View style={styles.errorContainerBuzon} >
-                      <Text style={styles.titleErrorBuzon} >Sin notificaciones</Text>  
+                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>  
 
                   <View style={styles.imageContainer}>
 
@@ -524,7 +527,7 @@ export const Buzon = () => {
                   (
                     <>
                     <View style={styles.errorContainerBuzon} >
-                        <Text style={styles.titleErrorBuzon} >Sin notificaciones</Text>  
+                        <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>  
   
                     <View style={styles.imageContainer}>
   
@@ -691,23 +694,26 @@ export const Buzon = () => {
 
 const styles = StyleSheet.create({
   imageContainer: {
-    marginBottom: 30,
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginBottom: wp('8%'),
+    marginHorizontal: wp('3%'),
+    marginTop: 0,
     /*    zIndex: 1.5, */
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: '30%',
-    minWidth: '30%',
+    minHeight: '20%',
+    minWidth: '20%',
+    maxHeight:'60%',
+    /* maxWidth:'50%', */
+    /* backgroundColor: 'blue', */
    
   },
   innerContainer: {
-    marginBottom: 15,
-    marginTop: 15,
+    marginBottom: wp('3%'),
+    marginTop: wp('3%'),
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
-    /*  backgroundColor: 'blue', */
+   /*   backgroundColor: 'blue', */
   },
   image: {
     /*   flex: 1, */
@@ -745,6 +751,25 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
     shadowRadius: 15,
+    elevation: 10,
+    padding: 10,
+    margin: 5,
+    marginBottom: 10,
+    marginHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  TertiaryButtonNotifications: {
+    backgroundColor: 'white',
+    minWidth: '80%',
+    borderColor: 'white',
+    borderWidth: 1,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 10,
     padding: 10,
     margin: 5,
     marginBottom: 10,
@@ -777,7 +802,8 @@ const styles = StyleSheet.create({
     fontSize: hp('1.9%'),
   },
   errorContainerBuzon: {
-    marginTop: 20,
+    marginTop: hp('1%'),
+    marginBottom:wp('1%'),
     padding: 10,
  /*    backgroundColor: 'violet', */
     borderRadius: 5,
@@ -795,9 +821,9 @@ const styles = StyleSheet.create({
   },
   ContainerEstudiosMedicosTitleAfuera: {
     marginTop: 5,
-    marginBottom:5,
+    marginBottom:wp('0%'),
     padding: 5,
-    backgroundColor: '#fbd1a5'/* globalColors.earthYellow2  *//* brown2 *//* 'brown' *//* '#97e3b0' *//* '#d7e5f8' */,
+    backgroundColor: '#e1a159'/* '#fbd1a5' *//* globalColors.earthYellow2  *//* brown2 *//* 'brown' *//* '#97e3b0' *//* '#d7e5f8' */,
     borderRadius: 15,
     borderWidth:0,
     borderColor: globalColors.earthYellow2,
@@ -828,6 +854,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Light',
     textAlign: 'center',
     marginHorizontal:20,
+    color:'black'
   },
   titleEstudiosMedicos: {
     marginBottom: 5,
@@ -842,14 +869,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
  /*    backgroundColor:'blue', */
     minWidth:'100%',
+    color: 'black'
   },
   titleEstudiosMedicosAfuera: {
     marginBottom: 5,
-    fontSize: hp('2.3%'),
+    fontSize: hp('2.5%'),
     fontFamily: 'Quicksand-Light',
     textAlign: 'center',
  /*    backgroundColor:'blue', */
     minWidth:'100%',
+    color:'white',
+    fontWeight:'bold',
   },
   titleOrdenConsulta: {
     marginBottom: 5,

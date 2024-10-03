@@ -556,6 +556,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
+    elevation: 5,
     padding: 5,
     margin: 5,
     marginBottom: 5,
@@ -642,6 +643,7 @@ container: {
   optionText: {
     fontSize: 16,
     textAlign: 'center',
+    color:'black'
   },
   closeButton: {
     marginTop: 20,
@@ -658,6 +660,7 @@ container: {
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    
   },
   modalContainer: {
     flex: 1,

@@ -121,7 +121,7 @@ const CredencialNew = () => {
       <>
       </>
       ) : (
-        <View style={{ height: hp('23%'), marginTop: hp('-1%'), /* backgroundColor:'green', */ transform: [{ rotate: '2deg' }] }} >
+        <View style={{ height: hp('23%'), marginTop: hp('-1%'), /* backgroundColor:'green', */ /* elevation: 10, */ transform: [{ rotate: '2deg' }] }} >
           <LinearGradient colors={planColors.length > 0 ? planColors : defaultColors} style={globalStylesCredentials.frenteCardHomeNew}>
             <ImageBackground source={require('../../screens/credential/CredentialsData/images/BackgroundLogoGray3.png')} 
             imageStyle={{

@@ -150,7 +150,7 @@ export const HomeScreenUxNew = () => {
           styles.secondaryButton,
         ]}
       >
-        <View style={{ margin: '0%' }} >
+        <View style={{ margin: '0%', /* backgroundColor: 'violet', */ }} >
           <View style={{ alignItems: 'center', display: 'flex', justifyContent: 'center',  /* backgroundColor: 'violet', */ maxWidth: wp('42%'),}}  >
             <IonIcon name={iconName} size={hp('3.3%')} color="#505050" style={styles.icon} />
           </View>
@@ -359,6 +359,8 @@ const styles = StyleSheet.create({
     /*  backgroundColor: 'yellow', */
     /*    backgroundColor: globalColors.white2, */
   },
+
+  /*  */
   bigContentContainer: {
     /*  flex: 1, */
     marginTop: hp('1%'),
@@ -386,6 +388,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignContent: 'center',
+    marginHorizontal: wp('2%'),
 
   },
   rowContainer1: {
@@ -540,7 +543,7 @@ const styles = StyleSheet.create({
     flex: 0.5,
     maxHeight: hp('15%'),
     maxWidth: wp('54%'),
-    minWidth: wp('48%'),
+    minWidth: wp('45%'),
     minHeight: hp('12%'),
     borderColor: 'white',
     borderWidth: 1,
@@ -555,6 +558,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
+    elevation: 5,
     /*  alignItems: 'center', */
     justifyContent: 'center',
   },
@@ -581,7 +585,7 @@ const styles = StyleSheet.create({
     /*   width: '100%',  */
     width: wp('100%'),
     marginTop: hp('0.1%'),
-    maxWidth: wp('42%'),
+    maxWidth: wp('40%'),
     maxHeight: hp('10%'),
     minHeight: hp('7.2%'),
       /* backgroundColor: 'violet', */
@@ -597,7 +601,7 @@ const styles = StyleSheet.create({
     marginBottom: hp('0%'),
     /*   backgroundColor: 'red', */
     maxHeight: hp('2.5%'),
-    minHeight: hp('2.2%'),
+    minHeight: hp('2.4%'),
     marginTop: hp('0.5%'),
     textAlign: 'center',
     flexWrap: 'wrap',

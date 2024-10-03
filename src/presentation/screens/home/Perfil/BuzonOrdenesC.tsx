@@ -354,7 +354,7 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
               error ? (
                 <>
                   <View style={styles.errorContainerBuzon} >
-                      <Text style={styles.titleErrorBuzon} >Sin notificaciones</Text>  
+                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>  
 
                   <View style={styles.imageContainer}>
 
@@ -432,7 +432,7 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
                   (
                     <>
                     <View style={styles.errorContainerBuzon} >
-                        <Text style={styles.titleErrorBuzon} >Sin notificaciones</Text>  
+                        <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>  
   
                     <View style={styles.imageContainer}>
   
@@ -602,19 +602,21 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
 
 const styles = StyleSheet.create({
   imageContainer: {
-    marginBottom: 30,
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginBottom: wp('8%'),
+    marginHorizontal: wp('3%'),
+    marginTop: 0,
     /*    zIndex: 1.5, */
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: '30%',
-    minWidth: '30%',
+    minWidth: '20%',
+    maxHeight:'60%',
    
   },
   innerContainer: {
-    marginBottom: 15,
-    marginTop: 15,
+    /* marginBottom: 15,
+    marginTop: 15, */
+    marginBottom: wp('3%'),
+    marginTop: wp('3%'),
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
@@ -655,10 +657,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
     shadowRadius: 15,
+    elevation: 10,
     padding: 10,
     margin: 5,
     marginBottom: 10,
-    marginHorizontal: 20,
+    /* marginHorizontal: 40, */
+    marginHorizontal: wp('9%'),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -707,10 +711,12 @@ const styles = StyleSheet.create({
   },
   titleEstudiosMedicosAfuera: {
     marginBottom: 5,
-    fontSize: hp('2.3%'),
+    fontSize: hp('2.5%'),
     fontFamily: 'Quicksand-Light',
     textAlign: 'center',
     minWidth:'100%',
+    color:'white',
+    fontWeight:'bold',
   },
   ContainerEstudiosMedicosTitle: {
     marginTop: 10,
@@ -770,8 +776,9 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+    padding: 30,
+    /* elevation: 1, */
+    
   },
   textStyle: {
     color: 'black',
@@ -854,7 +861,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 18,
-    marginTop: 10,
+    marginTop: 0,
+    elevation: 10,
   },
   //estilos para lograr un background borroso cuando esta el modal:
   overlay: {

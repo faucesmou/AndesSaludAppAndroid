@@ -288,6 +288,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,
+    elevation: 10,
     shadowRadius: 5,
     zIndex: 3,
   },
@@ -297,6 +298,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     fontFamily: 'Quicksand-Regular',
     textAlign: 'center',
+    color: 'black'
   },
   emergencyProvincesTitle: {
     color: 'brown',

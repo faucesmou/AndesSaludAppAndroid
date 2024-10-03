@@ -70,6 +70,7 @@ navigation.setOptions({
           textAlign: 'center',
           marginTop: 0,
           padding: 10,
+          color:'black',
        /*    backgroundColor: 'orange', */ 
           width:'100%'
         }}>

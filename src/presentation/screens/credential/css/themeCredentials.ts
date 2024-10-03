@@ -108,6 +108,7 @@ export const globalStylesCredentials = StyleSheet.create({
     paddingHorizontal: 0,
     color: 'white',
     borderRadius: 10, 
+    elevation:10,
     backgroundColor: 'violet',
     zIndex: 3,
   },
@@ -130,6 +131,7 @@ export const globalStylesCredentials = StyleSheet.create({
     borderRadius: 20, 
     backgroundColor: 'violet',
     zIndex: 3,
+     elevation: 30,
   },
   frenteCardHome2: {
   /*   padding: 10,
