@@ -376,6 +376,7 @@ export const EstudiosMedicosScreenUx = () => {
                         <Text style={{
                           fontSize: buttonTextFontSize,
                           textAlign: 'center',
+                          color:'black',
                         }/* styles.optionText */}>{option}</Text>
                       </TouchableOpacity>
                     ))}
@@ -405,7 +406,7 @@ export const EstudiosMedicosScreenUx = () => {
 
         <TouchableWithoutFeedback onPress={cerrarTeclado} >
           <View style={globalStyles.containerInput2} >
-            <Text style={{ /* backgroundColor: 'yellow', */ fontSize: 18, textAlign: 'center', marginBottom: 10, marginTop: 0 }}>Utilizá el siguiente buscador para encontrar tu prestador</Text>
+            <Text style={{ /* backgroundColor: 'yellow', */ fontSize: 18, textAlign: 'center', marginBottom: 10, marginTop: 0, color:'black' }}>Utilizá el siguiente buscador para encontrar tu prestador</Text>
             <TextInput
               editable={true}
               style={globalStyles.estilosInput2}
@@ -423,7 +424,7 @@ export const EstudiosMedicosScreenUx = () => {
         {/*  <Divider /> */}
         <TouchableWithoutFeedback onPress={cerrarTeclado} >
 
-          <Text style={{ fontSize: hp('2.2%') /* 18 */, textAlign: 'center', marginBottom: 5, marginTop: 5 }}>Prestadores encontrados: {NumeroPrestadoresEncontrados} </Text>
+          <Text style={{ fontSize: hp('2.2%') /* 18 */, textAlign: 'center', marginBottom: 5, marginTop: 5, color:'black' }}>Prestadores encontrados: {NumeroPrestadoresEncontrados} </Text>
 
         </TouchableWithoutFeedback>
 
@@ -584,6 +585,7 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 16,
     textAlign: 'center',
+    color:'black'
     /*  color: '#595960',  */
   },
   closeButton: {
@@ -602,6 +604,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    color:'black'
   },
   modalContainer: {
     flex: 1,
@@ -611,9 +614,10 @@ const styles = StyleSheet.create({
   },
   selectButton: {
     backgroundColor: '#4285F4',
-    padding: 8,
-    borderRadius: 8,
+    padding: 10,
+    borderRadius: 15,
     alignItems: 'center',
+    
   },
   /* cartel de no hay prestadores:  */
   noDataContainer: {

@@ -55,11 +55,12 @@ export const HomeScreenUxNew = () => {
       if (currentUserNameInicial) {
         const capitalizedUserName = capitalizeWords(currentUserNameInicial);
         setCurrentUserName(capitalizedUserName); // Actualiza el estado
+        console.log('currentUserName es----->', currentUserName);
       } else {
         console.log('No se encontró el nombre de usuario');
       }
    
-  }, [getUserName])
+  }, [getUserName, currentUserName])
   
   useEffect(() => {
     setShouldUpdateNotifications(true);
@@ -204,7 +205,7 @@ export const HomeScreenUxNew = () => {
             )
               :
               (
-                <Text style={styles.text2New}>¡Te va estábamos esperando!</Text>
+                <Text style={styles.text2New}>¡Te estábamos esperando!</Text>
               )
             }
 

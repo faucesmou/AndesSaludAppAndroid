@@ -200,6 +200,7 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 10,
     justifyContent: 'center',
     paddingHorizontal: wp('5%'),
+    color:'black'
  
   /*   paddingHorizontal: 30, */
    /*   backgroundColor: 'yellow'  */
@@ -215,6 +216,7 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 13,
   /*   alignSelf: 'center', */
     flexWrap:'wrap',
+    color:'black',
    /*  minWidth:wp('15%') */
   },
   /* estilos para estudios medicos enviados: */

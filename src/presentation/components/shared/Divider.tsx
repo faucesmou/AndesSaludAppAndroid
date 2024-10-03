@@ -2,13 +2,14 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { globalColors } from '../../theme/theme';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 interface Prop {
   marginTopDivider?: number
 }
 
 const Divider: React.FC<Prop> = ({marginTopDivider}: Prop) => {
-  return <View style={[styles.divider, {marginTop: marginTopDivider || 10}]} />;
+  return <View style={[styles.divider, {marginTop: marginTopDivider || wp('2%')}]} />;
 };
 
 const styles = StyleSheet.create({
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.gray2,
     marginHorizontal: 40,
     alignSelf: 'stretch',
-    marginBottom:10,
+    marginBottom:wp('2%'),
  /*    marginTop:10, */
   },
 });

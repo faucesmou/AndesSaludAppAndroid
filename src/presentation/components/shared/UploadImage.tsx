@@ -139,9 +139,25 @@ const UploadImage: React.FC = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Cargá las imágenes de tus Estudios</Text>
 
-    <View  style={{ marginBottom: wp('0.5%'),  marginTop: wp('0.5%'),}}>
+    {/* <View  style={{ marginBottom: wp('0.5%'),  marginTop: wp('0.5%'), }}>
       <Button title="Seleccionar Imágenes" onPress={handleImagePicker} />
-    </View>
+    </View> */}
+
+    <View style={{ marginBottom: wp('0.5%'), marginTop: wp('0.5%') }}>
+  <TouchableOpacity 
+    style={{
+      backgroundColor: '#4285F4', // Cambia el color de fondo aquí
+      padding: 10, 
+      borderRadius: 15,
+      alignItems: 'center', // Centra el texto
+      
+    }} 
+    onPress={handleImagePicker}
+  >
+    <Text style={{ color: 'white', fontSize: wp('4.3%'), fontWeight:'bold',
+     }}>Seleccionar Imágenes</Text>
+  </TouchableOpacity>
+</View>
 
    {/*    <ScrollView style={{ width: '100%',  }} > */}
 
@@ -174,8 +190,8 @@ const UploadImage: React.FC = () => {
   const styles = StyleSheet.create({
     container: {
       /*    flex: 1, */
-      padding: 10,
-      marginTop: wp('2%'),
+      padding: wp('1%'),
+      marginTop: wp('1%'),
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: wp('1%')
@@ -191,12 +207,14 @@ const UploadImage: React.FC = () => {
       fontSize: 17,
       marginBottom: 10,
       fontFamily: 'Quicksand-Regular',
+      color: 'black'
     },
     subitle: {
       fontSize: 15,
       marginBottom: 5,
       fontFamily: 'Quicksand-Regular',
       width: '100%',
+      color:'black'
     },
     image: {
       width: 200,

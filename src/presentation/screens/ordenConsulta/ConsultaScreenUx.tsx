@@ -280,7 +280,7 @@ export const ConsultaScreenUx = () => {
 
   const { height } = Dimensions.get('window');
   let MarginTopSeleccionaFamiliar: number = hp('0.5%');
-  let MarginTopDivider: number = hp('0.5%');
+  let MarginTopDivider: number = hp('1%');
   let buttonTextFontSize = wp('4.3%');
  let consignaTextFontSize = wp('5.3%'); 
  let titleTextFontSize = wp('5.7%'); 
@@ -549,6 +549,7 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 16,
     textAlign: 'center',
+    color:'black'
     /*  color: '#595960',  */
   },
   closeButton: {
@@ -576,8 +577,8 @@ const styles = StyleSheet.create({
   },
   selectButton: {
     backgroundColor: '#4285F4',
-    padding: 8,
-    borderRadius: 8,
+    padding: 10,
+    borderRadius: 15,
     alignItems: 'center',
   },
   /* cartel de no hay prestadores:  */
