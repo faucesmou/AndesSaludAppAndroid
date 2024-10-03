@@ -62,8 +62,10 @@ const CredencialNew = () => {
     }
     return [];
   };
+/*   const planColors = 'black'; */
   const planColors = getPlanColors(datosCredencial.plan);
 
+  const defaultColors = ['#474648', '#161516', '#161516', '#161516'];
 /*   const planColors = PlanPalettes[datosCredencial.plan] || []; */
 
   useEffect(() => {
@@ -120,7 +122,7 @@ const CredencialNew = () => {
       </>
       ) : (
         <View style={{ height: hp('23%'), marginTop: hp('-1%'), /* backgroundColor:'green', */ transform: [{ rotate: '2deg' }] }} >
-          <LinearGradient colors={planColors} style={globalStylesCredentials.frenteCardHomeNew}>
+          <LinearGradient colors={planColors.length > 0 ? planColors : defaultColors} style={globalStylesCredentials.frenteCardHomeNew}>
             <ImageBackground source={require('../../screens/credential/CredentialsData/images/BackgroundLogoGray3.png')} 
             imageStyle={{
               resizeMode: "cover",/* cover o contain */

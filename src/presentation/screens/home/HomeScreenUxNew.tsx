@@ -193,23 +193,23 @@ export const HomeScreenUxNew = () => {
 
       <View style={styles.cardContainer}>
        {/*  <Credencial /> */}
-     {/*    <CredencialNew /> */}
-      </View>
-
-      <View style={styles.imageContainer}>
-        <View style={styles.innerContainer2}>
-
-          {currentUserName ? (
-            <Text style={styles.text2New}>¡Hola, {currentUserName}!</Text>
-          )
-        :
-        (
-          <Text style={styles.text2New}>¡Te va estábamos esperando!</Text>
-        )
-        }
-       
+        <CredencialNew />
         </View>
-      </View>
+
+        <View style={styles.imageContainer}>
+          <View style={styles.innerContainer2}>
+
+            {currentUserName ? (
+              <Text style={styles.text2New}>¡Hola, {currentUserName}!</Text>
+            )
+              :
+              (
+                <Text style={styles.text2New}>¡Te va estábamos esperando!</Text>
+              )
+            }
+
+          </View>
+        </View>
 
         {/*   <ScrollView> */}
         <View style={styles.bigContentContainer}>
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
     width: wp('100%'),
-    height: hp('3%'),
+    height: hp('3.5%'),
 
     margin: 0,
     marginLeft: wp('4%'),

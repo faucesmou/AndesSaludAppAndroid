@@ -53,7 +53,7 @@ const shadowOpt = {
   radius: 3,
   opacity: 0.1,
   x: -5,
-  y: 20,
+  y: 30,
   style: { marginVertical: 5 }
 };
 

@@ -122,6 +122,7 @@ export const Afiliados = () => {
           <Text style={{
             fontSize: 25,
             textAlign: 'center',
+            color: 'black'
           }} >
             Andes Salud
           </Text>

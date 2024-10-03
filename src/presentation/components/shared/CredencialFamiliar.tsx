@@ -48,7 +48,7 @@ export const CredencialFamiliar = ({ idAfiliado }: CredencialFamiliarProps) => {
 
   /*   const { idAfiliado } = useAuthStore(); */
   const idAfiliado2 = idAfiliado;
-  console.log('ESTE ES EL idAfiliado desde ZARATUSTRA: ---->--->', idAfiliado2);
+
 
   const getPlanColors = (plan: string): string[] => {
     if (plan in PlanPalettes) {
@@ -57,7 +57,7 @@ export const CredencialFamiliar = ({ idAfiliado }: CredencialFamiliarProps) => {
     return [];
   };
   const planColors = getPlanColors(datosCredencial.plan);
-
+  const defaultColors = ['#474648', '#161516', '#161516', '#161516'];
   /*   const planColors = PlanPalettes[datosCredencial.plan] || []; */
   const handleOpenURLAndes = () => {
     console.log('entrando a Andes Salud');
@@ -136,7 +136,7 @@ export const CredencialFamiliar = ({ idAfiliado }: CredencialFamiliarProps) => {
       ) : (
         <View  style={{
         margin: 15, alignItems: 'center',   /* backgroundColor: 'blue',  */  marginBottom:3, marginRight:45, marginLeft: 45 }} >
-          <LinearGradient colors={planColors} style={{...globalStylesCredentials.frenteCardHome, marginBottom: 0,}}>
+          <LinearGradient colors={planColors.length > 0 ? planColors : defaultColors} style={{...globalStylesCredentials.frenteCardHome, marginBottom: 0,}}>
             <ImageBackground source={require('../../screens/credential/CredentialsData/images/BackgroundLogoGray3.png')} 
             imageStyle={{
              /*  resizeMode: "cover", */
@@ -179,7 +179,7 @@ export const CredencialFamiliar = ({ idAfiliado }: CredencialFamiliarProps) => {
                <View style={{ marginTop: hp('1%')}} >
 
                 <LinearGradient
-                  colors={planColors}
+                  colors={planColors.length > 0 ? planColors : defaultColors}
                   /* style={globalStylesCredentials.frenteCard} */
                   style={{...globalStylesCredentials.frenteCardHome, marginBottom:10, height: hp('27%')}}
                 >

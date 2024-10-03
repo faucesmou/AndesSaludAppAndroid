@@ -203,7 +203,7 @@ export const globalStylesCredentials = StyleSheet.create({
     marginVertical: 0,
     width: wp('13%'),
    /*  width: 50, */
-   height: hp('4%'),
+   height: hp('4.5%'),
    /*  height: 40, */
     color: 'white',
     borderRadius: 10, 
@@ -217,7 +217,7 @@ export const globalStylesCredentials = StyleSheet.create({
     marginVertical: 0,
     width: wp('13%'),
    /*  width: 50, */
-   height: hp('4%'),
+   height: hp('4.5%'),
    /*  height: 40, */
     color: 'white',
     borderRadius: 10, 
