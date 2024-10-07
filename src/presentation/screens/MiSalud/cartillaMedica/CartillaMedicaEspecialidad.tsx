@@ -289,7 +289,8 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
            try{
             console.log(`la latitude es: ${latitude} y la longitude es: ${longitude}` );
             
-          const url = `maps:0?q=${latitude},${longitude}`; 
+          const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`; 
+          /* const url = `maps:0?q=${latitude},${longitude}`;  */
           
              console.log('la url es: ----->', url);
              

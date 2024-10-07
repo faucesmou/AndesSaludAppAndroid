@@ -115,13 +115,13 @@ export const FormulariosEspScreen = () => {
  <ScrollView
  contentContainerStyle={{ flexGrow: 1 }}
  >    
-      <Text style={{ marginBottom: 5, marginTop: 5, fontSize: 25, textAlign: 'center', }}>Formularios Especiales</Text>
+      <Text style={{ marginBottom: 5, marginTop: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Formularios Especiales</Text>
 
       <View style={{ /* backgroundColor: 'green', */  flex: 1, marginBottom: 30, marginTop: 15 }}>
         {formularios.map((formulario, index) => (
           <View key={index} style={{ marginBottom: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{formulario.nombre}</Text>
-            <Text  style={{fontSize: 15, marginBottom:10 }}>{formulario.descripcion}</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>{formulario.nombre}</Text>
+            <Text  style={{fontSize: 15, marginBottom:10, color: 'black' }}>{formulario.descripcion}</Text>
             <Text style={{ color: 'blue',  fontSize: 15  }} 
             onPress={() => handleDescargarFormulario(formulario.nombreArchivo)}            
             >
