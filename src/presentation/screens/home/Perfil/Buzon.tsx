@@ -934,17 +934,19 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 10,
     zIndex: 2, // Asegúrate de que el modal esté por encima del overlay
-    width: '80%', // Ajusta el ancho según sea necesario
-    maxHeight: '30%', // Ajusta la altura según sea necesario
+    width: '80%', 
+    maxHeight: '40%', 
   },
   // altura del scrollView: 
    scrollViewContent: {
     flexGrow: 0,
   },
   button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+    borderRadius: 25,
+    borderColor: 'gray',
+    paddingHorizontal: 25,
+    paddingVertical:10,
+    borderWidth: 0.3,
   },
   textStyle: {
     color: 'black',
@@ -1010,7 +1012,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 18,
-    marginTop: 10,
   },
   //estilos para lograr un background borroso cuando esta el modal:
   overlay: {

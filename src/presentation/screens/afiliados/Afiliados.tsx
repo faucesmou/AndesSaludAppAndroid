@@ -14,6 +14,7 @@ import { useAuthStore } from '../../store/auth/useAuthStore';
 import Credencial from '../../components/shared/Credencial';
 import { TertiaryButton } from '../../components/shared/TertiaryButton';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { FullScreenLoader } from '../../components/ui/FullScreenLoader';
 
 
 /* const products = [
@@ -31,8 +32,11 @@ export const Afiliados = () => {
   const { top } = useSafeAreaInsets();
 
   const [products, setProducts] = useState<{ apellidoYNombre: string; nroAfiliado: string; idAfiliado: any }[]>([]);
+  
+  const [isConsulting, setIsConsulting] = useState(false);
+  
   useEffect(() => {
-
+    setIsConsulting(true);
     const ProductsRequest = async () => {
       try {
         const response = await axios.get(`https://andessalud.createch.com.ar/api/obtenerFamiliares?idAfiliado=${idAfiliado}`);
@@ -46,7 +50,7 @@ export const Afiliados = () => {
 
         setProducts(mappedProducts);
         console.log('este es el mappedProducts:---x-x-x-x-<<>>>', mappedProducts);
-
+        setIsConsulting(false);
 
 
       } catch (error) {
@@ -93,7 +97,25 @@ export const Afiliados = () => {
         >Selecciona un familiar para ver su credencial</Text>
 
         
-          <FlatList
+          {
+            
+            isConsulting ? (
+
+              <View
+                style={{
+                  flex: 0.5,
+                  marginTop: top - hp('-4%'),
+                  marginBottom: hp('6%'),
+                }}
+              >
+                <FullScreenLoader />
+              </View>
+    
+            )
+              :
+            
+            
+            <FlatList
             style={{  /*  backgroundColor: 'orange', */  marginBottom: 0, padding: 5, width: '100%',  maxHeight: '80%'  }}
             data={products}
             renderItem={({ item }) => (
@@ -107,7 +129,7 @@ export const Afiliados = () => {
                 color={color}
               />
             )}
-          />
+          />}
   
 
       </View>

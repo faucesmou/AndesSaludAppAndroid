@@ -797,10 +797,11 @@ const styles = StyleSheet.create({
     flexGrow: 0,
   },
   button: {
-    borderRadius: 20,
-    padding: 30,
-    /* elevation: 1, */
-    
+    borderRadius: 25,
+    borderColor: 'gray',
+    paddingHorizontal: 25,
+    paddingVertical:10,
+    borderWidth: 0.3,
   },
   textStyle: {
     color: 'black',
