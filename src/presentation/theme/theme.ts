@@ -222,10 +222,10 @@ export const globalStyles = StyleSheet.create({
   /* estilos para estudios medicos enviados: */
   containerEstudiosMedicosEnv: {
     /*  flex: 0.5, */
-    paddingHorizontal: 30,
-    marginTop: 20,
+    paddingHorizontal: wp('2%'),
+    marginTop: wp('2%'),
     /*   backgroundColor: 'yellow',  */
-    marginBottom: 10,
+    marginBottom: wp('2%'),
 
   },
   titleEstudiosMedicosEnv: {
@@ -235,8 +235,8 @@ export const globalStyles = StyleSheet.create({
     textAlign: 'center',
   },
   infoEstudiosMedicosEnv: {
-    marginBottom: 5,
-    marginTop:10,
+    marginBottom: wp('1%'),
+    marginTop:wp('1%'),
     fontSize: 20,
     fontFamily: 'Quicksand-Light',
     textAlign: 'center',
@@ -249,6 +249,7 @@ export const globalStyles = StyleSheet.create({
     margin: 10,
     marginTop: 10,
     alignItems: 'flex-start',
+    color:'black',
   },
   resultTextAprobado: {
     fontSize: 18,
@@ -273,6 +274,7 @@ export const globalStyles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 0,
    alignItems: 'flex-start', 
+    color:'black',
 /*    textAlign: 'center', */
     /* flexWrap: 'nowrap' */
   },
@@ -434,7 +436,7 @@ export const globalStyles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal:5,  
   },
-    icon: {
+    icon2: {
     marginRight: 0, // Espacio entre el icono y el texto
   },
   iconWrapper: {

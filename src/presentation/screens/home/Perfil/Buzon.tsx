@@ -443,7 +443,7 @@ export const Buzon = () => {
 
 
         { listadoEstMedicosVisible? (
-        <View style={{ /* marginBottom: 30,  */marginTop: wp('1%'),   /* backgroundColor: 'green', */ maxHeight:'80%',minHeight:'40%', width: '100%'}}>
+        <View style={{ /* marginBottom: 30,  */marginTop: wp('1%'),   /* backgroundColor: 'green', */ maxHeight:'80%',minHeight:'40%', width: '100%', marginHorizontal: wp('9%'),/* wp('4%') */}}>
 
                  
             <ScrollView 
@@ -622,7 +622,7 @@ export const Buzon = () => {
               >
               
                 <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
+                  <View style={styles.modalViewEstudioRechazado}>
                     <Text style={styles.textStyletTitle}>Estudio rechazado: </Text>
                     <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
                       {rechazoData.map((data, index) => (
@@ -700,9 +700,9 @@ const styles = StyleSheet.create({
     /*    zIndex: 1.5, */
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: '20%',
-    minWidth: '20%',
-    maxHeight:'60%',
+    minHeight: wp('20%'),
+    minWidth: wp('20%'),
+    maxHeight:wp('20%'),
     /* maxWidth:'50%', */
     /* backgroundColor: 'blue', */
    
@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
-   /*   backgroundColor: 'blue', */
+     /* backgroundColor: 'green', */
   },
   image: {
     /*   flex: 1, */
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     marginBottom: 10,
-    marginHorizontal: 20,
+    marginHorizontal: wp('9%'),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -917,6 +917,25 @@ const styles = StyleSheet.create({
     zIndex: 2, // Asegúrate de que el modal esté por encima del overlay
     width: '80%', // Ajusta el ancho según sea necesario
     maxHeight: '60%', // Ajusta la altura según sea necesario
+  },
+  modalViewEstudioRechazado: {
+    margin: 20,
+    marginTop: '20%',
+    backgroundColor: 'white'/* globalColors.gray3 */,
+    borderRadius: 20,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    elevation: 10,
+    zIndex: 2, // Asegúrate de que el modal esté por encima del overlay
+    width: '80%', // Ajusta el ancho según sea necesario
+    maxHeight: '30%', // Ajusta la altura según sea necesario
   },
   // altura del scrollView: 
    scrollViewContent: {

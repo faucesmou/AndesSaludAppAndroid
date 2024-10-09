@@ -35,7 +35,7 @@ interface Props {
 
 
 export const HomeScreenUxNew = () => {
-  const { setShouldUpdateNotifications, getUserName } = useAuthStore();
+  const { setShouldUpdateNotifications, getUserName, UserName  } = useAuthStore();
 
   const [currentUserName, setCurrentUserName] = useState<string | null>(null)
 
@@ -50,7 +50,7 @@ export const HomeScreenUxNew = () => {
 
 
   useEffect(() => {
-    
+    console.log('entrando al useEffect----->');
       const currentUserNameInicial = getUserName(); // Obtención síncrona del nombre
       if (currentUserNameInicial) {
         const capitalizedUserName = capitalizeWords(currentUserNameInicial);
@@ -60,7 +60,7 @@ export const HomeScreenUxNew = () => {
         console.log('No se encontró el nombre de usuario');
       }
    
-  }, [getUserName, currentUserName])
+  }, [UserName])
   
   useEffect(() => {
     setShouldUpdateNotifications(true);

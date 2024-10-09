@@ -335,12 +335,12 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
           }
           }
         >
-          <Text style={styles.titleEstudiosMedicosAfuera} >Órdenes de Consulta:</Text>
+          <Text style={styles.titleEstudiosMedicosAfuera} >Órdenes de Consulta 2:</Text>
         </Pressable>
       </View>
       {listadoEstMedicosVisible ?
         (
-          <View style={{ marginBottom: 40, marginTop: 5, /* backgroundColor: 'blue', */ maxHeight: '80%', minHeight: '40%', width: '100%', marginHorizontal: 30, }}>
+          <View style={{ marginBottom: 40, marginTop: 5, /* backgroundColor: 'blue', */ maxHeight: '80%', minHeight: '40%', width: '100%', marginHorizontal: wp('9%'), }}>
 
 <ScrollView nestedScrollEnabled={true}>
             
@@ -528,7 +528,7 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
               >
               
                 <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
+                  <View style={styles.modalViewEstudioRechazado}>
                     <Text style={styles.textStyletTitle}>Órden rechazada: </Text>
                     <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
                       {rechazoData.map((data, index) => (
@@ -608,8 +608,9 @@ const styles = StyleSheet.create({
     /*    zIndex: 1.5, */
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: '20%',
-    maxHeight:'60%',
+    minHeight: wp('20%'),
+    minWidth: wp('20%'),
+    maxHeight:wp('20%'),
    
   },
   innerContainer: {
@@ -620,7 +621,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
-    /*  backgroundColor: 'blue', */
+     /* backgroundColor: 'blue', */
   },
   image: {
     /*   flex: 1, */
@@ -691,7 +692,8 @@ const styles = StyleSheet.create({
     fontSize: hp('1.9%'),
   },
   errorContainerBuzon: {
-    marginTop: 20,
+    marginTop: hp('1%'),
+    marginBottom:wp('1%'),
     padding: 10,
 /*     backgroundColor: 'violet', */
     borderRadius: 5,
@@ -732,6 +734,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Light',
     textAlign: 'center',
     marginHorizontal:20,
+    color: 'black'
   },
   titleEstudiosMedicos: {
     marginBottom: 5,
@@ -769,6 +772,25 @@ const styles = StyleSheet.create({
     zIndex: 2, // Asegúrate de que el modal esté por encima del overlay
     width: '80%', // Ajusta el ancho según sea necesario
     maxHeight: '60%', // Ajusta la altura según sea necesario
+  },
+  modalViewEstudioRechazado: {
+    margin: 20,
+    marginTop: '20%',
+    backgroundColor: 'white'/* globalColors.gray3 */,
+    borderRadius: 20,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    elevation: 10,
+    zIndex: 2, // Asegúrate de que el modal esté por encima del overlay
+    width: '80%', // Ajusta el ancho según sea necesario
+    maxHeight: '30%', // Ajusta la altura según sea necesario
   },
   // altura del scrollView: 
    scrollViewContent: {

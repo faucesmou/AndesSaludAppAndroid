@@ -549,7 +549,7 @@ recuperarDatos: async (numeroAfiliado: string, dni: string) => {
                       }
                       //TODO: Save token and user in storage 
                       /*    await StorageAdapter.setItem( 'token', resp.token ); */
-
+                      
                       set({ status: 'registered', token: resp.token, user: resp.user });
 
                     } catch (err) {

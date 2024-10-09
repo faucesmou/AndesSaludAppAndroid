@@ -251,14 +251,14 @@ const [linkDescargaEstudio, setLinkDescargaEstudio] = useState<string>()
 
 const { height } = Dimensions.get('window');
 let MarginTopSeleccionaFamiliar: number = hp('0.5%');
-let MarginTopDivider: number = hp('0.5%');
+let MarginTopDivider: number = hp('25%');
 let buttonTextFontSize = wp('4.3%');
 let optionSelectedTextFontSize = wp('4.3%'); 
 let buttonDescriptionFontSize = wp('4.5%');
 if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
 
   MarginTopSeleccionaFamiliar = hp('0%');
-  MarginTopDivider = hp('0.5%');
+  MarginTopDivider = hp('25%');
   buttonTextFontSize = wp('3.8%');
   buttonDescriptionFontSize = wp('4%');
   optionSelectedTextFontSize = wp('4%'); 
@@ -283,7 +283,7 @@ if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPho
           <View
             style={{
               flex: 0.5,
-              marginTop: top - 10,
+              marginTop: top + MarginTopDivider,
             }}
           >
             <FullScreenLoader 
@@ -388,8 +388,8 @@ const styles = StyleSheet.create({
     elevation: 5, 
   },
   problemsContainer: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: wp('10%'),
+    marginBottom: wp('20%'),
     /*     padding: 20, */
     backgroundColor: 'white',
     borderRadius: 10,
@@ -423,8 +423,8 @@ const styles = StyleSheet.create({
   },
   problemMessage: {
     fontSize: 22,
-    marginTop:10,
-    marginBottom:5,
+    marginTop:wp('2%'),
+    marginBottom:wp('1%'),
     color:'#030136',
     fontWeight:'bold',
     
