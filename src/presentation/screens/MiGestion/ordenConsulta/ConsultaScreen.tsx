@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 
 import { Picker } from '@react-native-picker/picker';
-import { globalColors, globalStyles } from '../../theme/theme'
-import { PrimaryButton } from '../../components/shared/PrimaryButton'
+import { globalColors, globalStyles } from '../../../theme/theme'
+import { PrimaryButton } from '../../../components/shared/PrimaryButton'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
-import { RootStackParams } from '../../routes/StackNavigator'
-import CustomHeader from '../../components/CustomHeader'
-import { useAuthStore } from '../../store/auth/useAuthStore'
+import { RootStackParams } from '../../../routes/StackNavigator'
+import CustomHeader from '../../../components/CustomHeader'
+import { useAuthStore } from '../../../store/auth/useAuthStore'
 import { IndexPath, Layout, Select, SelectItem, SelectGroup, } from '@ui-kitten/components'
-import { BackButton } from '../../components/shared/BackButton'
+import { BackButton } from '../../../components/shared/BackButton'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 /* import { SvgXml } from 'react-native-svg';
 const isotipo = require('../credential/CredentialsData/images/Isotipo.svg'); */

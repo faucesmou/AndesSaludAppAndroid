@@ -16,6 +16,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import datos from './datosPrueba.json';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
 
 interface Saldo {
   id: number;
@@ -50,10 +51,11 @@ const shadowOpt = {
   color: "#000",
   border: 8,
   shadowRadius: 21,
-  radius: 3,
+  radius: 2,
   opacity: 0.1,
-  x: -5,
-  y: 30,
+  x: -2.5,
+  y: 25,
+/*   elevation:5, */
   style: { marginVertical: 5 }
 };
 
@@ -73,6 +75,8 @@ export const PagosScreen = () => {
   const [errores, setErrores] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
+  const [isConsulting, setIsConsulting] = useState(false);
+  const [isError, setIsError] = useState(false);
 
 /*   const Saldos = datos.data; */
   useEffect(() => {
@@ -80,6 +84,7 @@ export const PagosScreen = () => {
 
     const PagosPeticion = async () => {
       console.log('entrando a PagosPeticion--------->>>>');
+      setIsConsulting(true);
       try {
         const response = await axios.post(`https://fiscalizacion.createch.com.ar/contratos/paginador/aplicacion?afiliado=${cuilTitular}`);
 
@@ -112,21 +117,28 @@ export const PagosScreen = () => {
               
             }));
             setSaldos(extractedData);
+            setIsConsulting(false);
           
           }
           else {
             setError('El formato de los datos recibidos no es el esperado.');
             console.log('no es array');
+            setIsConsulting(false);
+            setIsError(true)
 
           }
         } else {
           setError("Error con los datos");
           console.log('la respuesta con errores de Cta Cte es--------->>>>', error);
+          setIsConsulting(false);
+          setIsError(true)
         }
 
       } catch (error) {
         console.error('Error al obtener los pagos:', error);
         setError("Error con los datos");
+        setIsConsulting(false);
+        setIsError(true)
       }
     };
 
@@ -138,6 +150,11 @@ export const PagosScreen = () => {
     Linking.openURL(url).catch((err) => console.error('Error al abrir el enlace:', err));
   };
 
+  function capitalizeWords(string:string) {
+    return string.replace(/\b\w+/g, function(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+  }
 
   const { height } = useWindowDimensions();
   let modalsTitleFontSize = wp('4.5%');
@@ -150,6 +167,7 @@ export const PagosScreen = () => {
   }
 
 
+
   return (
     <View
 
@@ -159,16 +177,76 @@ export const PagosScreen = () => {
 
       <BackButton Size={hp('4%')}/>
 
-      <Text style={{ marginBottom: 0, marginTop: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Estado de Pagos</Text>
+    {/*   <Text style={{ marginBottom: 0, marginTop: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Estado de Pagos</Text> */}
+
+      <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('3.5%'),
+        textAlign: 'center',
+        color: globalColors.gray2,
+        fontWeight: 'bold'
+      }}>Estado de Pagos</Text>
+
       <ScrollView >
 
         <View style={globalStyles.containerEstudiosMedicosEnv2}>
-          {error ? (
+
+
+          {
+          
+          
+         /*  error ? (
             <View style={globalStyles.errorContainerEstudios}>
               <Text style={globalStyles.titleErrorEstMedicosEnv}>Problemas en la solicitud</Text>
               <Text style={globalStyles.errorTextEstudios}>Error: {error}</Text>
             </View>
-          ) : (
+          ) : ( */
+
+          isConsulting ?
+          (
+            <>
+
+              <View
+                style={{
+                  flex: 0.5,
+                  marginTop: top - hp('-5%'),
+                  marginBottom: hp('6%'),
+                }}
+              >
+                <View style={styles.noDataContainer}>
+                  <Text style={styles.noDataText}>
+                    Aguardá un momento mientras obtenemos tus Pagos
+                  </Text>
+                  <Text style={styles.noDataText}>
+                    Esto puede tomar unos segundos
+                  </Text>
+
+                </View>
+              </View>
+              <FullScreenLoader />
+
+            </>
+
+          )
+          : isError ? (
+
+      <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>
+            ¡Ups! Parece que algo salió mal. 
+            </Text>
+            <Text style={styles.noDataText}>
+           Por favor, intenta nuevamente más tarde. 
+            </Text>
+            <Text style={styles.noDataText2}>
+            Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
+            </Text>
+          </View>
+       )
+       :
+       (
+
+
             Saldos.map((saldo, index) => (
               <View key={saldo.id} style={[
                 styles.cardWrapper,
@@ -183,7 +261,11 @@ export const PagosScreen = () => {
                       
                     <Text style={[styles.resultText3, {fontSize: modalsTitleFontSize}]}>{saldo.tipoSaldo}</Text>
 
-                    <Text style={[globalStyles.resultText2, {fontSize: modalsTitleFontSize}]}>Medio de Pago: {saldo.medioPago}</Text> 
+                    <Text style={[globalStyles.resultText2, {fontSize: modalsTitleFontSize}]}>Medio de Pago:
+                    <Text style={{ color: 'black', fontWeight:'bold' }}> {/* Cambia el color a lo que prefieras */}
+    {capitalizeWords(saldo.medioPago)}
+  </Text>
+                       {/* {capitalizeWords(saldo.medioPago)} */}</Text> 
 
                     { saldo.pagado === false ? 
                       (
@@ -227,20 +309,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 'auto',
+    backgroundColor:'green'
   },
   cardWrapper: {
     alignItems: 'center',
-    marginBottom: '5%',
+    /* marginBottom: '5%', */
   },
   card: {
-    width: 350,
+   /*  width: 350, */
+  /*  width: wp('20') */
     height: 'auto',
+   /*  height:wp('31%'), */
     marginTop: 0,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 7,
-    borderRadius: 15,
+    borderRadius: 20,
   },
   primaryButton45: {
     backgroundColor: '#b74a4a',
@@ -257,12 +342,30 @@ const styles = StyleSheet.create({
 
   },
   resultText3: {
-    fontSize: 18,
+    fontSize: wp('1%'),
     /* fontSize: 18, */
     fontFamily: 'Quicksand-Light',
     margin: 0,
     marginTop: 10,
     color: 'black',
+  },
+   /* Cartel de error: no se pudieron obtener los pagos:  */
+   noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: wp('4.5%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop:wp('3%'),
+  },
+  noDataText2: {
+    fontSize: wp('4%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop:wp('8%'),
   },
 });
 

@@ -16,6 +16,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import datos from './datosFacturas.json';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
 
 
 // Define los tipos
@@ -80,6 +81,8 @@ export const Facturas = () => {
   const [mensajeFactura, setMensajeFactura] = useState<string | null>(null);
   const [UrlFacturaGenerada, setUrlFacturaGenerada] = useState<string | null>(null);
  
+  const [isConsulting, setIsConsulting] = useState(false);
+  const [isError, setIsError] = useState(false);
   //probando modificar individualemnte los botones
   const [Facturas2, setFacturas2] = useState<FacturasInt[]>([]);
   const [mensajeFacturas, setMensajeFacturas] = useState<{ id: string, mensaje: string }[]>([]);
@@ -115,6 +118,8 @@ export const Facturas = () => {
   useEffect(() => {
 
     const FacturasRequest = async () => {
+
+      setIsConsulting(true);
       try {
         const response = await axios.get(`https://fiscalizacion.createch.com.ar/facturacion/api/total?titular=${cuilTitular}`);
 
@@ -141,20 +146,28 @@ export const Facturas = () => {
 
 
             setFacturas(reversedData);
+            setIsConsulting(false);
           }
           else {
             setError('El formato de los datos recibidos no es el esperado.');
             console.log('no es array');
+            setIsConsulting(false);
+            setIsError(true)
 
           }
         } else {
           setError("Error con los datos");
           console.log('la respuesta con errores de FacturasRequest es--------->>>>', error);
+          setIsConsulting(false);
+          setIsError(true)
         }
 
       } catch (error) {
         console.error('Error al obtener FacturasRequest :', error);
         setError("Error con los datos");
+        setIsConsulting(false);
+        setIsError(true)
+
       }
     };
     FacturasRequest()
@@ -328,22 +341,68 @@ export const Facturas = () => {
 
       style={globalStyles.container}
     >
-      <CustomHeader /* color={globalColors.black}  */ titleSize={hp('4%')} />
+      <CustomHeader titleSize={hp('4%')} />
 
-      <BackButton Size={hp('4%')}/>
+      <BackButton Size={hp('4%')} />
 
-{/*       <Text style={{ marginBottom: 0, marginTop: 5, fontSize: 25, textAlign: 'center', }}>Tus Facturas</Text> */}
+      <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('3.5%'),
+        textAlign: 'center',
+        color: globalColors.gray2,
+        fontWeight: 'bold'
+      }}>Descargá tus Facturas</Text>
+
       <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
       >
 
-        <View style={{...globalStyles.containerEstudiosMedicosEnv2, marginTop: 0}}>
-          {error ? (
-            <View style={globalStyles.errorContainerEstudios}>
-              <Text style={globalStyles.titleErrorEstMedicosEnv}>Factura no encontrada, intente nuevamente más tarde.</Text>
+        <View style={{ ...globalStyles.containerEstudiosMedicosEnv2, marginTop: 0 }}>
+          {
+            isConsulting ?
+              (
+                <>
 
-            </View>
-          ) : (
+                  <View
+                    style={{
+                      flex: 0.5,
+                      marginTop: top - hp('-5%'),
+                      marginBottom: hp('6%'),
+                    }}
+                  >
+                    <View style={styles.noDataContainer}>
+                      <Text style={styles.noDataText}>
+                        Aguardá un momento mientras obtenemos tus Facturas
+                      </Text>
+                      <Text style={styles.noDataText}>
+                        Esto puede tomar unos segundos
+                      </Text>
+
+                    </View>
+                  </View>
+                  <FullScreenLoader />
+
+                </>
+
+              )
+              : isError ? (
+
+          <View style={styles.noDataContainer}>
+                <Text style={styles.noDataText}>
+                ¡Ups! Parece que algo salió mal. 
+                </Text>
+                <Text style={styles.noDataText}>
+               Por favor, intenta nuevamente más tarde. 
+                </Text>
+                <Text style={styles.noDataText2}>
+                Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
+                </Text>
+              </View>
+           )
+           :
+           (
+       
             Facturas.map((factura, index) => (
 
 
@@ -410,9 +469,6 @@ export const Facturas = () => {
                   )
                     }
                      
-
-                 
-
                   </View>
                 </BoxShadow>
 
@@ -451,33 +507,22 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
   },
+    /* Cartel de error: no se pudieron obtener las facturas:  */
+    noDataContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    noDataText: {
+      fontSize: wp('4.5%'),
+      color: 'gray',
+      textAlign: 'center',
+      marginTop:wp('3%'),
+    },
+    noDataText2: {
+      fontSize: wp('4%'),
+      color: 'gray',
+      textAlign: 'center',
+      marginTop:wp('8%'),
+    },
 });
-
-
-{/*  {saldo.padrones.map((padron: any, padronIndex: number) => (
-                  <View key={padronIndex}>
-                    <Text style={globalStyles.resultText2}>Nombre: {padron.nombre}</Text>
-                    <Text style={globalStyles.resultText2}>Plan: {padron.plan}</Text>
-                  </View>
-                ))} */}
-
-                /* logica para mostrar afiliados: */
-
-{/*  <Text style={globalStyles.resultText2}>CUIL: {padron.cuil}</Text>
-                    <Text style={globalStyles.resultText2}>Edad: {padron.edad}</Text> */}
-   {/*  {showAfiliados && saldo.padrones.map((padron: any, padronIndex: number) => (
-                      <View key={padronIndex} >
-                        <Text style={globalStyles.resultText2}>{padron.nombre}</Text>
-                      </View>
-                    ))} */}
-
-                    {/* boton mostrar Afiliados:  */}
-
-                    {/* <TouchableOpacity
-                      onPress={() => setShowAfiliados(!showAfiliados)}
-                      style={globalStyles.primaryButton3}
-                    >
-                      <Text style={{ fontSize: 16 }}>
-                        {showAfiliados ? 'Ocultar Afiliados' : 'Mostrar Afiliados'}
-                      </Text>
-                    </TouchableOpacity> */}

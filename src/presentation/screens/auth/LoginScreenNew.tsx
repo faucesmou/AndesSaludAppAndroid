@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   },
   customButton: {
     backgroundColor: '#ECB30C',
-    borderColor: 'orange',
+    borderColor: '#ECB30C',
     borderRadius: 10,
     marginTop: hp('2%'),
     maxWidth: hp('20%'),

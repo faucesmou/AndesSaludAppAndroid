@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 
 import { Picker } from '@react-native-picker/picker';
-import { globalColors, globalStyles } from '../../theme/theme'
+import { globalColors, globalStyles } from '../../../theme/theme'
 /* import { PrimaryButton } from '../../components/shared/PrimaryButton' */
 import { NavigationProp, useNavigation, useIsFocused } from '@react-navigation/native'
-import { RootStackParams } from '../../routes/StackNavigator'
-import CustomHeader from '../../components/CustomHeader'
-import { useAuthStore } from '../../store/auth/useAuthStore'
+import { RootStackParams } from '../../../routes/StackNavigator'
+import CustomHeader from '../../../components/CustomHeader'
+import { useAuthStore } from '../../../store/auth/useAuthStore'
 /* import { IndexPath, Layout, Select, SelectItem, SelectGroup, } from '@ui-kitten/components' */
-import { BackButton } from '../../components/shared/BackButton'
-import { TertiaryButton } from '../../components/shared/TertiaryButton';
-import { IonIcon } from '../../components/shared/IonIcon';
-import Divider from '../../components/shared/Divider';
+import { BackButton } from '../../../components/shared/BackButton'
+import { TertiaryButton } from '../../../components/shared/TertiaryButton';
+import { IonIcon } from '../../../components/shared/IonIcon';
+import Divider from '../../../components/shared/Divider';
 
 
 export const ConsultaScreenFinal = () => {

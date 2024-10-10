@@ -76,8 +76,16 @@ export const MisDatosScreen = () => {
 
 <BackButton Size={hp('4%')}/>
 
+      {/* <Text style={{ marginBottom: hp('1%'), fontSize: hp('3%'), textAlign: 'center', color: 'black' }}>Mis Datos</Text> */}
 
-      <Text style={{ marginBottom: hp('1%'), fontSize: hp('3%'), textAlign: 'center', color: 'black' }}>Mis Datos</Text>
+      <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('3%'),
+        textAlign: 'center',
+        color: globalColors.gray2,
+        fontWeight: 'bold'
+      }}>Mis Datos</Text>
 
       {/*    <BackButton onPress={() => navigation.navigate('home')} /> */}
       {

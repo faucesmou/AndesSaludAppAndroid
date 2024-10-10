@@ -1,7 +1,8 @@
 import { createStackNavigator } from '@react-navigation/stack';
 
 
-import { ProductScreen } from '../screens/afiliados/ProductScreen';
+import { ProductScreen } from '../screens/home/afiliados/ProductScreen';
+
 /* import { SettingsScreen } from '../screens/settings/Perfil'; */
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
@@ -9,7 +10,7 @@ import { useEffect } from 'react';
 import { HamburgerMenu } from '../components/shared/HamburgerMenu';
 import { useProfileStore } from '../store/profile-store';
 
-import { Afiliados/* , ProductsScreen2  */} from '../screens/afiliados/Afiliados';
+import { Afiliados/* , ProductsScreen2  */} from '../screens/home/afiliados/Afiliados';
 import { MisDatosScreen } from '../screens/profile/MisDatosScreen';
 import { BottomTabsNavigator } from './BottomTabsNavigator';
 import { MiOrdenConsultaScreen } from '../screens/MiGestion/MiOrdenConsultaScreen';
@@ -22,16 +23,16 @@ import { RegisterScreen } from '../screens/auth/RegisterScreen';
 import { LoadingScreen } from '../screens/loading/LoadingScreen';
 import { useAuthStore } from '../store/auth/useAuthStore';
 import { CredencialScreenPrueba } from '../screens/credential/CredencialScreenPrueba';
-import { ConsultaScreen } from '../screens/ordenConsulta/ConsultaScreen';
-import { ConsultaScreenFinal } from '../screens/ordenConsulta/ConsultaScreenFinal';
+import { ConsultaScreen } from '../screens/MiGestion/ordenConsulta/ConsultaScreen';
+import { ConsultaScreenFinal } from '../screens/MiGestion/ordenConsulta/ConsultaScreenFinal';
 import { FormulariosEspScreen } from '../screens/MiGestion/formulariosEspeciales/FormulariosEspScreen';
 import { FormularioElegido } from '../screens/MiGestion/formulariosEspeciales/FormularioElegido';
 import { CartillaMedicaScreen } from '../screens/MiSalud/cartillaMedica/CartillaMedicaScreen';
 import { CartillaScreen } from '../screens/MiSalud/CartillaScreen';
 import { CartillaMedicaEspecialidad } from '../screens/MiSalud/cartillaMedica/CartillaMedicaEspecialidad';
-import { EstudiosMedicosScreen } from '../screens/MiSalud/estudiosMedicos/EstudiosMedicosScreen';
-import { EstudiosMedicosEnv } from '../screens/MiSalud/estudiosMedicos/EstudiosMedicosEnv';
-import { PagosScreen } from '../screens/MiGestion/pagos/PagosScreen';
+import { EstudiosMedicosScreen } from '../screens/MiGestion/estudiosMedicos/EstudiosMedicosScreen';
+import { EstudiosMedicosEnv } from '../screens/MiGestion/estudiosMedicos/EstudiosMedicosEnv';
+import { PagosScreen } from '../screens/home/pagos/PagosScreen';
 import { SettingsScreen } from '../screens/home/Perfil/Perfil';
 import { Buzon } from '../screens/home/Perfil/Buzon';
 import { Buzon1 } from '../screens/home/Perfil/Buzon1';
@@ -40,10 +41,10 @@ import { Facturas } from '../screens/home/Facturas/Facturas';
 import { LoginScreen2 } from '../screens/auth/LoginScreen2';
 import { RecoverData } from '../screens/auth/RecoverData';
 import { UserData } from '../screens/auth/UserData';
-import { ConsultaScreenUx } from '../screens/ordenConsulta/ConsultaScreenUx';
-import { EstudiosMedicosScreenUx } from '../screens/MiSalud/estudiosMedicos/EstudiosMedicosScreenUx';
+import { ConsultaScreenUx } from '../screens/MiGestion/ordenConsulta/ConsultaScreenUx';
+import { EstudiosMedicosScreenUx } from '../screens/MiGestion/estudiosMedicos/EstudiosMedicosScreenUx';
 import { LoginScreenNew } from '../screens/auth/LoginScreenNew';
-import { EstudiosMedicosEnvNew } from '../screens/MiSalud/estudiosMedicos/EstudiosMedicosEnvNew';
+import { EstudiosMedicosEnvNew } from '../screens/MiGestion/estudiosMedicos/EstudiosMedicosEnvNew';
 
 /* import { UserData } from '../screens/auth/userData'; */
 

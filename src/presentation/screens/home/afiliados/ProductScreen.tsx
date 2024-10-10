@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Pressable, Text, View, Dimensions } from 'react-native'
-import { RootStackParams } from '../../routes/StackNavigator';
+/* import { RootStackParams } from '../../routes/StackNavigator';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { globalColors, globalStyles } from '../../theme/theme';
 import { HamburgerMenu } from '../../components/shared/HamburgerMenu';
@@ -8,8 +8,15 @@ import { BackButton } from '../../components/shared/BackButton';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomHeader from '../../components/CustomHeader';
 import Credencial from '../../components/shared/Credencial';
-import { CredencialFamiliar } from '../../components/shared/CredencialFamiliar';
+import { CredencialFamiliar } from '../../components/shared/CredencialFamiliar'; */
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { RootStackParams } from '../../../routes/StackNavigator';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { globalStyles } from '../../../theme/theme';
+import CustomHeader from '../../../components/CustomHeader';
+import { BackButton } from '../../../components/shared/BackButton';
+import { CredencialFamiliar } from '../../../components/shared/CredencialFamiliar';
 
 
 export const ProductScreen = () => {
@@ -17,7 +24,7 @@ export const ProductScreen = () => {
   const { top } = useSafeAreaInsets();
  const heightWanted = top - 25;
 
-const params = useRoute<RouteProp<RootStackParams, 'Product'>>().params;
+const params = useRoute<RouteProp<RootStackParams, 'Products'>>().params;
 console.log('ESTE ES EL PARAMS: ---->--->', params);
 
 const idAfiliado = params.idAfiliado;

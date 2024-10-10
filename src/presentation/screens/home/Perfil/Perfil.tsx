@@ -77,7 +77,6 @@ const { height } = Dimensions.get('window');
        <BackButton /> 
      {/*    <Text style={{marginBottom: 10}}> Settings Screen</Text> */}
 
-
         <MisDatosScreen/>
 
          <TertiaryButton

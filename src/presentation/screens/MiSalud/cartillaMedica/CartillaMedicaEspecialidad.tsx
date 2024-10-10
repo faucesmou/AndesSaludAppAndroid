@@ -473,15 +473,17 @@ const filtrarPorTodos = () => {
         {isConsulting ? (
 
           <>
-<View style={styles.aguardaContainer}>
-                <Text style={styles.aguardaText}>
-                  Aguardá un momento mientras obtenemos tus Prestadores
-                </Text>
-                <Text style={styles.aguardaText}>
-                  Esto puede tomar unos segundos
-                </Text>
-            <FullScreenLoader layoutStyle={{ justifyContent: 'center', /* backgroundColor:'green'  */}}  />
+            <View style={styles.aguardaContainer}>
+              <Text style={styles.aguardaText}>
+                Aguardá un momento mientras obtenemos tus Prestadores
+              </Text>
+              <Text style={styles.aguardaText}>
+                Esto puede tomar unos segundos
+              </Text>
+              <View>
+              <FullScreenLoader layoutStyle={{ justifyContent: 'center', /* backgroundColor:'green' */  }} flexNumber={0.5} />
               </View>
+            </View>
           </>
         ) : (
           <ScrollView >

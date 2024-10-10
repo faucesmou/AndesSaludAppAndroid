@@ -16,6 +16,7 @@ import CustomHeader from '../../../components/CustomHeader';
 import { PrimaryButton } from '../../../components/shared/PrimaryButton';
 import { RootStackParams } from '../../../routes/StackNavigator';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
 
 export const CartillaMedicaScreen = () => {
   console.log('Entrando a CARTILLA MEDICA------->');
@@ -27,11 +28,15 @@ export const CartillaMedicaScreen = () => {
 
   const [cartillas, setCartillas] = useState<{ nombre: string; descripcion: string; idCartilla: string }[]>([]);
 
+  const [isConsulting, setIsConsulting] = useState(false);
+  const [isError, setIsError] = useState(false);
+
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
 
   useEffect(() => {
 
     const CartillaRequest = async () => {
+      setIsConsulting(true);
 
       try {
         const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPObtenerCartillas?IMEI=&idAfiliado=${idAfiliado}&otrasCartillas=`)
@@ -55,7 +60,7 @@ export const CartillaMedicaScreen = () => {
           }];
         setCartillas(mappedCartillas);
       
-        
+         setIsConsulting(false);
 
       /*   console.log('este es el mappedCartillas DE CARTILLA MEDICA---x--x-x--x->:', mappedCartillas); */
         /*  console.log('este es el cartillas useState:', cartillas); */
@@ -63,6 +68,8 @@ export const CartillaMedicaScreen = () => {
       }
       catch (error) {
         console.error('Error al obtener los formularios:', error);
+        setIsConsulting(false);
+        setIsError(true)
       }
     };
     CartillaRequest()
@@ -91,22 +98,49 @@ export const CartillaMedicaScreen = () => {
         fontWeight: 'bold'
       }}>Especialidades</Text>
 
-      <View style={{ /* backgroundColor: 'yellow', */ flex: 1, marginBottom: hp('4%'), marginTop: hp('1%') }}>
-        <ScrollView /* contentContainerStyle={styles.scrollViewContent} */>
-          {cartillas.map((cartilla, index) => (
+      <View style={{  flex: 1, marginBottom: hp('4%'), marginTop: hp('1%') }}>
+        <ScrollView >
+          {
+          
+          isConsulting ? 
+           (
+
+            <View
+            style={{
+              flex: 0.5,
+              marginTop: top - hp('-10%'),
+              marginBottom: hp('6%'),
+            }}
+          >
+            <FullScreenLoader />
+          </View>
+
+           )
+           : isError ? (
+     
+          <View style={styles.noDataContainer}>
+                <Text style={styles.noDataText}>
+                ¡Ups! Parece que algo salió mal. 
+                </Text>
+                <Text style={styles.noDataText}>
+               Por favor, intenta nuevamente más tarde. 
+                </Text>
+                <Text style={styles.noDataText2}>
+                Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
+                </Text>
+              </View>
+           )
+           :
+           (
+          
+          
+          cartillas.map((cartilla, index) => (
 
             <View 
             key={index} 
             style={{ marginBottom: 5 }} 
             >
-            {/*   <Text 
-              onPress={ ()=> {
-                console.log('Valor de idCartilla ACA ACA ACAA:', cartilla.idCartilla);
-              let idCartilla = cartilla.idCartilla;
-                GuardarIdCartillaSeleccionada(idCartilla); 
-                navigation.navigate('Prestadores', { idCartilla: cartilla.idCartilla })}
-              }
-                style={{ fontSize: 16, textAlign: 'center', }}>{cartilla.nombre}</Text> */}
+           
 
               {/* mejora del estilo:  */}
               <Pressable
@@ -137,7 +171,10 @@ export const CartillaMedicaScreen = () => {
               </Pressable>
 
             </View>
-          ))}
+          ))
+          
+        )
+          }
 
         </ScrollView>
       </View>
@@ -180,6 +217,24 @@ const styles = StyleSheet.create ({
   textWrapper: {
     flex: 1,
     paddingRight: 5,
+  },
+   /* cartel de error: no se pudieron obtener las especialidades:  */
+   noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: wp('4.5%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop:wp('3%'),
+  },
+  noDataText2: {
+    fontSize: wp('4%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop:wp('8%'),
   },
 })
 /* <FlatList

@@ -3,7 +3,17 @@ import { type NavigationProp, useNavigation } from '@react-navigation/native';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import axios from 'axios';
-import { globalColors, globalStyles } from '../../theme/theme';
+import { useAuthStore } from '../../../store/auth/useAuthStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { globalColors } from '../../../theme/theme';
+import { RootStackParams } from '../../../routes/StackNavigator';
+import CustomHeader from '../../../components/CustomHeader';
+import { BackButton } from '../../../components/shared/BackButton';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
+import { FlatList } from 'react-native-gesture-handler';
+import { TertiaryButton } from '../../../components/shared/TertiaryButton';
+/* import { globalColors, globalStyles } from '../../theme/theme';
 import { FlatList } from 'react-native-gesture-handler';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
 import { type RootStackParams } from '../../routes/StackNavigator';
@@ -14,7 +24,7 @@ import { useAuthStore } from '../../store/auth/useAuthStore';
 import Credencial from '../../components/shared/Credencial';
 import { TertiaryButton } from '../../components/shared/TertiaryButton';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { FullScreenLoader } from '../../components/ui/FullScreenLoader';
+import { FullScreenLoader } from '../../components/ui/FullScreenLoader'; */
 
 
 /* const products = [
@@ -108,7 +118,7 @@ export const Afiliados = () => {
                   marginBottom: hp('6%'),
                 }}
               >
-                <FullScreenLoader />
+                <FullScreenLoader  />
               </View>
     
             )
@@ -149,7 +159,7 @@ export const Afiliados = () => {
             Andes Salud
           </Text>
 
-          <Image source={require('../../assets/images/logogris.png')}
+          <Image source={require('../../../assets/images/logogris.png')}
             style={styles.image}
             resizeMode="contain" // Ajusta la imagen manteniendo su relación de aspecto
           />

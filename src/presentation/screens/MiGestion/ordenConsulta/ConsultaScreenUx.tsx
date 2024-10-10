@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import { Picker } from '@react-native-picker/picker';
-import { globalColors, globalStyles } from '../../theme/theme'
+import { globalColors, globalStyles } from '../../../theme/theme'
 /* import { PrimaryButton } from '../../components/shared/PrimaryButton' */
 import { NavigationProp, useNavigation, useIsFocused } from '@react-navigation/native'
-import { RootStackParams } from '../../routes/StackNavigator'
-import CustomHeader from '../../components/CustomHeader'
-import { useAuthStore } from '../../store/auth/useAuthStore'
+import { RootStackParams } from '../../../routes/StackNavigator'
+import CustomHeader from '../../../components/CustomHeader'
+import { useAuthStore } from '../../../store/auth/useAuthStore'
 /* import { IndexPath, Layout, Select, SelectItem, SelectGroup, } from '@ui-kitten/components' */
-import { BackButton } from '../../components/shared/BackButton'
-import { TertiaryButton } from '../../components/shared/TertiaryButton';
-import { IonIcon } from '../../components/shared/IonIcon';
-import Divider from '../../components/shared/Divider';
+import { BackButton } from '../../../components/shared/BackButton'
+import { TertiaryButton } from '../../../components/shared/TertiaryButton';
+import { IonIcon } from '../../../components/shared/IonIcon';
+import Divider from '../../../components/shared/Divider';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export const ConsultaScreenUx = () => {
@@ -27,6 +27,8 @@ export const ConsultaScreenUx = () => {
   const [FamiliaresObtenidosObjeto, setFamiliaresObtenidosObjeto] = useState<string[]>([]); // 
   const [selectedFamiliarNombre, setSelectedFamiliarNombre] = useState<string | null>(null);
   const [FamiliarSeleccionadoDatos, setFamiliarSeleccionadoDatos] = useState<string[]>([]); // 
+  const [isConsultingFamiliar, setIsConsultingFamiliar] = useState(false);
+  const [errorConsultingFamiliar, setErrorConsultingFamiliar] = useState(false);
 
   const handleSelectFamiliar = async (itemValue: string | number, itemIndex: number) => {
 
@@ -75,6 +77,9 @@ export const ConsultaScreenUx = () => {
   const [SelectedEspecialidadNombre, setSelectedEspecialidadNombre] = useState<string | null>(null);
   const [EspecialidadSeleccionadaDatos, setEspecialidadSeleccionadaDatos] = useState<string[]>([]);
   const [IdEspecialidadElegida, setIdEspecialidadElegida] = useState<string>('');
+  const [isConsultingEspecialidades, setIsConsultingEspecialidades] = useState(false);
+  const [errorConsultingEspecialidades, setErrorConsultingEspecialidades] = useState(false);
+
 
   const handleSelectEspecialidad = (itemValue: string | number, itemIndex: number) => {
     setSelectedEspecialidadNombre(NombresDeEspecialidades[itemIndex]);
@@ -125,6 +130,10 @@ export const ConsultaScreenUx = () => {
   const [selectedValue, setSelectedValue] = useState('Familiares');
   const [selectedEspecialidad, setSelectedEspecialidad] = useState('Especialidades');
   const [selectedPrestador, setSelectedPrestador] = useState('Prestadores');
+
+    const [isConsultingPrestador, setIsConsultingPrestador] = useState(false);
+  const [errorConsultingPrestador, setErrorConsultingPrestador] = useState(false);
+
   /*   const handleSelect2 = (nombre:any) => {
       const actions = {
         'Córdoba': filtrarPorCordoba,
@@ -199,7 +208,7 @@ export const ConsultaScreenUx = () => {
     console.log('PrestadorSeleccionadoDatos ------>>>', PrestadorSeleccionadoDatos);
 
     const obtenerFamiliaresConsulta = async () => {
-
+      setIsConsultingFamiliar(true)
       try {
         if (idAfiliado !== undefined) {
           const FamiliaresObtenidosObjeto = await ObtenerFamiliares(idAfiliado);
@@ -210,17 +219,24 @@ export const ConsultaScreenUx = () => {
           const nombresFamiliares = [mensajePredeterminado, ...FamiliaresObtenidosObjeto.map((familiar) => familiar.apellidoYNombre)];
           /* const nombresFamiliares = FamiliaresObtenidosObjeto.map((familiar) => familiar.apellidoYNombre); */
           setNombresDeFamiliares(nombresFamiliares)
-
+          setIsConsultingFamiliar(false)
           return FamiliaresObtenidosObjeto
           /*  set({ idsFamiliares: idsesFamiliares }) */
         } else {
           console.error('idAfiliado es undefined. No se puede llamar a ObtenerFamiliares.');
+          setIsConsultingFamiliar(false);
+          setErrorConsultingFamiliar(true)
         }
       } catch (error) {
         console.error('idAfiliado es undefined. No se puede llamar a ObtenerFamiliares desde el tramitesScreen.');
+        setIsConsultingFamiliar(false)
+        setErrorConsultingFamiliar(true)
       }
     };
     const obtenerEspecialidadesConsulta = async () => {
+
+      setIsConsultingEspecialidades(true)
+
       try {
         if (idAfiliado !== undefined && idAfiliadoTitular !== undefined) {
           const especialidadesObtenidas = await ObtenerEspecialidades(idAfiliado, idAfiliadoTitular);
@@ -228,16 +244,23 @@ export const ConsultaScreenUx = () => {
           const mensajePredeterminado = '(Desliza hacia arriba)';
           const nombresEspecialidades = [mensajePredeterminado, ...especialidadesObtenidas.map((especialidad) => especialidad.nombreParaAfiliado)];
           setNombresDeEspecialidades(nombresEspecialidades)
+          setIsConsultingEspecialidades(false)
           return especialidadesObtenidas
 
         } else {
           console.error('idAfiliado  o idAfiliadoTitular es undefined. No se puede llamar a ObtenerEspecialidades.');
+          setIsConsultingEspecialidades(false)
+          setErrorConsultingEspecialidades(true)
         }
       } catch (error) {
         console.error('idAfiliado  o idAfiliadoTitular es undefined. No se puede llamar a ObtenerEspecialidades desde el ConsultaScreen.');
+        setIsConsultingEspecialidades(false)
+        setErrorConsultingEspecialidades(true)
       }
     };
     const obtenerPrestadoresConsulta = async () => {
+
+      setIsConsultingPrestador(true)
       try {
 
         if (idAfiliado !== undefined && idAfiliadoTitular !== undefined && IdEspecialidadElegida !== undefined) {
@@ -246,11 +269,13 @@ export const ConsultaScreenUx = () => {
           const nombresPrestadores = PrestadoresObtenidos.map((prestador: any) => prestador.prestador);
           if (nombresPrestadores[0] === "No se encontraron prestadores para la especialidad indicada.") {
             setNombresDePrestadores(["Elija familiar y especialidad"]);
+            setIsConsultingPrestador(false)
           } else {
             const mensajePredeterminado = '(Desliza hacia arriba)';
             //@ts-ignore
             const nombresPrestadoresParaMostrar = [mensajePredeterminado, ...PrestadoresObtenidos.map((prestador) => prestador.prestador)];
             setNombresDePrestadores(nombresPrestadoresParaMostrar)
+            setIsConsultingPrestador(false)
             /*  setNombresDePrestadores(nombresPrestadores); */
           }
 
@@ -259,9 +284,13 @@ export const ConsultaScreenUx = () => {
 
         } else {
           console.error('idAfiliado  o idAfiliadoTitular es undefined. No se puede llamar a ObtenerEspecialidades.');
+          setIsConsultingPrestador(false)
+          setErrorConsultingPrestador(true)
         }
       } catch (error) {
         console.error('idAfiliado  o idAfiliadoTitular es undefined. No se puede llamar a ObtenerEspecialidades desde el ConsultaScreen.');
+        setIsConsultingPrestador(false)
+        setErrorConsultingPrestador(true)
       }
     };
     obtenerFamiliaresConsulta();
@@ -342,7 +371,31 @@ export const ConsultaScreenUx = () => {
                   <IonIcon name='chevron-up-circle-outline' size={20} color="#505050" />
                 </View>
                 <ScrollView>
-                  {nombresDeFamiliares.map((option) => (
+                  {
+                    isConsultingFamiliar ? 
+                    (
+                      <TouchableOpacity
+                      style={styles.modalOption}>
+
+                      <Text style={styles.optionText}>Aguarda un momento</Text>
+
+                    </TouchableOpacity>
+                    )
+                    : errorConsultingFamiliar ? 
+                    (
+                      <TouchableOpacity
+                      style={styles.modalOption}>
+
+                      <Text style={styles.optionText}>No se encontraron familiares</Text>
+
+                    </TouchableOpacity>
+                    )
+
+                    :
+                    
+                    (
+
+                  nombresDeFamiliares.map((option) => (
                     <TouchableOpacity
                       key={option}
                       style={styles.modalOption}
@@ -350,7 +403,12 @@ export const ConsultaScreenUx = () => {
                     >
                       <Text style={styles.optionText}>{option}</Text>
                     </TouchableOpacity>
-                  ))}
+
+
+                  ))
+                )
+                  
+                  }
                 </ScrollView>
                 <View style={{ alignSelf: 'center', marginTop: 5 }}>
                   <IonIcon name='chevron-down-circle-outline' size={20} color="#505050" />
@@ -393,15 +451,42 @@ export const ConsultaScreenUx = () => {
                   <IonIcon name='chevron-up-circle-outline' size={20} color="#505050" />
                 </View>
                 <ScrollView>
-                  {NombresDeEspecialidades.map((option) => (
-                    <TouchableOpacity
-                      key={option}
-                      style={styles.modalOption}
-                      onPress={() => handleSelectEspecialidadNuevoSelect(option)}
-                    >
-                      <Text style={styles.optionText}>{option}</Text>
-                    </TouchableOpacity>
-                  ))}
+                  {
+                    isConsultingEspecialidades ?
+                      (
+                        <TouchableOpacity
+                          style={styles.modalOption}>
+
+                          <Text style={styles.optionText}>Aguarda un momento</Text>
+
+                        </TouchableOpacity>
+                      )
+                      : errorConsultingEspecialidades ?
+                        (
+                          <TouchableOpacity
+                            style={styles.modalOption}>
+
+                            <Text style={styles.optionText}>No se encontraron especialidades</Text>
+
+                          </TouchableOpacity>
+                        )
+
+                        :
+                        (
+
+
+                          NombresDeEspecialidades.map((option) => (
+                            <TouchableOpacity
+                              key={option}
+                              style={styles.modalOption}
+                              onPress={() => handleSelectEspecialidadNuevoSelect(option)}
+                            >
+                              <Text style={styles.optionText}>{option}</Text>
+                            </TouchableOpacity>
+                          ))
+                        )
+
+                  }
                 </ScrollView>
                 <View style={{ alignSelf: 'center', marginTop: 5 }}>
                   <IonIcon name='chevron-down-circle-outline' size={20} color="#505050" />
@@ -451,7 +536,33 @@ export const ConsultaScreenUx = () => {
                   <IonIcon name='chevron-up-circle-outline' size={20} color="#505050" />
                 </View>
                 <ScrollView>
-                  {NombresDePrestadores.map((option) => (
+                  {
+                  
+                  
+                    isConsultingPrestador ? 
+                    (
+                      <TouchableOpacity
+                      style={styles.modalOption}>
+
+                      <Text style={styles.optionText}>Aguarda un momento</Text>
+
+                    </TouchableOpacity>
+                    )
+                    : errorConsultingPrestador ? 
+                    (
+                      <TouchableOpacity
+                      style={styles.modalOption}>
+
+                      <Text style={styles.optionText}>No se encontraron prestadores</Text>
+
+                    </TouchableOpacity>
+                    )
+
+                    :
+                    
+                    (
+                  
+                  NombresDePrestadores.map((option) => (
                     <TouchableOpacity
                       key={option}
                       style={styles.modalOption}
@@ -459,7 +570,10 @@ export const ConsultaScreenUx = () => {
                     >
                       <Text style={styles.optionText}>{option} </Text>
                     </TouchableOpacity>
-                  ))}
+                  ))
+                  
+                )
+                  }
                 </ScrollView>
                 <View style={{ alignSelf: 'center', marginTop: 5 }}>
                   <IonIcon name='chevron-down-circle-outline' size={20} color="#505050" />
