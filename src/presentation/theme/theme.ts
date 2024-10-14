@@ -334,7 +334,7 @@ export const globalStyles = StyleSheet.create({
   },
 
   primaryButton2: {
-    backgroundColor: '#b74a4a',/* globalColors.profile2 */
+    backgroundColor: '#ba5050',/* globalColors.profile2 */
     borderRadius: 5,
     padding: 5,
     margin: 10,
@@ -348,8 +348,8 @@ export const globalStyles = StyleSheet.create({
 
   },
   paidButton: {
-    backgroundColor: '#39b536',/* globalColors.profile2 */
-    borderRadius: 5,
+    backgroundColor: '#5ab759',/* globalColors.profile2 */
+    borderRadius: 25,
     padding: 5,
     margin: 10,
     marginTop: 15,
@@ -361,8 +361,8 @@ export const globalStyles = StyleSheet.create({
     justifyContent: 'center'
   },
   paidSign: {
-    backgroundColor: '#39b536',/* globalColors.profile2 */
-    borderRadius: 0,
+    backgroundColor: '#5ab759', /* globalColors.profile2 */
+    borderRadius: 25,
     padding: 5,
     margin: 10,
     marginTop: 15,

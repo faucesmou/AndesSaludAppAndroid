@@ -275,6 +275,7 @@ export const PagosScreen = () => {
                           <Text style={globalStyles.buttonText}>
                             Link de Pago
                           </Text>
+                          {/* verde: '#5ab759' , rojo: '#ba5050'*/}
                         </TouchableOpacity>
                           </>
 
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   primaryButton45: {
-    backgroundColor: '#b74a4a',
+    backgroundColor: '#ba5050',
     borderRadius: 5,
     padding: 5,
     margin: 10,

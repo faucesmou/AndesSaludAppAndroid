@@ -18,6 +18,8 @@ import { SecondaryButton2 } from '../../components/shared/SecondaryButton2';
 import { IonIcon } from '../../components/shared/IonIcon';
 import CredencialNew from '../../components/shared/CredencialNew';
 import Icon from 'react-native-vector-icons/Ionicons';
+/* import { LinearGradient } from 'react-native-svg'; */
+import LinearGradient from 'react-native-linear-gradient';
 
 
 interface Props {
@@ -175,10 +177,11 @@ export const HomeScreenUxNew = () => {
       >
 
 
-      <View style={[styles.headerContainer, { height: headerHeight, backgroundColor: '#e1a159'/* '#7ba1c3' */, },]}>
+     {/*  <View style={[styles.headerContainer, { height: headerHeight, backgroundColor: '#e1a159', },]}>
         <View style={{ width: wp('80%'), marginBottom: titleMarginBottom }}>
           <Text style={styles.headerText}>Inicio</Text>
         </View>
+        
         <View>
           <Pressable
             onPress={() => {
@@ -190,7 +193,29 @@ export const HomeScreenUxNew = () => {
           </Pressable>
           <NotiComponent3 />
         </View>
+      </View> */}
+         <LinearGradient
+      colors={['#e49958','#e49958','#e1a159', '#e1a159','#e1a159', '#e49958','#e49958','#e49958', ]/* ['#e49958','#e49958','#e1a159', '#e1a159','#e1a159','#e1a159','#e1a159','#c88846','#daa36b' , '#e79340' ] */} // Degradado del color base
+      start={{ x: 0, y: 0 }} // Inicio del gradiente (esquina superior izquierda)
+      end={{ x: 1, y: 2 }} // Fin del gradiente (esquina inferior derecha)
+      style={[{ height: headerHeight }, styles.headerContainer]} // Estilo inline para ajustar tamaño y posición
+    >
+      <View style={{ width: '80%', marginBottom: titleMarginBottom }}>
+        <Text style={styles.headerText}>Inicio</Text>
       </View>
+
+      <View>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('Buzón');
+          }}
+          style={{ marginLeft: 0, marginBottom: iconMarginBottom }}
+        >
+          <NotiMensajes IonIconSize={iconNotificationFontSize} />
+        </Pressable>
+        <NotiComponent3 />
+      </View>
+    </LinearGradient>
 
       <View style={styles.cardContainer}>
        {/*  <Credencial /> */}

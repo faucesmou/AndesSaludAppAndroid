@@ -73,6 +73,9 @@ export const EstudiosMedicosScreenUx = () => {
   const [FamiliaresObtenidosObjeto, setFamiliaresObtenidosObjeto] = useState<string[]>([]); // 
   const [selectedFamiliarNombre, setSelectedFamiliarNombre] = useState<string | null>(null);
   const [FamiliarSeleccionadoDatos, setFamiliarSeleccionadoDatos] = useState<string[]>([]); // 
+  const [isConsultingFamiliar, setIsConsultingFamiliar] = useState(false);
+  const [errorConsultingFamiliar, setErrorConsultingFamiliar] = useState(false);
+
 
   /*   const handleSelectFamiliar = (itemValue: string | number, itemIndex: number) => {
       setSelectedFamiliarNombre(nombresDeFamiliares[itemIndex]);
@@ -103,7 +106,8 @@ export const EstudiosMedicosScreenUx = () => {
   //--------------------- LOGICA PARA EL INPUT DE BÙSQUEDA DE PRESTADOR-------------------------------------->
   const [isPosting, setIsPosting] = useState(false)
   const [busqueda, setBusqueda] = useState({ cadena: '' })
-
+  const [isConsultingPrestador, setIsConsultingPrestador] = useState(false);
+  const [errorConsultingPrestador, setErrorConsultingPrestador] = useState(false);
 
 
   const obtenerPrestadoresConsulta = async () => {
@@ -113,6 +117,8 @@ export const EstudiosMedicosScreenUx = () => {
         return false;
       }; */
 
+      setIsConsultingPrestador(true)
+
     try {
 
       if (idAfiliado !== undefined && busqueda.cadena !== '') {
@@ -121,8 +127,11 @@ export const EstudiosMedicosScreenUx = () => {
 
         const nombresPrestadores = PrestadoresObtenidos.map((prestador: any) => {
           if (Array.isArray(prestador.nombre)) {
+            setIsConsultingPrestador(false)
             return prestador.nombre[0];
+            
           } else {
+            setIsConsultingPrestador(false)
             return prestador.nombre;
           }
 
@@ -133,26 +142,34 @@ export const EstudiosMedicosScreenUx = () => {
         if (nombresPrestadores.length === 0) {
           setNombresDePrestadores(["No se encontraron prestadores"]);
           setNumeroDePrestadoresEncontrados(0)
+          setIsConsultingPrestador(false)
         } else {
           setNombresDePrestadores(nombresPrestadores);
           let CantidadDePrestadoresEncontrados = nombresPrestadores.length;
           setNumeroDePrestadoresEncontrados(CantidadDePrestadoresEncontrados)
+          setIsConsultingPrestador(false)
           // Si solo hay un prestador, seleccionarlo automáticamente:
           if (nombresPrestadores.length === 1) {
             /*    handleSelectPrestador(nombresPrestadores[0], 0); */
             handleSelectPrestadorNuevoSelect(nombresPrestadores[0])
             setNumeroDePrestadoresEncontrados(1)
+            setIsConsultingPrestador(false)
           }
         }
+        setIsConsultingPrestador(false)
         return true;
 
       } else {
 
         console.log('idAfiliado  o cadena esta vacio. No se puede llamar a ObtenerPrestadoresEstudiosMedicos.');
+        setIsConsultingPrestador(false);
+        /* setErrorConsultingPrestador(true) */
         return false;
       }
     } catch (error) {
       console.log(' No se puede llamar a ObtenerPrestadoresEstudiosMedicos desde el EstudiosMedicosScreen.');
+      setIsConsultingPrestador(false);
+      setErrorConsultingPrestador(true)
     }
   };
   /* Por el momento no se usa este handle porque he quitado el botón "buscar prestador" y se busca automaticamente mientras el usuario escribe. */
@@ -202,7 +219,7 @@ export const EstudiosMedicosScreenUx = () => {
   useEffect(() => {
 
     const obtenerFamiliaresConsulta = async () => {
-
+      setIsConsultingFamiliar(true)
       try {
         if (idAfiliado !== undefined) {
           const FamiliaresObtenidosObjeto = await ObtenerFamiliares(idAfiliado);
@@ -212,14 +229,18 @@ export const EstudiosMedicosScreenUx = () => {
           const nombresFamiliares = [mensajePredeterminado, ...FamiliaresObtenidosObjeto.map((familiar) => familiar.apellidoYNombre)];
           /* const nombresFamiliares = FamiliaresObtenidosObjeto.map((familiar) => familiar.apellidoYNombre); */
           setNombresDeFamiliares(nombresFamiliares)
-
+          setIsConsultingFamiliar(false)
           return FamiliaresObtenidosObjeto
           /*  set({ idsFamiliares: idsesFamiliares }) */
         } else {
           console.error('idAfiliado es undefined. No se puede llamar a ObtenerFamiliares.');
+          setIsConsultingFamiliar(false);
+          setErrorConsultingFamiliar(true)
         }
       } catch (error) {
         console.error('idAfiliado es undefined. No se puede llamar a ObtenerFamiliares desde el tramitesScreen.');
+        setIsConsultingFamiliar(false)
+        setErrorConsultingFamiliar(true)
       }
     };
 
@@ -367,7 +388,28 @@ export const EstudiosMedicosScreenUx = () => {
                     <IonIcon name='chevron-up-circle-outline' size={20} color="#505050" />
                   </View>
                   <ScrollView>
-                    {nombresDeFamiliares.map((option) => (
+                    {
+                     isConsultingFamiliar ? 
+                     (
+                       <TouchableOpacity
+                       style={styles.modalOption}>
+ 
+                       <Text style={styles.optionText}>Aguarda un momento</Text>
+ 
+                     </TouchableOpacity>
+                     )
+                     : errorConsultingFamiliar ? 
+                     (
+                       <TouchableOpacity
+                       style={styles.modalOption}>
+ 
+                       <Text style={styles.optionText}>No se encontraron familiares</Text>
+ 
+                     </TouchableOpacity>
+                     )
+                     :
+                     (
+                    nombresDeFamiliares.map((option) => (
                       <TouchableOpacity
                         key={option}
                         style={styles.modalOption}
@@ -379,7 +421,10 @@ export const EstudiosMedicosScreenUx = () => {
                           color:'black',
                         }/* styles.optionText */}>{option}</Text>
                       </TouchableOpacity>
-                    ))}
+                    ))
+                  )
+                    
+                    }
                   </ScrollView>
                   <View style={{ alignSelf: 'center', marginTop: 5 }}>
                     <IonIcon name='chevron-down-circle-outline' size={20} color="#505050" />
@@ -467,7 +512,29 @@ export const EstudiosMedicosScreenUx = () => {
                     <IonIcon name='chevron-up-circle-outline' size={20} color="#505050" />
                   </View>
                   <ScrollView>
-                    {NombresDePrestadores.map((option) => (
+                    {
+                    isConsultingPrestador ?
+                    (
+                      <TouchableOpacity
+                        style={styles.modalOption}>
+
+                        <Text style={styles.optionText}>Aguarda un momento</Text>
+
+                      </TouchableOpacity>
+                    )
+                    : errorConsultingPrestador ?
+                      (
+                        <TouchableOpacity
+                          style={styles.modalOption}>
+
+                          <Text style={styles.optionText}>No se encontraron prestadores</Text>
+
+                        </TouchableOpacity>
+                      )
+
+                      :
+                      (
+                    NombresDePrestadores.map((option) => (
                       <TouchableOpacity
                         key={option}
                         style={styles.modalOption}
@@ -475,7 +542,9 @@ export const EstudiosMedicosScreenUx = () => {
                       >
                         <Text style={styles.optionText}>{option}</Text>
                       </TouchableOpacity>
-                    ))}
+                    ))
+                    )
+                    }
                   </ScrollView>
                   <View style={{ alignSelf: 'center', marginTop: 5 }}>
                     <IonIcon name='chevron-down-circle-outline' size={20} color="#505050" />
@@ -631,5 +700,6 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
   },
+  
 })
 

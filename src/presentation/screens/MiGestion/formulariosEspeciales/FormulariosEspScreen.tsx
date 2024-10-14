@@ -122,7 +122,7 @@ export const FormulariosEspScreen = () => {
           <View key={index} style={{ marginBottom: 10 }}>
             <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>{formulario.nombre}</Text>
             <Text  style={{fontSize: 15, marginBottom:10, color: 'black' }}>{formulario.descripcion}</Text>
-            <Text style={{ color: 'blue',  fontSize: 15  }} 
+            <Text style={{ color: '#0e77e7',  fontSize: 15, fontWeight:'bold'  }} 
             onPress={() => handleDescargarFormulario(formulario.nombreArchivo)}            
             >
               Descargar Formulario

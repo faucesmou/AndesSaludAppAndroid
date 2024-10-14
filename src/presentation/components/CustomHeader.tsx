@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { globalColors } from '../theme/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
   color?: string;
@@ -22,7 +23,7 @@ const CustomHeader = ( {color, titleSize} : Props) => {
   React.useEffect(() => {
     navigation.setOptions({
       headerStyle: {
-        backgroundColor: backColor, 
+        /* backgroundColor: backColor,  */
         height: adjustedHeaderHeight,
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
@@ -34,6 +35,15 @@ const CustomHeader = ( {color, titleSize} : Props) => {
         marginTop: wp('6%'),       
       },
       headerTitleAlign: 'center',
+      headerBackground: () => (
+        <LinearGradient
+          colors={['#e49958','#e49958','#e1a159', '#e1a159','#e1a159', '#e49958','#e49958','#e49958', ]} // El gradiente de colores
+          start={{ x: 0, y: 0 }} // Degradado desde la esquina superior izquierda
+          end={{ x: 1, y: 2.5 }} // Hacia la esquina inferior derecha
+          style={{ flex: 1, borderBottomLeftRadius: 15, borderBottomRightRadius: 15 }}
+        />
+      ),
+
     });
   }, [navigation, backColor, titleSize, adjustedHeaderHeight]);
 

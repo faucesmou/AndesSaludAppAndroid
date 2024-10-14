@@ -228,7 +228,7 @@ export const RecoverData = ({ navigation }: Props) => {
               <View
                 style={{
                   flex: 0.5,
-                  marginTop: top - 25,
+                  marginTop: top - 1,
                   marginBottom: 0,
                 }}
               >
