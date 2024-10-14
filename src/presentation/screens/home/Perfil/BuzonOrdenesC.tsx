@@ -324,6 +324,12 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
   const modifyEstMedicVisible = () => {
     setListadoEstMedicosVisible(prevState => !prevState);
   };
+
+  function capitalizeWords(string:string) {
+    return string.replace(/\b\w+/g, function(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+  }
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   return (
     <>
@@ -335,12 +341,12 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
           }
           }
         >
-          <Text style={styles.titleEstudiosMedicosAfuera} >Órdenes de Consulta 2:</Text>
+          <Text style={styles.titleEstudiosMedicosAfuera} >Órdenes de Consulta:</Text>
         </Pressable>
       </View>
       {listadoEstMedicosVisible ?
         (
-          <View style={{ marginBottom: 40, marginTop: 5, /* backgroundColor: 'blue', */ maxHeight: '80%', minHeight: '40%', width: '100%', marginHorizontal: wp('9%'), }}>
+          <View style={{ marginBottom: 40, marginTop: 5, /* backgroundColor: 'blue', */ maxHeight: '89%', minHeight: '40%', width: '100%', marginHorizontal: wp('9%'), }}>
 
 <ScrollView nestedScrollEnabled={true}>
             
@@ -403,7 +409,8 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
 
                               {notificacion.afiliado && (
                                 <Text style={styles.buttonText}>
-                                  {notificacion.afiliado}
+                                  {/* {notificacion.afiliado} */}
+                                  {capitalizeWords(notificacion.afiliado)}
                                 </Text>
                               )}
                               {notificacion.codEstado && (
@@ -822,7 +829,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 7,
     marginBottom: 5,
-    fontSize:15,
+    /* fontSize:15, */
+    fontSize: wp('3.5%'),
   },
   valueCodAutorizado: {
     color: 'green',
@@ -850,10 +858,11 @@ const styles = StyleSheet.create({
   },
   textStyletTitle: {
     color: 'black',
-    fontWeight: 'normal',
+    fontWeight: 'bold',
     textAlign: 'justify',
     marginTop: 4,
-    fontSize: 19,
+    fontSize: wp('5%'),
+    /* fontSize: 19, */
   },
   textStyletTitlePracticaNoEncontrada: {
     color: 'black',

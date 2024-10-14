@@ -29,9 +29,9 @@ export const TramitesScreen = () => {
  const { height } = Dimensions.get('window');
 
  let headerHeight = hp('16%'); // Ajusta el tamaño de la cabecera según el alto de la pantalla
- let buttonTextFontSize = wp('5%');
- let buttonDescriptionFontSize = wp('4.5%');
- let cardTitleFontSize: number = hp('2.5%');
+ let buttonTextFontSize = wp('4.5%');
+ let buttonDescriptionFontSize = wp('4%');
+ let cardTitleFontSize: number = hp('2.6%');
 let cardDescriptionFontSize: number = hp('2%');
 let iconNotificationFontSize: number = wp('8%');
 let titleMarginBottom: number  = hp('4%'); 
@@ -176,13 +176,14 @@ let arrowMarginBottom: number  = hp('4%');
             style={styles.innerContainer}
           >
             <Text style={{
-              fontSize: 25,
+              fontSize: wp('6%'),
               textAlign: 'center',
+              color: globalColors.gray,
             }} >
               Andes Salud
             </Text>
 
-            <Image source={require('../../assets/images/logogris.png')}
+            <Image source={require('../../assets/images/logogrisClaro.png')}
               style={styles.image}
               resizeMode="contain" // Ajusta la imagen manteniendo su relación de aspecto
             />
@@ -250,6 +251,7 @@ const styles = StyleSheet.create({
     marginTop: hp('7%'),
    /*  marginTop: 70, */
     borderRadius: 15,
+    marginHorizontal:wp('3%'),
 /*     backgroundColor: 'yellow' */
   },
   imageContainer: {
@@ -271,9 +273,9 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   image: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    flex: 0.7,
+    width: '80%',
+    height: '80%',
     margin: 10,
   },
   text: {

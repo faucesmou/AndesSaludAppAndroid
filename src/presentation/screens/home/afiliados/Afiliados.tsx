@@ -88,7 +88,15 @@ export const Afiliados = () => {
       <CustomHeader /* color={globalColors.gray2} */ titleSize={hp('4%')} />
 
       <BackButton Size={hp('4%')}/>
-      <Text style={{ marginBottom: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Afiliados a Cargo</Text>
+      {/* <Text style={{ marginBottom: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Afiliados a Cargo</Text> */}
+      <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('3.5%'),
+        textAlign: 'center',
+        color: globalColors.gray,
+        fontWeight: 'bold'
+      }}>Afiliados a Cargo</Text>
 
       <View
         style={{
@@ -97,14 +105,16 @@ export const Afiliados = () => {
         }}>
         <Text
           style={{
-            fontSize: 20,
+            fontSize: hp('2.5%'),
             marginBottom: 10,
             marginTop: 10,
             padding: 0,
             marginHorizontal: 10,
-            color: 'black'
+            /* color: 'black', */
+            color: globalColors.gray2,
+            fontWeight: 'bold'
           }}
-        >Selecciona un familiar para ver su credencial</Text>
+        >Selecciona un familiar para ver su credencial:</Text>
 
         
           {
@@ -152,14 +162,15 @@ export const Afiliados = () => {
           style={styles.innerContainer}
         >
           <Text style={{
-            fontSize: 25,
+            fontSize: wp('6%'),
             textAlign: 'center',
-            color: 'black'
+            /* color: '#cccccc' */
+            color: globalColors.gray,
           }} >
             Andes Salud
           </Text>
 
-          <Image source={require('../../../assets/images/logogris.png')}
+          <Image source={require('../../../assets/images/logogrisClaro.png')}
             style={styles.image}
             resizeMode="contain" // Ajusta la imagen manteniendo su relación de aspecto
           />
@@ -190,9 +201,9 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   image: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    flex: 0.6,
+    width: '80%',
+    height: '80%',
     margin: 10,
   }
 });

@@ -25,9 +25,9 @@ export const CartillaScreen = () => {
 
   let headerHeight = hp('16%'); // Ajusta el tamaño de la cabecera según el alto de la pantalla
   let adjustedHeaderHeight = headerHeight + top
-  let buttonTextFontSize = wp('5%');
-  let buttonDescriptionFontSize = wp('4.5%');
-  let cardTitleFontSize: number = hp('2.5%');
+  let buttonTextFontSize = wp('4.5%');
+  let buttonDescriptionFontSize = wp('4%');
+  let cardTitleFontSize: number = hp('2.6%');
  let cardDescriptionFontSize: number = hp('2%');
  let iconNotificationFontSize: number = wp('8%');
  let titleMarginBottom: number  = hp('4%'); 
@@ -192,7 +192,7 @@ export const CartillaScreen = () => {
 
         </View>
 
-        <View style={{ marginTop: hp('1%') }}>
+        <View style={{ marginTop: hp('1%'), marginHorizontal:wp('3%') }}>
 
           <TertiaryButton
             onPress={() => navigation.navigate('Cartillas')}
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,
-    elevation: 10,
+    elevation: 6,
     shadowRadius: 5,
     zIndex: 3,
   },

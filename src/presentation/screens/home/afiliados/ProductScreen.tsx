@@ -13,7 +13,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParams } from '../../../routes/StackNavigator';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { globalStyles } from '../../../theme/theme';
+import { globalColors, globalStyles } from '../../../theme/theme';
 import CustomHeader from '../../../components/CustomHeader';
 import { BackButton } from '../../../components/shared/BackButton';
 import { CredencialFamiliar } from '../../../components/shared/CredencialFamiliar';
@@ -48,7 +48,11 @@ navigation.setOptions({
     navigation.goBack(); // Retroceder a la pantalla anterior
   };
 
-
+  function capitalizeWords(string:string) {
+    return string.replace(/\b\w+/g, function(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+  }
 
   return (
     <View 
@@ -72,17 +76,28 @@ navigation.setOptions({
         }}
         > Credencial</Text> */}
 
-        <Text style={{
+        {/* <Text style={{
           fontSize:20,
           textAlign: 'center',
           marginTop: 0,
           padding: 10,
           color:'black',
-       /*    backgroundColor: 'orange', */ 
           width:'100%'
         }}>
           { params.id }  
-        </Text>
+        </Text> */}
+
+        <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: wp('2%'),
+        fontSize: hp('3%'),
+        textAlign: 'center',
+        color: globalColors.gray,
+        fontWeight: 'bold'
+      }}>
+        {/*  { params.id } */}  
+          {capitalizeWords(params.id)}
+      </Text>
 
        {/*  <Text style={{
           fontSize:15,

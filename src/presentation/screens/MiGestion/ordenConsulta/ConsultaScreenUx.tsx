@@ -334,7 +334,16 @@ export const ConsultaScreenUx = () => {
 
       <BackButton Size={hp('4%')} />
 
-      <Text style={{ marginBottom: '3%', marginTop: '2%', fontSize: titleTextFontSize, textAlign: 'center', color: '#030136' }}>Solicitá tu Orden de Consulta</Text>
+      {/* <Text style={{ marginBottom: '3%', marginTop: '2%', fontSize: titleTextFontSize, textAlign: 'center', color: '#030136' }}>Solicitá tu Orden de Consulta</Text> */}
+
+      <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('3.2%'),
+        textAlign: 'center',
+        color: globalColors.gray2,
+        fontWeight: 'bold'
+      }}>Solicitá tu Orden de Consulta</Text>
 
       {/* color: '#'595960 */}
 
@@ -628,8 +637,10 @@ const styles = StyleSheet.create({
     /* backgroundColor: SelectedPrestadorNombre ? globalColors.NaranjaPastel : 'white' */
   },
   consignaText: {
-    color: 'black',
-    fontSize: 20,
+   /*  color: 'gray', */
+   color: globalColors.gray2,
+   fontWeight: 'bold',
+    fontSize: hp('2%'),
     margin: 0,
     padding: 0,
     marginBottom: 10,

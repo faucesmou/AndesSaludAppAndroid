@@ -450,12 +450,16 @@ export const EstudiosMedicosScreenUx = () => {
         {/*   <KeyboardAvoidingView behavior="padding"> */}
 
         <TouchableWithoutFeedback onPress={cerrarTeclado} >
+
           <View style={globalStyles.containerInput2} >
-            <Text style={{ /* backgroundColor: 'yellow', */ fontSize: 18, textAlign: 'center', marginBottom: 10, marginTop: 0, color:'black' }}>Utilizá el siguiente buscador para encontrar tu prestador</Text>
+
+          <Text style={[styles.consignaText, { marginHorizontal: dynamicMargin, textAlign: 'center' }]}>Selecciona un Prestador:</Text>
+
+            <Text style={{ /* backgroundColor: 'yellow', */   fontSize: hp('2.5%')/* fontSize: 18 */, textAlign: 'center', marginBottom: 10, marginTop: 0, color:'black' }}>Utilizá el siguiente buscador para encontrar tu prestador:</Text>
             <TextInput
               editable={true}
               style={globalStyles.estilosInput2}
-              placeholder="Escribí aquí el prestador deseado"
+              placeholder="Escribe aquí el prestador deseado"
               placeholderTextColor="gray"
               value={busqueda.cadena}
               onChangeText={(cadena) => setBusqueda({ cadena })}
@@ -469,7 +473,11 @@ export const EstudiosMedicosScreenUx = () => {
         {/*  <Divider /> */}
         <TouchableWithoutFeedback onPress={cerrarTeclado} >
 
-          <Text style={{ fontSize: hp('2.2%') /* 18 */, textAlign: 'center', marginBottom: 5, marginTop: 5, color:'black' }}>Prestadores encontrados: {NumeroPrestadoresEncontrados} </Text>
+          {/* TÍTULO DE PRESTADORES ENCONTRADSO:  */}
+
+          {/* <Text style={{ fontSize: hp('2%'), textAlign: 'center', marginBottom: 5, marginTop: 5, color:'black' }}>Prestadores encontrados: {NumeroPrestadoresEncontrados} </Text> */}
+          <>
+          </>
 
         </TouchableWithoutFeedback>
 
@@ -484,7 +492,9 @@ export const EstudiosMedicosScreenUx = () => {
 
             <View style={[styles.container, { gap: dynamicGap }]}>
               {/* Botón que abre el modal */}
-              <Text style={[styles.consignaText, { marginHorizontal: dynamicMargin, textAlign: 'center', fontSize: hp('2.5%') }]}>Selecciona un Prestador:</Text>
+
+             {/*  <Text style={[styles.consignaText, { marginHorizontal: dynamicMargin, textAlign: 'center' }]}>Selecciona un Prestador:</Text> */}
+              
               <TouchableOpacity
                 style={[styles.selectButton, { marginHorizontal: dynamicMargin }]}
                 onPress={() => setModalPrestadorVisible(true)}
@@ -583,7 +593,7 @@ export const EstudiosMedicosScreenUx = () => {
 
             {!isFormComplete ?
               (
-                <Text style={{ marginBottom: wp('1.5%'), marginTop: wp('1%'), fontSize: hp('2.2%'), textAlign: 'center', color: '#595960', /* color:'#030136' */ }}>Completá todos los campos para poder continuar con tu solicitud</Text>
+                <Text style={{ marginBottom: wp('1.5%'), marginTop: wp('10%'), fontSize: hp('2.2%'), textAlign: 'center', color: '#595960', /* color:'#030136' */ }}>Completá todos los campos para poder continuar con tu solicitud</Text>
               ) :
               null
             }
@@ -618,8 +628,11 @@ const styles = StyleSheet.create({
     /* backgroundColor: SelectedPrestadorNombre ? globalColors.NaranjaPastel : 'white' */
   },
   consignaText: {
-    color: 'black',
-    fontSize: 20,
+    /* color: 'black', */
+    color: globalColors.gray2,
+    fontWeight: 'bold',
+    /* fontSize: 20, */
+    fontSize: hp('3%'),
     margin: 0,
     padding: 0,
     marginBottom: 10,

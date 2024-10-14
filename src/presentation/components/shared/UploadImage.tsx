@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useAuthStore } from '../../store/auth/useAuthStore';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { globalColors } from '../../theme/theme';
 
 const UploadImage: React.FC = () => {
   /* quiero usar estos estados par mostra la imagen y chequear si estan guardandose o quitandse */
@@ -204,10 +205,14 @@ const UploadImage: React.FC = () => {
       width: '100%',
     },
     title: {
-      fontSize: 17,
+      /* fontSize: 17, */
       marginBottom: 10,
       fontFamily: 'Quicksand-Regular',
-      color: 'black'
+     /*  color: 'black' */
+     fontSize: hp('2.5%'),
+      color: globalColors.gray2,
+    fontWeight: 'bold',
+      /* style={[styles.consignaText, { marginHorizontal: dynamicMargin }]} */
     },
     subitle: {
       fontSize: 15,

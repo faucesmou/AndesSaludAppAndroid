@@ -81,7 +81,7 @@ export const MisDatosScreen = () => {
       <Text style={{
         marginBottom: wp('2%'),
         marginTop: 0,
-        fontSize: hp('3%'),
+        fontSize: hp('3.5%'),
         textAlign: 'center',
         color: globalColors.gray2,
         fontWeight: 'bold'
@@ -106,8 +106,8 @@ export const MisDatosScreen = () => {
           <FlatList
             data={afiliado}
             renderItem={({ item }) => (
-              <View>
-                <View>
+              <View style={ { /* alignContent: 'center', */ alignItems:'center' }}>
+                <View style={styles.TertiaryButton}>
                   <View style={styles.container}>
                     <Text style={[styles.text, {fontSize:hp('2%')}]}>{`${item.apellidoYNombre}`}</Text>
                     <Text style={[styles.text, {fontSize:hp('2%')}]}>{`Numero de Afiliado: ${item.nroAfiliado}`}</Text>
@@ -135,13 +135,34 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 18,
     textAlign: 'left',
-    color: 'black'
+    /* color: 'black', */
+    color: globalColors.gray,
+    fontWeight: 'bold',
    
   },
   container: {
     marginHorizontal:20,
    marginTop: 10,
    marginBottom:20,
-  }
+  },
+   //ESTILOS PARA EL BORDE (COPIADOS DE TERTIARY BUTTON):
+   TertiaryButton: {
+    backgroundColor: 'white',
+    minWidth: '95%',
+    borderColor: 'white',
+    borderWidth: 1,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+    padding: wp('1%'),
+    margin: wp('1%'),
+    marginBottom: wp('2%'),
+    marginHorizontal: wp('10%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
 })

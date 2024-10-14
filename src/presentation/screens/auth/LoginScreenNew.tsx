@@ -148,7 +148,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                 </Text>
                 <Input 
                 placeholder="Usuario"
-                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center' }}
+                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor:'#7ba1c3'/* 'black' */ }}
                   autoCapitalize="none"
                   value={form.usuario}
                   onChangeText={(usuario) => setForm({ ...form, usuario })}
@@ -156,7 +156,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                 <Input
                   placeholder="Contraseña"
                   secureTextEntry
-                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center'  }}
+                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor:'#7ba1c3'/* 'black' */  }}
                   value={form.password}
                   onChangeText={(password) => setForm({ ...form, password })}
 

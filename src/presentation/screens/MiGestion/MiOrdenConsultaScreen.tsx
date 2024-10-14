@@ -10,7 +10,7 @@ import CustomHeader from '../../components/CustomHeader'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { FullScreenLoader } from '../../components/ui/FullScreenLoader'
 import { useAuthStore } from '../../store/auth/useAuthStore'
-
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 export const MiOrdenConsultaScreen = () => {
@@ -144,15 +144,22 @@ setMounted(true);  // Marca como montado para evitar re-ejecuciones
                 <View
                   style={styles.successContainer}
                 >
+                  <View style={styles.textContainer}>
 
                   <Text style={styles.titleMessage}
                   >¡Tu Orden está lista!</Text>
-                  <Text style={{ marginBottom: 5, fontSize: 20, marginTop: 10, color:'#595960'  }}>Ingresá al siguiente link para descargarla:</Text>
+
+                  <Text style={{ marginBottom: 5, fontSize: hp('2.1%'), marginTop: 10, color:'#595960', justifyContent:'center'  }}>Ingresá al siguiente link para descargarla:</Text>
+
                   <TouchableOpacity onPress={handleOpenURL}>
-                    <Text style={{ marginBottom: 25, marginTop: 15, fontSize: 15, color: 'blue' }}>
+                    <Text style={{ marginBottom: wp('2%'), marginTop: 15, fontSize: 15, color: '#0e77e7', fontWeight:'bold' }}>
                       {ordenConsulta}
                     </Text>
                   </TouchableOpacity>
+
+
+
+                  </View>
                   <View style={styles.imageContainer}>
                
                 <Image source={require('../../assets/images/logoAndesSaludRedondo4.png')} style={styles.successImage} />
@@ -192,6 +199,20 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 5, 
   },
+  textContainer: {
+  /*   marginTop: 10,
+    marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10, */
+    alignItems: 'center',
+     marginHorizontal: wp('4%'),
+     justifyContent:'center'
+/*   shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 1,
+    elevation: 5,  */
+  },
   
   imageContainer: {
     marginTop: 10,
@@ -217,11 +238,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   }, 
   titleMessage: {
-    fontSize: 22,
+    /* fontSize: 22, */
+    fontSize: hp('3%'),
     marginTop:10,
     marginBottom:5,
     color:'#030136',
     fontWeight:'bold',
+   /*  justifyContent:'center' */
   },
   epigrafeMessage: {
     fontSize: 20,
@@ -230,6 +253,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
    color:'#030136',
    fontWeight:'bold',
+ 
   },
   containerEpigrafe: {
    /*  fontSize: 18, */

@@ -390,7 +390,11 @@ export const Buzon = () => {
     }
   ];
 
-
+  function capitalizeWords(string:string) {
+    return string.replace(/\b\w+/g, function(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+  }
   const color = globalColors.gray;
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   /*  console.log('estas son las notificaciones:', notificaciones); */
@@ -507,7 +511,8 @@ export const Buzon = () => {
                             <View style={styles.textWrapper}>
                               {notificacion.afiliado && (
                                 <Text style={styles.buttonText}>
-                                  {notificacion.afiliado}
+                                  {/* {notificacion.afiliado} */}
+                                  {capitalizeWords(notificacion.afiliado)}
                                 </Text>
                               )}
                               {notificacion.estado && (
@@ -983,16 +988,19 @@ const styles = StyleSheet.create({
   },
   textStyleOrdenRechazada: {
     color: 'black',
-    fontWeight: 'normal',
+    /* fontWeight: 'normal', */
+    fontWeight: 'bold',
 /*     textAlign: 'justify', */
     marginTop: 7,
   },
   textStyletTitle: {
     color: 'black',
-    fontWeight: 'normal',
+   /*  fontWeight: 'normal', */
+   fontWeight: 'bold',
     textAlign: 'justify',
     marginTop: 4,
     fontSize: 20,
+    
   },
   textStyletTitlePracticaNoEncontrada: {
     color: 'black',

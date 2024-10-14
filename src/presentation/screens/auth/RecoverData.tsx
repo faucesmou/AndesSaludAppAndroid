@@ -187,7 +187,7 @@ export const RecoverData = ({ navigation }: Props) => {
               value={form.dni}
               onChangeText={(dni) => setForm({ ...form, dni })}
               accessoryLeft={<MyIcon name="person-outline" />}
-              style={{ marginBottom: 10, borderRadius: 15, }}
+              style={{ marginBottom: 10, borderRadius: 15, borderColor:'#7ba1c3' }}
 
             />
             <Input
@@ -198,7 +198,7 @@ export const RecoverData = ({ navigation }: Props) => {
               onChangeText={(numeroAfiliado) => setForm({ ...form, numeroAfiliado })}
               accessoryLeft={<IonIcon name='card-outline' size={25} color="#505050" marginLeft={'2%'} marginRight={'2.3%'}/> }
               
-              style={{ marginBottom: 10, borderRadius: 15, marginLeft: 1}}
+              style={{ marginBottom: 10, borderRadius: 15, marginLeft: 1, borderColor:'#7ba1c3'}}
             />
         
           </Layout>

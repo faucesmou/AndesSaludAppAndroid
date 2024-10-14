@@ -115,7 +115,16 @@ export const FormulariosEspScreen = () => {
  <ScrollView
  contentContainerStyle={{ flexGrow: 1 }}
  >    
-      <Text style={{ marginBottom: 5, marginTop: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Formularios Especiales</Text>
+      {/* <Text style={{ marginBottom: 5, marginTop: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Formularios Especiales</Text> */}
+
+      <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('3.2%'),
+        textAlign: 'center',
+        color: globalColors.gray2,
+        fontWeight: 'bold'
+      }}>Formularios Especiales</Text>
 
       <View style={{ /* backgroundColor: 'green', */  flex: 1, marginBottom: 30, marginTop: 15 }}>
         {formularios.map((formulario, index) => (
