@@ -136,6 +136,7 @@ export const Buzon = () => {
         // Calcular la fecha de hace 1 semana desde 'now'
         const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         console.log('Fecha de hace 1 semana:', oneWeekAgo);
+        const eightWeeksAgo = new Date(now.getTime() - 56 * 24 * 60 * 60 * 1000);
 
         // Filtramos las notificaciones basándonos en la fecha de vencimiento
         const filteredNotificaciones = mappedNotificaciones.filter((notificacion: Notificacion) => {
@@ -170,7 +171,10 @@ export const Buzon = () => {
             return false; // Excluir notificaciones con fechas no parseables
           }
          /*  console.log('fecFinalizacionDate: ', fecFinalizacionDate); */
-          return fecFinalizacionDate >= oneWeekAgo; 
+
+         /* MOMENTANEO !!!! PUSE 8 SEMANAS EN VEZ DE 2  !!! REVISAR--->-->-------------------------------------------------------------------->>>*/
+
+          return fecFinalizacionDate >= eightWeeksAgo; 
           /*  Retenemos solo las notificaciones cuya fecha de vencimiento es igual o posterior a la fecha actual ( return fecFinalizacionDate >= twoWeeksAgo; )
           o a la fecha dos semanas posterior al vencimiento:  return fecFinalizacionDate >= twoWeeksAgo; */ 
         });
@@ -178,8 +182,51 @@ export const Buzon = () => {
         /* Se ordenan de la mas reciente a la mas antigua: */
         const notificacionesOrdenadas = filteredNotificaciones.reverse();
 
+        // Ordenar las notificaciones por fecha de solicitud (de más reciente a más antigua)
+        const notificacionesOrdenadas2 = filteredNotificaciones.sort((a, b) => {
+          /* console.log('filteredNotificaciones-->', filteredNotificaciones);
+          console.log('a.fecSolicitud---> ', a.fecSolicitud);
+          console.log('b.fecSolicitud---> ', b.fecSolicitud);
+          const dateA = new Date(a.fecSolicitud);
+          const dateB = new Date(b.fecSolicitud);
+          console.log('notificacionesOrdenadas2-->Comparando: dateA, dateB ', dateA, dateB); */
+           // Dividir la fecha y hora en partes
+  // Dividir la fecha y hora en partes (como cadenas)
+          const [dateAString, timeAString] = a.fecSolicitud.split(' ');
+          const [dayAString, monthAString, yearAString] = dateAString.split('/');
+          const [hoursAString, minutesAString, secondsAString] = timeAString.split(':');
+
+          const [dateBString, timeBString] = b.fecSolicitud.split(' ');
+          const [dayBString, monthBString, yearBString] = dateBString.split('/');
+          const [hoursBString, minutesBString, secondsBString] = timeBString.split(':');
+
+          // Convertir las cadenas a números
+          const yearA = Number(yearAString);
+          const monthA = Number(monthAString) - 1; // Meses en JavaScript comienzan en 0
+          const dayA = Number(dayAString);
+          const hoursA = Number(hoursAString);
+          const minutesA = Number(minutesAString);
+          const secondsA = Number(secondsAString);
+
+          const yearB = Number(yearBString);
+          const monthB = Number(monthBString) - 1;
+          const dayB = Number(dayBString);
+          const hoursB = Number(hoursBString);
+          const minutesB = Number(minutesBString);
+          const secondsB = Number(secondsBString);
+
+          // Crear objetos Date
+          const dateObjectA = new Date(yearA, monthA, dayA, hoursA, minutesA, secondsA);
+          const dateObjectB = new Date(yearB, monthB, dayB, hoursB, minutesB, secondsB);
+
+          // Comparar las fechas y devolver un número para el ordenamiento
+          return dateObjectB.getTime() - dateObjectA.getTime();
+        });
+
+
+        console.log('notificacionesOrdenadas2-->', notificacionesOrdenadas2);
         // Asignamos las notificaciones filtradas al estado
-      setNotificaciones(notificacionesOrdenadas);
+      setNotificaciones(notificacionesOrdenadas2);
       console.log('set Notificaciones. Notificaciones:-->', notificaciones);
       
 
