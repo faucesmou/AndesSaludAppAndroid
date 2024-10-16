@@ -415,7 +415,7 @@ const filtrarPorTodos = () => {
 
       <Text style={{
         marginBottom: 10,
-        marginTop: 0,
+        marginTop: wp('-3%'),
         fontSize: hp('3.5%'),
         textAlign: 'center',
         color: globalColors.gray2,
@@ -466,7 +466,7 @@ const filtrarPorTodos = () => {
 
       </View>
 
-      <View style={{ flex: 1, marginBottom: hp('4%'), marginTop: 0 }}>
+      <View style={{ flex: 1, marginBottom: hp('2%'), marginTop: 0 }}>
 
 
 

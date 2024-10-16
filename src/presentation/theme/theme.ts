@@ -30,6 +30,7 @@ export const globalColors = {
 /*   gray3:'#c1b9bb',  */
 /*   gray3:'#c1c1c1', */
 gray3:'#DCDCDC', 
+gray4:'#c7c5c5', 
   white1:'##d8d8cf',
   white2:'#ffffff',
   background: '#fff',

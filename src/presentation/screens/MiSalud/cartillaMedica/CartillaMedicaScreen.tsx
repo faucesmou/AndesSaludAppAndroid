@@ -91,14 +91,14 @@ export const CartillaMedicaScreen = () => {
 
       <Text style={{
         marginBottom: 0,
-        marginTop: 0,
+        marginTop: wp('-3%'),
         fontSize: hp('4%'),
         textAlign: 'center',
         color: globalColors.gray2,
         fontWeight: 'bold'
       }}>Especialidades</Text>
 
-      <View style={{  flex: 1, marginBottom: hp('4%'), marginTop: hp('1%') }}>
+      <View style={{  flex: 1, marginBottom: hp('2%'), marginTop: hp('1%') }}>
         <ScrollView >
           {
           

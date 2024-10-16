@@ -15,8 +15,8 @@ const NotificationBadge = ( {counter }: Props) => {
   return (
     <View style={styles.badge}>
       <Text style={{display: 'flex', flexWrap: 'nowrap', color: 'black',
-    fontSize: wp('2.3%'),
-    fontWeight: 'bold',}/* styles.badgeText */}>{counter}</Text>
+    fontSize: wp('2.4%'),
+    fontWeight: 'bold', marginTop:wp('-0.5%')}/* styles.badgeText */}>{counter}</Text>
     </View>
   );
 };
@@ -50,15 +50,16 @@ const styles = StyleSheet.create({
     top: -5, // Ajustar según sea necesario
     right: -5, // Ajustar según sea necesario
     backgroundColor: 'yellow',
-    borderRadius: 10,
-    padding: 4,
+    borderRadius: 20,
+    width: 22, // Establecer el ancho igual al borderRadius
+    height: 20, // Establecer la altura igual al borderRadius
+    padding: 5,
     zIndex: 1, // Asegurarse de que esté por encima del ícono
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  badgeText: {
-    color: 'black',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
+
 });
 
 export default NotiMensajes;

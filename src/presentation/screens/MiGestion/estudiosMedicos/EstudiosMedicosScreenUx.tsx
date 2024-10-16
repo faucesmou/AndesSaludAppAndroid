@@ -345,6 +345,22 @@ export const EstudiosMedicosScreenUx = () => {
       <BackButton Size={hp('4%')}/>
       {/*   <Text style={{ marginBottom: '3%', marginTop: '2%', fontSize: 25, textAlign: 'center', color:'#030136'}}>Estudios medicos Ux</Text>  */}
 
+
+      <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('3%'),
+        textAlign: 'center',
+        color: globalColors.gray2,
+        fontWeight: 'bold'
+      }}>Solicitá la Orden de tus Estudios</Text>
+
+<TouchableWithoutFeedback onPress={cerrarTeclado} >
+
+<Divider marginTopDivider={MarginTopDivider} />
+
+</TouchableWithoutFeedback>
+
       <View
         style={{   /* backgroundColor: 'green', */  flex: 1, marginBottom: '15%', marginTop: '0%' }}>
 
@@ -593,7 +609,7 @@ export const EstudiosMedicosScreenUx = () => {
 
             {!isFormComplete ?
               (
-                <Text style={{ marginBottom: wp('1.5%'), marginTop: wp('10%'), fontSize: hp('2.2%'), textAlign: 'center', color: '#595960', /* color:'#030136' */ }}>Completá todos los campos para poder continuar con tu solicitud</Text>
+                <Text style={{ marginBottom: wp('1.5%'), marginTop: wp('3%'), fontSize: hp('2.2%'), textAlign: 'center', color: '#595960', /* color:'#030136' */ }}>Completá todos los campos para poder continuar con tu solicitud</Text>
               ) :
               null
             }
