@@ -212,7 +212,7 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
         })
 
         setNotificacionesOrdenConsulta(notificacionesOrdenadas);
-        
+       
         setIsConsulting(false);
     
       } catch (error) {

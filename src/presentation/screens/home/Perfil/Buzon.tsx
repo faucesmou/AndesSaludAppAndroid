@@ -43,7 +43,7 @@ interface AutorizadasData {
 
 export const Buzon = () => {
   const { idAfiliado } = useAuthStore();
-  console.log('idAfiliado es---------------------->:', idAfiliado);
+ /*  console.log('idAfiliado es---------------------->:', idAfiliado); */
   
 
   const { top } = useSafeAreaInsets();
@@ -184,13 +184,7 @@ export const Buzon = () => {
 
         // Ordenar las notificaciones por fecha de solicitud (de más reciente a más antigua)
         const notificacionesOrdenadas2 = filteredNotificaciones.sort((a, b) => {
-          /* console.log('filteredNotificaciones-->', filteredNotificaciones);
-          console.log('a.fecSolicitud---> ', a.fecSolicitud);
-          console.log('b.fecSolicitud---> ', b.fecSolicitud);
-          const dateA = new Date(a.fecSolicitud);
-          const dateB = new Date(b.fecSolicitud);
-          console.log('notificacionesOrdenadas2-->Comparando: dateA, dateB ', dateA, dateB); */
-           // Dividir la fecha y hora en partes
+         
   // Dividir la fecha y hora en partes (como cadenas)
           const [dateAString, timeAString] = a.fecSolicitud.split(' ');
           const [dayAString, monthAString, yearAString] = dateAString.split('/');

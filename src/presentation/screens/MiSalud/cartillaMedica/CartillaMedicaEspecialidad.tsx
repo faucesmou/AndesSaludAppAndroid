@@ -48,6 +48,7 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
   
   const [selectedValue, setSelectedValue] = useState('Todos');
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalNoSeEncontraron, setModalmodalNoSeEncontraron] = useState(false);
 
   const [cartillas, setCartillas] = useState<{ nombre: string; /* descripcion: string; */ idConvenio: string }[]>([]);
   const [cartillas2, setCartillas2] = useState<{ nombre: string; idConvenio: string }[]>([]);
@@ -205,14 +206,14 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
         setCartillas(mappedCartillas);
 
       } catch (error) {
-        console.error('Error al obtener los formularios:', error);
+        console.log('Error al obtener los formularios:', error);
         let sinCartilas = [{
           nombre: 'No se encontraron prestadores para esta especialidad',
           idConvenio: 'sin convenio'
         }]
         setCartillas(sinCartilas);
         if (axios.isAxiosError(error)) {
-          console.error('Detalles del error:', JSON.stringify(error, null, 2));
+          console.log('Detalles del error:', JSON.stringify(error, null, 2));
           let sinCartilas = [{
             nombre: 'No se encontraron prestadores para esta especialidad',
             idConvenio: 'sin convenio'
@@ -296,7 +297,7 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
              
              Linking.openURL(url)
            }catch(err){
-            console.error('ocurrio un error al intentar abrir el mapa:', err)
+            console.log('ocurrio un error al intentar abrir el mapa:', err)
               /*  const url = `comgooglemaps://?center=${latitude},${longitude}&zoom=14`; */
             /* const url = `comgooglemaps://?center=<span class="math-inline">\{latitude\.trim\(\)\},</span>{longitude.trim()}&zoom=14`; */
             /* const url = `comgooglemaps://?center=${encodeURIComponent(latitude.trim())},${encodeURIComponent(longitude.trim())}`; */
@@ -312,54 +313,173 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
 
 
 const filtrarPorCordoba = () => {
-  const palabrasClave = [ "CORDOBA", "B5000","5105","VILLA ALLENDE", ];  
-     const filtrados = prestadores.filter(prestador =>
+  const palabrasClave = [ "CORDOBA", "B5000","5105","VILLA ALLENDE", ]; 
+ /*  const filtrados = prestadores.filter(prestador =>
+    prestador.localidad &&
+    palabrasClave.some(palabra =>
+      prestador.localidad.toUpperCase().includes(palabra)
+    )
+  ); */
+  const filtrados = prestadores.filter(prestador =>
+    prestador.localidad &&
+    palabrasClave.some(palabra => {
+      if (typeof palabra === 'string') {
+        return prestador.localidad.toUpperCase().includes(palabra.toUpperCase());
+      } else if (typeof palabra === 'number') {
+        // Convertir tanto palabra como localidad a string para comparar
+        return prestador.localidad.toString().includes(palabra.toString());
+      }
+      return false; // Si palabra no es ni string ni number
+    })
+  )
+  console.log('los filtrados de córdoba gonchi son los siguientes:--->', filtrados )
+  
+  if (filtrados.length === 0) {
+    // No se encontraron coincidencias
+    setCartillas([{
+      nombre: 'No se encontraron prestadores para esta especialidad',
+      idConvenio: 'sin convenio'
+    }]);
+    setModalmodalNoSeEncontraron(true)
+  } else {
+    setModalmodalNoSeEncontraron(false)
+    setPrestadoresCordoba(filtrados);
+    setProvinciaSeleccionada('Córdoba');
+    setMostrarFiltrados(true);}
+    /*  const filtrados = prestadores.filter(prestador =>
     palabrasClave.some(palabra =>
       prestador.localidad.toUpperCase().includes(palabra)
     )
   ); 
   setPrestadoresCordoba(filtrados);
   setProvinciaSeleccionada('Córdoba');
-  setMostrarFiltrados(true);
+  setMostrarFiltrados(true); */
 };
 const filtrarPorSanJuan = () => {
 
    const palabrasClave = [ "5400", "CAUCETE", "5442", "SAN JUAN"]; 
    const filtrados = prestadores.filter(prestador =>
+    prestador.localidad &&
+    palabrasClave.some(palabra => {
+      if (typeof palabra === 'string') {
+        return prestador.localidad.toUpperCase().includes(palabra.toUpperCase());
+      } else if (typeof palabra === 'number') {
+        // Convertir tanto palabra como localidad a string para comparar
+        return prestador.localidad.toString().includes(palabra.toString());
+      }
+      return false; // Si palabra no es ni string ni number
+    })
+  );
+
+  if (filtrados.length === 0) {
+    setCartillas([{
+      nombre: 'No se encontraron prestadores para esta especialidad',
+      idConvenio: 'sin convenio'
+    }]);
+    setModalmodalNoSeEncontraron(true)
+  } else {
+    setModalmodalNoSeEncontraron(false)
+    setPrestadoresSanJuan(filtrados);
+    setProvinciaSeleccionada('San Juan');
+    setMostrarFiltrados(true);
+  }
+  /*  const filtrados = prestadores.filter(prestador =>
     palabrasClave.some(palabra =>
       prestador.localidad.toUpperCase().includes(palabra)
     )
   );
   setPrestadoresSanJuan(filtrados);
   setProvinciaSeleccionada('San Juan');
-  setMostrarFiltrados(true);
+  setMostrarFiltrados(true); */
 };
 
-const filtrarPorMendoza = () => {
+/* const filtrarPorMendoza = () => {
   const palabrasClave = ["MENDOZA", "5500", "5519", "5501","5521","5515", "5509",  "DORREGO", "LUJAN DE CUYO", "MAIPU", "GUAYMALLEN", "LAVALLE","GENERAL SAN MARTIN", "TUNUYAN", "GODOY CRUZ"];
+
   const filtrados = prestadores.filter(prestador =>
+    prestador.localidad &&
     palabrasClave.some(palabra =>
       prestador.localidad.toUpperCase().includes(palabra)
     )
   );
-  setPrestadoresMendoza(filtrados);
-  setProvinciaSeleccionada('Mendoza');
-  setMostrarFiltrados(true);
+  
+  if (filtrados.length === 0) {
+  
+    setCartillas([{
+      nombre: 'No se encontraron prestadores para esta especialidad',
+      idConvenio: 'sin convenio'
+    }]);
+  } else {
+    setPrestadoresMendoza(filtrados);
+    setProvinciaSeleccionada('Mendoza');
+    setMostrarFiltrados(true);
+
+  }
+}; */
+const filtrarPorMendoza = () => {
+  const palabrasClave = ["MENDOZA", "5500", "5519", "5501", "5521", "5515", "5509", "DORREGO","LUJAN DE CUYO", "MAIPU", "GUAYMALLEN", "LAVALLE","GENERAL SAN MARTIN", "TUNUYAN", "GODOY CRUZ" ];
+
+  const filtrados = prestadores.filter(prestador =>
+    prestador.localidad &&
+    palabrasClave.some(palabra => {
+      if (typeof palabra === 'string') {
+        return prestador.localidad.toUpperCase().includes(palabra.toUpperCase());
+      } else if (typeof palabra === 'number') {
+        // Convertir tanto palabra como localidad a string para comparar
+        return prestador.localidad.toString().includes(palabra.toString());
+      }
+      return false; // Si palabra no es ni string ni number
+    })
+  );
+
+  if (filtrados.length === 0) {
+    setCartillas([{
+      nombre: 'No se encontraron prestadores para esta especialidad',
+      idConvenio: 'sin convenio'
+    }]);
+    setModalmodalNoSeEncontraron(true)
+  } else {
+    setModalmodalNoSeEncontraron(false)
+    setPrestadoresMendoza(filtrados);
+    setProvinciaSeleccionada('Mendoza');
+    setMostrarFiltrados(true);
+  }
 };
 const filtrarPorSanLuis = () => {
   const palabrasClave = [ "5700", "SAN LUIS", "VILLA MERCEDES", "5730"];
+
   const filtrados = prestadores.filter(prestador =>
-    palabrasClave.some(palabra =>
-      prestador.localidad.toUpperCase().includes(palabra)
-    )
+    prestador.localidad &&
+    palabrasClave.some(palabra => {
+      if (typeof palabra === 'string') {
+        return prestador.localidad.toUpperCase().includes(palabra.toUpperCase());
+      } else if (typeof palabra === 'number') {
+        // Convertir tanto palabra como localidad a string para comparar
+        return prestador.localidad.toString().includes(palabra.toString());
+      }
+      return false; // Si palabra no es ni string ni number
+    })
   );
-  setPrestadoresSanLuis(filtrados);
-  setProvinciaSeleccionada('San Luis');
-  setMostrarFiltrados(true);
+
+  if (filtrados.length === 0) {
+    setCartillas([{
+      nombre: 'No se encontraron prestadores para esta especialidad',
+      idConvenio: 'sin convenio'
+    }]);
+    setModalmodalNoSeEncontraron(true)
+  } else {
+    setModalmodalNoSeEncontraron(false)
+    setPrestadoresSanLuis(filtrados);
+    setProvinciaSeleccionada('San Luis');
+    setMostrarFiltrados(true);
+  }
 };
+
+
 const filtrarPorTodos = () => {
   const filtrados = prestadores
   setPrestadoresTodos(filtrados);
+  setModalmodalNoSeEncontraron(false);  
   setProvinciaSeleccionada('Todos');
   setMostrarFiltrados(true);
 };
@@ -456,7 +576,10 @@ const filtrarPorTodos = () => {
               </ScrollView>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={() => setModalVisible(false)}
+                onPress={() => {
+                  setModalVisible(false)
+                  setModalmodalNoSeEncontraron(false);  
+                }}
               >
                 <Text style={styles.closeButtonText}>Cerrar</Text>
               </TouchableOpacity>
@@ -487,7 +610,7 @@ const filtrarPorTodos = () => {
           </>
         ) : (
           <ScrollView >
-            {prestadoresParaMostrar.length === 0 ? (
+            {prestadoresParaMostrar.length === 0 || modalNoSeEncontraron ? (
               <View style={styles.noDataContainer}>
                 <Text style={styles.noDataText}>
                   No se encontraron prestadores para esta Especialidad y Provincia.
@@ -594,7 +717,7 @@ const styles = StyleSheet.create({
  marginLeft:5,
   },
   descriptionTexttelefono: {
-    color: 'blue',
+    color:'#4285F4',
     fontSize: 15,
     textAlign: 'center',
   },
