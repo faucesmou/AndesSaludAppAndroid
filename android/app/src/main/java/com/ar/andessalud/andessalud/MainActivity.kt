@@ -1,4 +1,4 @@
-package com.navigationapp6
+package com.ar.andessalud.andessalud
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

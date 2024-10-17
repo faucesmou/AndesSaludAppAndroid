@@ -1,4 +1,4 @@
-package com.navigationapp6
+package com.ar.andessalud.andessalud
 
 import android.app.Application
 import com.facebook.react.PackageList
