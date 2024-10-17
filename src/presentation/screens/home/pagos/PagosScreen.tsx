@@ -255,7 +255,7 @@ export const PagosScreen = () => {
                       { marginBottom: saldo.pagado ? '4%' : '7%' },
                     ]}
                     >
-                      <BoxShadow setting={{ ...shadowOpt, height: showAfiliados ? 210 : 105 }}
+                      <BoxShadow setting={{ ...shadowOpt, height: showAfiliados ? 210 : 105, y: saldo.pagado === false ? 30 : 20  }}
                       >
 
                         <View style={styles.card}>
@@ -282,10 +282,10 @@ export const PagosScreen = () => {
                                 </TouchableOpacity> */}
                                 <LinearGradient
                                   /*  colors={['#ba5050', '#ba5050','#dc7643','#e08050']} */
-                                  colors={[/* '#ba5050', */ '#c86443', '#d6783c', '#e08050', '#e88848']}
+                                  colors={[ '#c86443', '#d6783c', '#e08050', '#e88848']}
                                   start={{ x: 0, y: 0 }}
                                   end={{ x: 1, y: 0 }}
-                                  style={styles.primaryButton45}>
+                                  style={styles.primaryButton46}>
                                   <TouchableOpacity onPress={() => handlePress(saldo.linkDePago)}>
                                     <Text style={globalStyles.buttonText}>Link de Pago</Text>
                                   </TouchableOpacity>
@@ -295,7 +295,7 @@ export const PagosScreen = () => {
                             ) : (
                               <>
                                 <LinearGradient
-                                  colors={['#6ca96b', '#5ab759', '#5ab759','#5ab759'/* '#6ca96b' */]}
+                                  colors={['#509d4f','#5ab759', '#5ab759', '#5ab759']}
                                   start={{ x: 0, y: 0 }}
                                   end={{ x: 1, y: 0 }}
                                   style={styles.primaryButton45}>
@@ -354,12 +354,24 @@ const styles = StyleSheet.create({
   },
   primaryButton45: {
     backgroundColor: '#ba5050',
-    backgroundImage: 'linear-gradient(to right, #ba5050, #f0f0f0)',
     borderRadius: 17,
-    padding: 5,
+    padding: 6,
     margin: 10,
     marginTop: 10,
-    marginBottom: 15,
+    marginBottom: 20,
+    marginHorizontal: 60,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'center'
+  },
+  primaryButton46: {
+    backgroundColor: '#ba5050',
+    borderRadius: 17,
+    padding: 6,
+    margin: 10,
+    marginTop: 10,
+    marginBottom: 20,
     marginHorizontal: 60,
     paddingHorizontal: 10,
     alignItems: 'center',

@@ -17,7 +17,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import datos from './datosFacturas.json';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
-
+import LinearGradient from 'react-native-linear-gradient';
 
 // Define los tipos
 interface Padron {
@@ -28,7 +28,7 @@ interface Padron {
 }
 
 interface FacturasInt {
-  id:string;
+  id: string;
   periodo: number;
   tipoSaldo: string;
   medioPago: string;
@@ -36,9 +36,9 @@ interface FacturasInt {
   pagados: string;
   padrones: Padron[];
   periodoString: string;
-  facturas:string;
-  idUnico:string;
-  periodo2:string;
+  facturas: string;
+  idUnico: string;
+  periodo2: string;
 }
 
 // Estado inicial vacío
@@ -60,11 +60,11 @@ const shadowOpt = {
 
 export const Facturas = () => {
 
-  const { idAfiliadoTitular, cuilTitular,  } = useAuthStore();
+  const { idAfiliadoTitular, cuilTitular, } = useAuthStore();
 
 
-  console.log('ENTRANDO A FACTURAS---->>>', );
-  console.log('El cuilTitular es---->>>', cuilTitular );
+  console.log('ENTRANDO A FACTURAS---->>>',);
+  console.log('El cuilTitular es---->>>', cuilTitular);
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
   const { top } = useSafeAreaInsets();
@@ -80,7 +80,7 @@ export const Facturas = () => {
   const [errorGenerandoFactura, setErrorGenerandoFactura] = useState<string | null>(null);
   const [mensajeFactura, setMensajeFactura] = useState<string | null>(null);
   const [UrlFacturaGenerada, setUrlFacturaGenerada] = useState<string | null>(null);
- 
+
   const [isConsulting, setIsConsulting] = useState(false);
   const [isError, setIsError] = useState(false);
   //probando modificar individualemnte los botones
@@ -123,7 +123,7 @@ export const Facturas = () => {
       try {
         const response = await axios.get(`https://fiscalizacion.createch.com.ar/facturacion/api/total?titular=${cuilTitular}`);
 
-       /*  console.log('la respuesta de cristian es: response.data.data--------->>>>', response.data.data); */
+        /*  console.log('la respuesta de cristian es: response.data.data--------->>>>', response.data.data); */
 
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
@@ -171,115 +171,115 @@ export const Facturas = () => {
       }
     };
     FacturasRequest()
-    
-/*     console.log('la respuesta de cristian Facturas es--------->>>>', Facturas); */
+
+    /*     console.log('la respuesta de cristian Facturas es--------->>>>', Facturas); */
   }, [])
 
-  const handlePress = (url: string ) => {
+  const handlePress = (url: string) => {
 
     Linking.openURL(url).catch((err) => console.error('Error al abrir el enlace de factura:', err));
- 
-  
-}
 
 
-  const FacturasRequest2 = async ( existeFactura: string, idUnico: string) => {
+  }
 
-      console.log('entrando a FACTURAREQUEST2 ---------->');
-      
+
+  const FacturasRequest2 = async (existeFactura: string, idUnico: string) => {
+
+    console.log('entrando a FACTURAREQUEST2 ---------->');
+
     try {
-     if (existeFactura === "Si" ) {  
-      console.log('INICIANDO CONSULTA DE FACTURA CON idUnicoFactura---------->', idUnico);
-      const response = await axios.get(`https://fiscalizacion.createch.com.ar/facturacion/api/external?idUnico=${idUnico}`);
+      if (existeFactura === "Si") {
+        console.log('INICIANDO CONSULTA DE FACTURA CON idUnicoFactura---------->', idUnico);
+        const response = await axios.get(`https://fiscalizacion.createch.com.ar/facturacion/api/external?idUnico=${idUnico}`);
 
 
 
-      if (response.status === 200) {
-        // Procesa la respuesta de la API
-        const data = await response.data.data;
-        if ((data)) {
-          let UrlDescarga = data.UrlComprobante;
-          console.log('la UrlDescarga es-------------->>>>>>>>>>>: ', UrlDescarga);
-      
-         handlePress(UrlDescarga)
+        if (response.status === 200) {
+          // Procesa la respuesta de la API
+          const data = await response.data.data;
+          if ((data)) {
+            let UrlDescarga = data.UrlComprobante;
+            console.log('la UrlDescarga es-------------->>>>>>>>>>>: ', UrlDescarga);
+
+            handlePress(UrlDescarga)
+          } else {
+            setError('El formato de los datos recibidos no es el esperado.');
+            console.log('no es array');
+
+          }
         } else {
-          setError('El formato de los datos recibidos no es el esperado.');
-          console.log('no es array');
-       
+          setError("Error con los datos");
+          console.log('Error en la consulta factura con id unico.Error>>>>', error);
+
         }
+
       } else {
-        setError("Error con los datos");
-        console.log('Error en la consulta factura con id unico.Error>>>>', error);
-     
-      } 
-      
-    }  else {
-     
-      console.log('No existe factura para descargar');
-   
-    }
+
+        console.log('No existe factura para descargar');
+
+      }
     } catch (error) {
       console.error('Error al obtener las facturas:', error);
-    /*   console.log('Detalles completos del error---->', error.response); */
+      /*   console.log('Detalles completos del error---->', error.response); */
       setError("Error con los datos");
-     
+
     }
-   /*  console.log('Fin de la funcion FacturaRequest2 con el idUnico >>>', idUnicoFactura); */
+    /*  console.log('Fin de la funcion FacturaRequest2 con el idUnico >>>', idUnicoFactura); */
   }
-  const GenerarFactura = async ( existeFactura: string, idUnico: string, periodo2: string ) => {
+  const GenerarFactura = async (existeFactura: string, idUnico: string, periodo2: string) => {
 
-      console.log('entrando a GENERAR FACTURA---------->');
-      
+    console.log('entrando a GENERAR FACTURA---------->');
+
     try {
-     if (existeFactura === "No" ) {  
-      console.log('INICIANDO GENERACION DE FACTURA CON idUnicoFactura---------->', idUnico);
-      console.log('INICIANDO GENERACION DE FACTURA CON periodo2---------->', periodo2);
-      const response = await axios.post(`https://fiscalizacion.createch.com.ar/facturacion/api/url-factura?titular=${cuilTitular}&idUnico=${idUnico}&periodo=${periodo2}`);
-      console.log('los datos de generar factura recibidos son---------->response>>>', response);
-      if (response.status === 200) {
-        // Procesa la respuesta de la API
-        const data = await response.data.meta;
-        console.log('los datos de generar factura recibidos son---------->data>>>', data);
-        if ((data)) {
-          let mensajeFacturaGenerada = data.msg;
-          let urlFactura = data.urlFactura
-          console.log('el urlFactura---------->>>>', urlFactura);
-          if (urlFactura != ""){
-            setUrlFacturaGenerada(urlFactura);
-            handlePress(urlFactura)
-          }
-          console.log('el mensaje de factura generada es: Descarga de factura generada es-------------->>>>>>>>>>>: ', mensajeFacturaGenerada);
-          setMensajeFactura(mensajeFacturaGenerada)
-          setErrorGenerandoFactura(''); 
+      if (existeFactura === "No") {
+        console.log('INICIANDO GENERACION DE FACTURA CON idUnicoFactura---------->', idUnico);
+        console.log('INICIANDO GENERACION DE FACTURA CON periodo2---------->', periodo2);
+        const response = await axios.post(`https://fiscalizacion.createch.com.ar/facturacion/api/url-factura?titular=${cuilTitular}&idUnico=${idUnico}&periodo=${periodo2}`);
+        console.log('los datos de generar factura recibidos son---------->response>>>', response);
+        if (response.status === 200) {
+          // Procesa la respuesta de la API
+          const data = await response.data.meta;
+          console.log('los datos de generar factura recibidos son---------->data>>>', data);
+          if ((data)) {
+            let mensajeFacturaGenerada = data.msg;
+            let urlFactura = data.urlFactura
+            console.log('el urlFactura---------->>>>', urlFactura);
+            if (urlFactura != "") {
+              setUrlFacturaGenerada(urlFactura);
+              handlePress(urlFactura)
+            }
+            console.log('el mensaje de factura generada es: Descarga de factura generada es-------------->>>>>>>>>>>: ', mensajeFacturaGenerada);
+            setMensajeFactura(mensajeFacturaGenerada)
+            setErrorGenerandoFactura('');
 
+          } else {
+            setError('El formato de los datos recibidos no es el esperado.');
+            setMensajeFactura('');
+            setErrorGenerandoFactura('Reintentar más tarde.');
+            console.log('no es array');
+
+          }
         } else {
-          setError('El formato de los datos recibidos no es el esperado.');
-          setMensajeFactura(''); 
+          setError("Error con los datos");
+          console.log('Error en la generacion de factura con id unico.Error>>>>', error);
           setErrorGenerandoFactura('Reintentar más tarde.');
-          console.log('no es array');
-       
+          setMensajeFactura('');
+
+
         }
+
       } else {
-        setError("Error con los datos");
-        console.log('Error en la generacion de factura con id unico.Error>>>>', error);
+
+        console.log('No existe factura para descargar / generar');
         setErrorGenerandoFactura('Reintentar más tarde.');
         setMensajeFactura('');
-      
-     
-      } 
-      
-    }  else {
-     
-      console.log('No existe factura para descargar / generar');
-      setErrorGenerandoFactura('Reintentar más tarde.');
-      setMensajeFactura('');
-    }
+      }
     } catch (error) {
       console.error('Error al obtener las facturas:', error);
       setErrorGenerandoFactura('Reintentar más tarde.');
       setMensajeFactura('');
-    
-     
+
+
     }
     console.log('Fin de la funcion generar factura con el idUnico >>>', idUnico);
   }
@@ -299,12 +299,12 @@ export const Facturas = () => {
           if (urlFactura) {
             handlePress(urlFactura);
           }
-          else if(mensajeFacturaGenerada === 'Factura no creada SALDO IGUAL 0' ) {
+          else if (mensajeFacturaGenerada === 'Factura no creada SALDO IGUAL 0') {
             console.log('entrando en else if facutra no creada..--->');
-            
+
             let mensajeSaldoCero = 'Factura con saldo $0'
             setMensajeFacturas(prev => [...prev.filter(item => item.id !== id), { id, mensaje: mensajeSaldoCero }]);
-          
+
           } else {
 
             setMensajeFacturas(prev => [...prev.filter(item => item.id !== id), { id, mensaje: mensajeFacturaGenerada }]);
@@ -333,8 +333,8 @@ export const Facturas = () => {
     return 'Generar';
   };
 
-  
-  
+
+
 
   return (
     <View
@@ -389,99 +389,132 @@ export const Facturas = () => {
               )
               : isError ? (
 
-          <View style={styles.noDataContainer}>
-                <Text style={styles.noDataText}>
-                ¡Ups! Parece que algo salió mal. 
-                </Text>
-                <Text style={styles.noDataText}>
-               Por favor, intenta nuevamente más tarde. 
-                </Text>
-                <Text style={styles.noDataText2}>
-                Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
-                </Text>
-              </View>
-           )
-           :
-           (
-       
-            Facturas.map((factura, index) => (
+                <View style={styles.noDataContainer}>
+                  <Text style={styles.noDataText}>
+                    ¡Ups! Parece que algo salió mal.
+                  </Text>
+                  <Text style={styles.noDataText}>
+                    Por favor, intenta nuevamente más tarde.
+                  </Text>
+                  <Text style={styles.noDataText2}>
+                    Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
+                  </Text>
+                </View>
+              )
+                :
+                (
+
+                  Facturas.map((factura, index) => (
 
 
-              <View style={styles.cardWrapper}
-        
-                key={index}
+                    <View style={styles.cardWrapper}
 
-              >
-                <BoxShadow setting={{ ...shadowOpt, height: showAfiliados ? 210 : 105 }} >
-                  <View style={styles.card}>
+                      key={index}
 
-                    <Text style={globalStyles.resultText3}>Período: {factura.periodoString}</Text>
-                    <Text style={globalStyles.resultText2}>Estado del pago: {factura.pagados ? 'Pagado' : 'Pendiente'}</Text>
+                    >
+                      <BoxShadow setting={{ ...shadowOpt, height: showAfiliados ? 210 : 105 }} >
+                        <View style={styles.card}>
 
-                    {!factura.pagados ?
-                      (
-                        <TouchableOpacity
-                          style={globalStyles.primaryButton2}
-                          onPress={() => handlePress(factura.linkMp)}
-                        >
-                          <Text style={globalStyles.buttonText}>
-                            Link de Pago
-                          </Text>
-                        </TouchableOpacity>
+                          <Text style={globalStyles.resultText3}>Período: {factura.periodoString}</Text>
+                          <Text style={globalStyles.resultText2}>Estado del pago: {factura.pagados ? 'Pagado' : 'Pendiente'}</Text>
 
-                      ) :
+                          {!factura.pagados ?
+                            (
+                              <>
+                                <LinearGradient
 
-                      (
-                        factura.facturas === "Si" ? (
+                                  colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
+                                  start={{ x: 0, y: 0 }}
+                                  end={{ x: 1, y: 0 }}
+                                  style={globalStyles.primaryButton2}>
 
-                          <TouchableOpacity
-                            style={globalStyles.paidButton}
-                            onPress={async () => {
-                              let existeFactura = factura.facturas;
-                              let idUnico = factura.idUnico;
-                              await FacturasRequest2(existeFactura, idUnico)
-                            }}
-                          >
+                                  <TouchableOpacity
+                                    /* style={globalStyles.primaryButton2} */
+                                    onPress={() => handlePress(factura.linkMp)}
+                                  >
+                                    <Text style={globalStyles.buttonText}>
+                                      Link de Pago
+                                    </Text>
+                                  </TouchableOpacity>
+                                </LinearGradient>
 
-                            <Text style={globalStyles.buttonText}>
-                              Descargar
-                            </Text>
+                              </>
 
-                          </TouchableOpacity>
+                            ) :
 
-                        )
-                          :
-                          (
-                            <>
-                             
-                              <TouchableOpacity
-                          style={globalStyles.paidButton}
-                          onPress={async () => {
-                            await GenerarFactura2(factura.id, factura.facturas, factura.idUnico, String(factura.periodo));
-                          }}
-                        >
-                          <Text style={globalStyles.buttonText}>{getButtonText2(factura.id)}</Text>
-                        </TouchableOpacity>  
+                            (
+                              factura.facturas === "Si" ? (
 
-                  </>
+                                <LinearGradient
+                                  colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                                  start={{ x: 0, y: 0 }}
+                                  end={{ x: 1, y: 0 }}
+                                  style={globalStyles.paidButton}
+                                >
+                                  <TouchableOpacity
+                                    onPress={async () => {
+                                      let existeFactura = factura.facturas;
+                                      let idUnico = factura.idUnico;
+                                      await FacturasRequest2(existeFactura, idUnico)
+                                    }}
+                                  >
 
-                  )
+                                    <Text style={globalStyles.buttonText}>
+                                      Descargar
+                                    </Text>
 
-                  )
-                    }
-                     
-                  </View>
-                </BoxShadow>
+                                  </TouchableOpacity>
+                                </LinearGradient>
+                              )
+                                :
+                                (
+                                  <>
 
-              </View>
-            ))
-          )}
-        </View>
+                                    {/* <TouchableOpacity
+                                      style={globalStyles.paidButton}
+                                      onPress={async () => {
+                                        await GenerarFactura2(factura.id, factura.facturas, factura.idUnico, String(factura.periodo));
+                                      }}
+                                    >
+                                      <Text style={globalStyles.buttonText}>{getButtonText2(factura.id)}</Text>
+                                    </TouchableOpacity> */}
 
 
-      </ScrollView>
+                                    <LinearGradient
+                                      colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                                      start={{ x: 0, y: 0 }}
+                                      end={{ x: 1, y: 0 }}
+                                      style={globalStyles.paidButton}
+                                    >
+                                      <TouchableOpacity
+                                        onPress={async () => {
+                                          await GenerarFactura2(factura.id, factura.facturas, factura.idUnico, String(factura.periodo));
+                                        }}
+                                      >
 
-    </View>
+                                        <Text style={globalStyles.buttonText}>{getButtonText2(factura.id)}</Text>
+
+                                      </TouchableOpacity>
+                                    </LinearGradient>
+                                  </>
+
+                                )
+
+                            )
+                          }
+
+                        </View>
+                      </BoxShadow>
+
+                    </View>
+                  ))
+                )}
+        </View >
+
+
+      </ScrollView >
+
+    </View >
   )
 }
 
@@ -496,7 +529,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
     borderRadius: 15,
-  
+
   },
   card: {
     width: 350,
@@ -508,22 +541,22 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
   },
-    /* Cartel de error: no se pudieron obtener las facturas:  */
-    noDataContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    noDataText: {
-      fontSize: wp('4.5%'),
-      color: 'gray',
-      textAlign: 'center',
-      marginTop:wp('3%'),
-    },
-    noDataText2: {
-      fontSize: wp('4%'),
-      color: 'gray',
-      textAlign: 'center',
-      marginTop:wp('8%'),
-    },
+  /* Cartel de error: no se pudieron obtener las facturas:  */
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: wp('4.5%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop: wp('3%'),
+  },
+  noDataText2: {
+    fontSize: wp('4%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop: wp('8%'),
+  },
 });

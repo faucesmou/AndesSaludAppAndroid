@@ -154,7 +154,7 @@ export const EstudiosMedicosEnvNew = () => {
     }
 
    EstudiosMedicosRequest()   /* descomentar al terminar */
-  /*   EnvioIdAfiliadoSeleccionado() */
+    /* EnvioIdAfiliadoSeleccionado() */
   }, []);
 
 

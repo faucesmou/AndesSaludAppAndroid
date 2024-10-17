@@ -15,7 +15,7 @@ import Divider from '../../../components/shared/Divider';
 import { BuzonOrdenesC } from './BuzonOrdenesC';
 import { useNotificationStore } from '../../../store/notification-store';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Notificacion {
   idOrden: string;
@@ -661,11 +661,23 @@ export const Buzon = () => {
 
                           {/*   <Text style={styles.textStylePractica}>idOrden: {data.idOrdenDET}</Text> */}
 
-                          <TouchableOpacity style={styles.primaryButton45} onPress={() => handlePress(data.idOrden)}>
+                          <LinearGradient
+                                  /*  colors={['#ba5050', '#ba5050','#dc7643','#e08050']} */
+                                  /* colors={[ '#c86443', '#d6783c', '#e08050', '#e88848']} */
+                                  colors={['#509d4f','#5ab759', '#5ab759', '#5ab759']}
+                                  start={{ x: 0, y: 0 }}
+                                  end={{ x: 1, y: 0 }}
+                                  style={styles.primaryButton45}>
+                                  <TouchableOpacity onPress={() => handlePress(data.idOrden)}>
+                                    <Text style={styles.buttonText2}>Link de Descarga</Text>
+                                  </TouchableOpacity>
+                                </LinearGradient>
+
+                         {/*  <TouchableOpacity style={styles.primaryButton45} onPress={() => handlePress(data.idOrden)}>
                           <Text style={styles.buttonText2}>
                             Link de Descarga
                           </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                           </View>
 
@@ -1079,7 +1091,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   textStyleCoseguro: {
-    color: 'red',
+    color: '#cf6c2f',
     fontWeight: 'normal',
     textAlign: 'justify',
     marginTop: 7,
@@ -1113,7 +1125,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     margin: hp('1%'),
-    marginTop: hp('0%'),
+    marginTop: hp('1%'),
     marginBottom: 15,
     marginHorizontal: wp('1%'),
     paddingHorizontal: wp('1%'),

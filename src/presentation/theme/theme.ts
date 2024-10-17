@@ -335,12 +335,12 @@ export const globalStyles = StyleSheet.create({
   },
 
   primaryButton2: {
-    backgroundColor: '#ba5050',/* globalColors.profile2 */
+    /* backgroundColor: '#ba5050', *//* globalColors.profile2 */
     borderRadius: 17,
     padding: 6,
     margin: 10,
-    marginTop: 15,
-    marginBottom: 15,
+    marginTop: 10,
+    marginBottom: 20,
     marginHorizontal: 60,
     paddingHorizontal: 10,
     alignItems: 'center',

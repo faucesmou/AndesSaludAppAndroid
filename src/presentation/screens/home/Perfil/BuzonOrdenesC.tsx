@@ -858,7 +858,7 @@ const styles = StyleSheet.create({
    
   },
   valueCoseguro: {
-    color: 'red',
+    color: '#cf6c2f',
     fontWeight: 'bold',
     marginTop: 7,
   },
@@ -900,7 +900,7 @@ const styles = StyleSheet.create({
     /*   lineHeight: 10, */
   },
   textStyleCoseguro: {
-    color: 'red',
+    color: '#cf6c2f',
     fontWeight: 'normal',
     textAlign: 'justify',
     marginTop: 7,

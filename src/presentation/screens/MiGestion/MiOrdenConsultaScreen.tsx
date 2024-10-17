@@ -65,7 +65,7 @@ setMounted(true);  // Marca como montado para evitar re-ejecuciones
         setIsConsulting(false);
       }
     };
-    /* OrdenConsultaRequest() */
+    OrdenConsultaRequest()
 
   }, [idAfiliadoTitular, idPrestacion, idPrestador, idAfiliadoSeleccionado, mounted]);
 
