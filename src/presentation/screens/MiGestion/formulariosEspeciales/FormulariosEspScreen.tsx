@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { type NavigationProp, useNavigation } from '@react-navigation/native';
-import { Text, View, Linking, ScrollView, Dimensions } from 'react-native';
+import { Text, View, Linking, ScrollView, Dimensions, StyleSheet } from 'react-native';
 
 import axios from 'axios';
 
@@ -19,6 +19,7 @@ import CustomHeader from '../../../components/CustomHeader';
 import { PrimaryButton } from '../../../components/shared/PrimaryButton';
 import { RootStackParams } from '../../../routes/StackNavigator';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
 
 
 
@@ -33,16 +34,20 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 export const FormulariosEspScreen = () => {
 
   const { idAfiliadoTitular } = useAuthStore();
- /*  console.log('idAfiliadoTitular ---->', idAfiliadoTitular); */
+  /*  console.log('idAfiliadoTitular ---->', idAfiliadoTitular); */
 
 
 
   const { top } = useSafeAreaInsets();
 
   const [formularios, setFormularios] = useState<{ nombre: string; descripcion: string; nombreArchivo: string }[]>([]);
+  const [isError, setIsError] = useState(false);
+  const [isConsulting, setIsConsulting] = useState(false);
+
   useEffect(() => {
 
     const FormsRequest = async () => {
+      setIsConsulting(true);
       try {
         const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPObtenerFormulariosEspeciales?idAfiliadoTitular=${idAfiliadoTitular}`);
 
@@ -73,12 +78,13 @@ export const FormulariosEspScreen = () => {
              nombreArchivo: formulariosData.nombreArchivo._text,
            }]; */
         setFormularios(mappedFormularios);
+        setIsConsulting(false);
 
-/*         console.log('este es el mappedProducts:', mappedFormularios); */
-/*         console.log('este es el formularios useState:', formularios); */
 
       } catch (error) {
         console.error('Error al obtener los formularios:', error);
+        setIsConsulting(false);
+        setIsError(true)
       }
     };
     FormsRequest()
@@ -87,11 +93,7 @@ export const FormulariosEspScreen = () => {
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
 
- /*  const handleDescargarFormulario = (nombreArchivo: string) => {
-    const url = `https://www.prestacional.saludnuevocuyo.com.ar/ClientBin/DocumentosDownload/${nombreArchivo}`;
-    console.log('formulario nombre elegido: ---->', nombreArchivo);
-    navigation.navigate('Formulario', { url });
-  }; */
+ 
   const handleDescargarFormulario = (nombreArchivo: string) => {
     const url = `https://www.prestacional.saludnuevocuyo.com.ar/ClientBin/DocumentosDownload/${nombreArchivo}`;
 
@@ -100,57 +102,129 @@ export const FormulariosEspScreen = () => {
       .catch(err => console.error('Error al abrir URL: ', err));
   };
 
+
   const color = globalColors.orange
 
 
   return (
     <View
-   
+
       style={globalStyles.container}
-  
+
     >
-      <CustomHeader /* color={globalColors.black}  */titleSize={hp('4%')}  />
+      <CustomHeader /* color={globalColors.black}  */ titleSize={hp('4%')} />
 
       <BackButton Size={hp('4%')} />
- <ScrollView
- contentContainerStyle={{ flexGrow: 1 }}
- >    
-      {/* <Text style={{ marginBottom: 5, marginTop: 5, fontSize: 25, textAlign: 'center', color: 'black' }}>Formularios Especiales</Text> */}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+       
+        <Text style={{
+          marginBottom: wp('1%'),
+          marginTop: 0,
+          fontSize: hp('3.2%'),
+          textAlign: 'center',
+          color: globalColors.gray2,
+          fontWeight: 'bold'
+        }}>Formularios Especiales</Text>
 
-      <Text style={{
-        marginBottom: wp('2%'),
-        marginTop: 0,
-        fontSize: hp('3.2%'),
-        textAlign: 'center',
-        color: globalColors.gray2,
-        fontWeight: 'bold'
-      }}>Formularios Especiales</Text>
+        <View style={{ /* backgroundColor: 'green', */  flex: 1, marginBottom: 30, marginTop: wp('3%') }}>
 
-      <View style={{ /* backgroundColor: 'green', */  flex: 1, marginBottom: 30, marginTop: 15 }}>
-        {formularios.map((formulario, index) => (
-          <View key={index} style={{ marginBottom: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>{formulario.nombre}</Text>
-            <Text  style={{fontSize: 15, marginBottom:10, color: 'black' }}>{formulario.descripcion}</Text>
-            <Text style={{ color: '#0e77e7',  fontSize: 15, fontWeight:'bold'  }} 
-            onPress={() => handleDescargarFormulario(formulario.nombreArchivo)}            
-            >
-              Descargar Formulario
-            </Text>
-          </View>
-        ))}
-      </View>
-</ScrollView> 
+          {
+            isConsulting ?
+              (
+                <>
+
+                  <View
+                    style={{
+                      flex: 0.5,
+                      marginTop: top - hp('-5%'),
+                      marginBottom: hp('6%'),
+                      marginHorizontal: wp('9%'),
+                    }}
+                  >
+                    <View style={styles.noDataContainer}>
+                      <Text style={styles.noDataText}>
+                        Aguardá un momento mientras obtenemos los Formularios
+                      </Text>
+                      <Text style={styles.noDataText2}>
+                        Esto puede tomar unos segundos
+                      </Text>
+                  <FullScreenLoader />
+
+                    </View>
+                  </View>
+
+                </>
+
+              )
+              : isError ? (
+
+                <View style={styles.noDataContainer}>
+                  <Text style={styles.noDataText}>
+                    ¡Ups! Parece que algo salió mal.
+                  </Text>
+                  <Text style={styles.noDataText}>
+                    Por favor, intenta nuevamente más tarde.
+                  </Text>
+                  <Text style={styles.noDataText2}>
+                    Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
+                  </Text>
+                </View>
+              )
+                :
+                (
+
+                  formularios.map((formulario, index) => (
+                    <View key={index} style={{ marginBottom: 10 }}>
+                      <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>{formulario.nombre}</Text>
+                      <Text style={{ fontSize: 15, marginBottom: 10, color: 'black' }}>{formulario.descripcion}</Text>
+                      <Text style={{ color: '#0e77e7', fontSize: 15, fontWeight: 'bold' }}
+                        onPress={() => handleDescargarFormulario(formulario.nombreArchivo)}
+                      >
+                        Descargar Formulario
+                      </Text>
+                    </View>
+                  ))
+
+                )
+          }
+
+        </View>
+      
+      </ScrollView>
     </View>
 
   )
 }
-{/* <FlatList
-        data={products}
-        renderItem={({ item }) => (
-          <PrimaryButton
-            onPress={() => navigation.navigate('Product', { id:item.apellidoYNombre, nroAfiliado: item.nroAfiliado })}
-            label={item.apellidoYNombre} 
-            color={color} 
-          />
-        )}
-      /> */}
+
+const styles = StyleSheet.create({
+  /* estilos para estudios consulta de formularios: */
+  containerEstudiosMedicosEnv2: {
+    paddingHorizontal: 0,
+    marginTop: 20,
+    alignItems: 'center',
+    marginBottom: 10,
+
+  },
+  noDataContainer: {
+    flex: 1,
+  /*   marginBottom: hp('6%'), */
+    marginHorizontal: wp('8%'),
+   
+  },
+  noDataText: {
+    fontSize: wp('4%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop: wp('0%'),
+  },
+  noDataText2: {
+    fontSize: wp('4%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop: wp('5%'),
+  },
+});
+
+

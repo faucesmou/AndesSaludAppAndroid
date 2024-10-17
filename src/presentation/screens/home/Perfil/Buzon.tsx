@@ -167,7 +167,7 @@ export const Buzon = () => {
 
           // Validar que la fecha sea un objeto Date válido
           if (isNaN(fecFinalizacionDate.getTime())) {
-            console.warn(`Fecha de finalización no se pudo parsear correctamente para idOrden ${notificacion.idOrden}. Fecha recibida:`, notificacion.fecFinalizacion);
+           /*  console.warn(`Fecha de finalización no se pudo parsear correctamente para idOrden ${notificacion.idOrden}. Fecha recibida:`, notificacion.fecFinalizacion); */
             return false; // Excluir notificaciones con fechas no parseables
           }
          /*  console.log('fecFinalizacionDate: ', fecFinalizacionDate); */
@@ -472,7 +472,7 @@ export const Buzon = () => {
             {/* <Text style={styles.MainTitle} >Selecciona el tipo de solicitud</Text> */}
             
             <Text style={{
-        marginBottom: wp('2%'),
+        marginBottom: wp('1%'),
         marginTop: 0,
         fontSize: hp('3%'),
         textAlign: 'center',
@@ -506,9 +506,21 @@ export const Buzon = () => {
 
             {isConsulting ?
               (
-                <View style={styles.LoaderContainer}>
-                  <FullScreenLoader />
-                </View>
+                  <View style={styles.LoaderContainer}>
+
+                    <View style={styles.noDataContainer}>
+                      <Text style={styles.noDataText}>
+                        Aguardá un momento
+                      </Text>
+                      <Text style={styles.noDataText}>
+                        Esto puede tomar unos segundos
+                      </Text>
+
+                    </View>
+
+                    <FullScreenLoader />
+
+                  </View>
               )
               :
               error ? (
@@ -535,7 +547,15 @@ export const Buzon = () => {
                 notificaciones.length > 0 ?
                   (
                     <>
-                      
+                       <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('2%'),
+        textAlign: 'center',
+        color: globalColors.gray2,
+        fontWeight: 'bold',
+        marginHorizontal: wp('9%'),
+      }}>Presiona en las notificaciones para acceder a los detalles:</Text>
 
                       {notificaciones.map((notificacion, index) => (
                       <Pressable
@@ -1105,6 +1125,19 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: wp('4%'),
     textAlign: 'center',
+  },
+  noDataContainer: {
+    flex: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: wp('5%'),
+    marginTop:wp('0%'),
+  },
+  noDataText: {
+    fontSize: wp('4%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop:wp('0%'),
   },
 
 });

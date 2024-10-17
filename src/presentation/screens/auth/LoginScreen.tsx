@@ -79,17 +79,17 @@ export const LoginScreen = ({ navigation }: Props) => {
         const datosGuardados = await guardarDatosLoginEnContext(idAfiliado);
 
         if (!datosGuardados) {
-          console.error('No se pudieron guardar los datos de usuario desde el LoginScreen');
+          console.log('No se pudieron guardar los datos de usuario desde el LoginScreen');
         }
       } else {
-        console.error('idAfiliado no está disponible');
+        console.log('idAfiliado no está disponible');
       }
 
       } else {
         Alert.alert('Ups!', 'Usuario o contraseña incorrectos');
       }
     } catch (error) {
-      console.error('Error durante el login:', error);
+      console.log('Error durante el login:', error);
     } finally {
       setIsPosting(false);
     }

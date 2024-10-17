@@ -53,7 +53,7 @@ const shadowOpt = {
   radius: 3,
   shadowRadius: 15,
   opacity: 0.1,
-  x: -5,
+  x: -1,
   y: 20,
   style: { marginVertical: 5 }
 };
@@ -347,7 +347,7 @@ export const Facturas = () => {
 
       <Text style={{
         marginBottom: wp('2%'),
-        marginTop: 0,
+        marginTop: wp('-1%'),
         fontSize: hp('3.5%'),
         textAlign: 'center',
         color: globalColors.gray2,
@@ -369,6 +369,7 @@ export const Facturas = () => {
                       flex: 0.5,
                       marginTop: top - hp('-5%'),
                       marginBottom: hp('6%'),
+                      marginHorizontal: wp('9%'),
                     }}
                   >
                     <View style={styles.noDataContainer}>

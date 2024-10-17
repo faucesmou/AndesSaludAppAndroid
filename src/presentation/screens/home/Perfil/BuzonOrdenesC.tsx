@@ -353,6 +353,16 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
             {isConsulting ?
               (
                 <View style={styles.LoaderContainer}>
+
+                  <View style={styles.noDataContainer}>
+                      <Text style={styles.noDataText}>
+                        Aguardá un momento
+                      </Text>
+                      <Text style={styles.noDataText}>
+                        Esto puede tomar unos segundos
+                      </Text>
+
+                    </View>
                   <FullScreenLoader />
                 </View>
               )
@@ -382,7 +392,15 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
                   (
                     <>
                      
-
+                     <Text style={{
+        marginBottom: wp('2%'),
+        marginTop: 0,
+        fontSize: hp('2%'),
+        textAlign: 'center',
+        color: globalColors.gray2,
+        fontWeight: 'bold',
+        marginHorizontal: wp('9%'),
+      }}>Presiona en las notificaciones para acceder a los detalles:</Text>
                       {notificacionesOrdenConsulta.map((notificacion, index) => (
                       <Pressable
                       key={index} 
@@ -912,6 +930,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  noDataContainer: {
+    flex: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: wp('5%'),
+    marginTop:wp('0%'),
+  },
+  noDataText: {
+    fontSize: wp('4%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop:wp('0%'),
   },
 
 });

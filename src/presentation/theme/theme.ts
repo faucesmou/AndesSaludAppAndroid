@@ -336,8 +336,8 @@ export const globalStyles = StyleSheet.create({
 
   primaryButton2: {
     backgroundColor: '#ba5050',/* globalColors.profile2 */
-    borderRadius: 5,
-    padding: 5,
+    borderRadius: 17,
+    padding: 6,
     margin: 10,
     marginTop: 15,
     marginBottom: 15,

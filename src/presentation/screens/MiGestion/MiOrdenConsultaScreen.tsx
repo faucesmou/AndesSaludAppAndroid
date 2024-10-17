@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import axios from 'axios'
-import { globalColors } from '../../theme/theme'
+import { globalColors, globalStyles } from '../../theme/theme'
 import { RootStackParams } from '../../routes/StackNavigator'
 import { HamburgerMenu } from '../../components/shared/HamburgerMenu'
 import { BackButton } from '../../components/shared/BackButton'
@@ -65,7 +65,7 @@ setMounted(true);  // Marca como montado para evitar re-ejecuciones
         setIsConsulting(false);
       }
     };
-    OrdenConsultaRequest()
+    /* OrdenConsultaRequest() */
 
   }, [idAfiliadoTitular, idPrestacion, idPrestador, idAfiliadoSeleccionado, mounted]);
 
@@ -130,11 +130,14 @@ setMounted(true);  // Marca como montado para evitar re-ejecuciones
                 style={{
                   marginTop: 10,
                   backgroundColor: '#FFFFFF',
-                  marginHorizontal:10,
+                 marginHorizontal: wp('5%'),
+                 alignContent:'center',
+                 alignItems: 'center',
+                 
                 }}
               >
-                <Text style={{ marginBottom: 5, fontSize: 20,  color:'#030136' }}>Dificultades en la solicitud</Text>
-                <Text style={{ marginBottom: 5, fontSize: 18, color:'#595960' }}>Tuvimos inconvenientes para procesar tu solicitud por favor intenta nuevamente más tarde</Text>
+                {/* <Text style={{ marginBottom: 5, fontSize: 20,  color:'#030136' }}>Dificultades en la solicitud</Text> */}
+                <Text style={{ marginBottom: 5, fontSize: wp('4%'), color:'#595960' }}>Tuvimos inconvenientes para procesar tu solicitud por favor intenta nuevamente más tarde</Text>
              
               </View>
               </>
@@ -151,10 +154,13 @@ setMounted(true);  // Marca como montado para evitar re-ejecuciones
 
                   <Text style={{ marginBottom: 5, fontSize: hp('2.1%'), marginTop: 10, color:'#595960', justifyContent:'center'  }}>Ingresá al siguiente link para descargarla:</Text>
 
-                  <TouchableOpacity onPress={handleOpenURL}>
-                    <Text style={{ marginBottom: wp('2%'), marginTop: 15, fontSize: 15, color: '#0e77e7', fontWeight:'bold' }}>
+                  <TouchableOpacity style={styles.primaryButton45} onPress={handleOpenURL}>
+                   {/*  <Text style={{ marginBottom: wp('2%'), marginTop: 15, fontSize: 15, color: '#0e77e7', fontWeight:'bold' }}>
                       {ordenConsulta}
-                    </Text>
+                    </Text> */}
+                    <Text style={styles.buttonTextLink}>
+                            Descargá tu Orden
+                          </Text>
                   </TouchableOpacity>
 
 
@@ -186,6 +192,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 1,
     elevation: 5, 
+    marginHorizontal: wp('3%'),
   },
   successContainer: {
     marginTop: 10,
@@ -231,6 +238,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 1,
     elevation: 5, 
+    marginHorizontal: wp('3%'),
   },
   containerMessage: {
     marginTop: 15, 
@@ -244,6 +252,7 @@ const styles = StyleSheet.create({
     marginBottom:5,
     color:'#030136',
     fontWeight:'bold',
+    marginHorizontal: 0,
    /*  justifyContent:'center' */
   },
   epigrafeMessage: {
@@ -288,5 +297,24 @@ const styles = StyleSheet.create({
     width: 220,
     height: 220,
     marginBottom:5,
+  },
+  primaryButton45: {
+    backgroundColor: '#0e77e7',
+    borderRadius: 17,
+    padding: 7,
+    margin: 10,
+    marginTop: 10,
+    marginBottom: 15,
+    marginHorizontal: 60,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'center'
+
+  },
+  buttonTextLink: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
   },
 })
