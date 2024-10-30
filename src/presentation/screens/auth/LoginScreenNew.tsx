@@ -1,5 +1,5 @@
 import { Layout, Text, Input, Button } from "@ui-kitten/components"
-import { Alert, StyleSheet, View, useWindowDimensions, Image, Linking } from "react-native"
+import { Alert, StyleSheet, View, useWindowDimensions, Image, Linking, Modal, TouchableOpacity } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 
 import { StackScreenProps } from "@react-navigation/stack";
@@ -11,7 +11,8 @@ import { RootStackParams } from "../../routes/StackNavigator";
 import { FullScreenLoader } from "../../components/ui/FullScreenLoader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import Svg, { Path } from 'react-native-svg'; 
+import Svg, { Path } from 'react-native-svg';
+import { Icon } from "react-native-vector-icons/Icon";
 
 
 
@@ -21,10 +22,13 @@ interface Props extends StackScreenProps<RootStackParams, 'LoginScreen'> { }
 
 export const LoginScreenNew = ({ navigation }: Props) => {
 
+
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
 
+  const [isModalVisible, setModalVisible] = useState(false);
 
+ 
   const { loginGonzaMejorado, guardarDatosLoginEnContext, loginGonzaMejorado2, setUserName } = useAuthStore();
 
 
@@ -40,19 +44,19 @@ export const LoginScreenNew = ({ navigation }: Props) => {
 
   const handleOpenURLAndes = () => {
     console.log('entrando a Andes Salud');
-    
+
     setLinkAndesSalud(UrlAndes);
   }
 
   useEffect(() => {
-    const openURLAndesSalud = async () =>{
-      if(linkAndesSalud){
-        try{
+    const openURLAndesSalud = async () => {
+      if (linkAndesSalud) {
+        try {
           await Linking.openURL(linkAndesSalud)
         } catch (err) {
           console.log('Error al intentar ingresar a Andes Salud:', err);
         } finally {
-        
+
           setLinkAndesSalud('');
         }
       }
@@ -75,23 +79,25 @@ export const LoginScreenNew = ({ navigation }: Props) => {
       if (loginExitoso) {
         /* const idAfiliadoActual = idAfiliado */
         const { idAfiliado } = useAuthStore.getState();
-        
+
         if (idAfiliado) {
           // Llama a guardarDatosLoginEnContext con el idAfiliado actualizado
           const datosGuardados = await guardarDatosLoginEnContext(idAfiliado);
 
           if (!datosGuardados) {
-            console.error('No se pudieron guardar los datos de usuario desde el LoginScreen');
+            console.log('No se pudieron guardar los datos de usuario desde el LoginScreen');
           }
         } else {
-          console.error('idAfiliado no está disponible');
+          console.log('idAfiliado no está disponible');
         }
 
       } else {
-        Alert.alert('Ups!', 'Usuario o contraseña incorrectos');
+        /* Alert.alert('Ups!', 'Usuario o contraseña incorrectos'); */
+        setModalVisible(true)
+        /*  console.log('Error durante el login:'); */
       }
     } catch (error) {
-      console.error('Error durante el login:', error);
+      console.log('Error durante el login:', error);
     } finally {
       setIsPosting(false);
     }
@@ -105,8 +111,8 @@ export const LoginScreenNew = ({ navigation }: Props) => {
 
   return (
     <Layout style={{ flex: 1, }}>
-      <ScrollView style={{ marginHorizontal: hp('0.7%') }} 
-      contentContainerStyle={{ flexGrow: 1 }}
+      <ScrollView style={{ marginHorizontal: hp('0.7%') }}
+        contentContainerStyle={{ flexGrow: 1 }}
       >
         <Layout style={{ paddingTop: paddingTopNumber, backgroundColor: 'white', }}>
 
@@ -147,9 +153,9 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                 <Text style={styles.text}>
                   Por favor, ingresa tu Usuario y Contraseña para continuar:
                 </Text>
-                <Input 
-                placeholder="Usuario"
-                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor:'#7ba1c3'/* 'black' */ }}
+                <Input
+                  placeholder="Usuario"
+                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
                   autoCapitalize="none"
                   value={form.usuario}
                   onChangeText={(usuario) => setForm({ ...form, usuario })}
@@ -157,7 +163,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                 <Input
                   placeholder="Contraseña"
                   secureTextEntry
-                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor:'#7ba1c3'/* 'black' */  }}
+                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
                   value={form.password}
                   onChangeText={(password) => setForm({ ...form, password })}
 
@@ -168,7 +174,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                 onPress={onLoginGonza2}
               >
                 INGRESAR
-                </Button>
+              </Button>
 
               {
                 isPosting ? (
@@ -188,6 +194,26 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                   <>
                   </>
               }
+
+              {isModalVisible && (
+                <Modal
+                  transparent={true}
+                  animationType="fade"
+                  visible={isModalVisible}
+                  onRequestClose={() => setModalVisible(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                      {/* <Icon name="alert-circle" size={40} color="#ff5c5c" /> */}
+                      <Text style={styles.modalTitle}>Ups!</Text>
+                      <Text style={styles.modalMessage}>Usuario o contraseña incorrectos</Text>
+                      <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
+                        <Text style={styles.buttonText}>Aceptar</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
+              )}
 
               <Layout style={{ height: hp('4%') }} />
 
@@ -267,20 +293,20 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: hp('-1%'), 
-    
+    marginTop: hp('-1%'),
+
   },
   textTitle: {
     fontSize: wp('8%'),
     color: 'white',
-    fontWeight:'bold',
+    fontWeight: 'bold',
     textAlign: 'center',
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   text: {
     fontSize: wp('4%'),
     color: 'black',
-    fontWeight:'bold',
+    fontWeight: 'bold',
     marginBottom: hp('2%'),
   },
   customButton: {
@@ -292,15 +318,51 @@ const styles = StyleSheet.create({
     minWidth: hp('15%'),
   },
   image: {
-    width: wp('20%'), 
-    height: hp('10%'), 
+    width: wp('20%'),
+    height: hp('10%'),
     marginBottom: wp('1%'),
     marginTop: 0,
   },
   customText2: {
     color: '#7ba1c3',//color enviado en el pdf de referencia
-   /*  color: '#4285F4', */
+    /*  color: '#4285F4', */
     fontWeight: 'bold',
     fontSize: wp('4%')
+  },
+  /* estilos de modal en caso de usuario incorrecto: */
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    color: '#ff5c5c',
+  },
+  modalMessage: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
+  },
+  button: {
+    backgroundColor: '#ff5c5c',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

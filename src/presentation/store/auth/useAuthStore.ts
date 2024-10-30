@@ -196,7 +196,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         set({ status: 'authenticated', idAfiliado: resultadoIdAfiliado, });
         return true; // Devuelve true si el login es exitoso
       } else {
-        console.error('Usuario o contraseña incorrectos.');
+        console.log('Usuario o contraseña incorrectos.');
         set({ status: 'unauthenticated' });
         return false; // Devuelve false si las credenciales son incorrectas
       }

@@ -43,13 +43,13 @@ export const SettingsScreen = () => {
   const handleOpenURLDataPolicy = () => {
     console.log('entrando a Andes Salud');
 
-    setLinkDataPolicy(UrlAndes);
+    setLinkDataPolicy(UrlDatapolicy);
   }
 
   const handleOpenURLManualUso = () => {
     console.log('seteando link de manual de uso');
 
-    setLinkManualUso(UrlManualUso2);
+    setLinkManualUso(UrlManualUso);
   }
 
 
