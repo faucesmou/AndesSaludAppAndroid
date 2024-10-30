@@ -118,6 +118,8 @@ export const PagosScreen = () => {
 
             }));
             setSaldos(extractedData);
+            /*  console.log('saldos_:> ', Saldos); */
+
             setIsConsulting(false);
 
           }
@@ -143,7 +145,7 @@ export const PagosScreen = () => {
       }
     };
 
-    PagosPeticion()
+     PagosPeticion()
 
   }, [])
 
@@ -246,79 +248,111 @@ export const PagosScreen = () => {
                 </View>
               )
                 :
-                (
+                Saldos.length > 0 ?
+                  (
 
 
-                  Saldos.map((saldo, index) => (
-                    <View key={saldo.id} style={[
-                      styles.cardWrapper,
-                      { marginBottom: saldo.pagado ? '4%' : '7%' },
-                    ]}
-                    >
-                      <BoxShadow setting={{ ...shadowOpt, height: showAfiliados ? 210 : 105, y: saldo.pagado === false ? 30 : 20  }}
+                    Saldos.map((saldo, index) => (
+                      <View key={saldo.id} style={[
+                        styles.cardWrapper,
+                        { marginBottom: saldo.pagado ? '4%' : '7%' },
+                      ]}
                       >
+                        <BoxShadow setting={{ ...shadowOpt, height: showAfiliados ? 210 : 105, y: saldo.pagado === false ? 30 : 20 }}
+                        >
 
-                        <View style={styles.card}>
+                          <View style={styles.card}>
 
 
-                          <Text style={[styles.resultText3, { fontSize: modalsTitleFontSize }]}>{saldo.tipoSaldo}</Text>
+                            <Text style={[styles.resultText3, { fontSize: modalsTitleFontSize }]}>{saldo.tipoSaldo}</Text>
 
-                          <Text style={[globalStyles.resultText2, { fontSize: modalsTitleFontSize }]}>Medio de Pago:
-                            <Text style={{ color: 'black', fontWeight: 'bold' }}> {/* Cambia el color a lo que prefieras */}
-                              {capitalizeWords(saldo.medioPago)}
-                            </Text>
-                            {/* {capitalizeWords(saldo.medioPago)} */}</Text>
+                            <Text style={[globalStyles.resultText2, { fontSize: modalsTitleFontSize }]}>Medio de Pago:
+                              <Text style={{ color: 'black', fontWeight: 'bold' }}> {/* Cambia el color a lo que prefieras */}
+                                {capitalizeWords(saldo.medioPago)}
+                              </Text>
+                              {/* {capitalizeWords(saldo.medioPago)} */}</Text>
 
-                          {saldo.pagado === false ?
-                            (
-                              <>
-                              {/*   <Text style={[globalStyles.resultText2, { fontSize: modalsTitleFontSize }]}>Saldo: ${saldo.debePagar}</Text> */}
-                                <Text style={[globalStyles.resultText2, { fontSize: modalsTitleFontSize }]}>Estado: Pendiente</Text>
-                                {/*  <TouchableOpacity style={styles.primaryButton45} onPress={() => handlePress(saldo.linkDePago)}>
+                            {saldo.pagado === false ?
+                              (
+                                <>
+                                  {/*   <Text style={[globalStyles.resultText2, { fontSize: modalsTitleFontSize }]}>Saldo: ${saldo.debePagar}</Text> */}
+                                  <Text style={[globalStyles.resultText2, { fontSize: modalsTitleFontSize }]}>Estado: Pendiente</Text>
+                                  {/*  <TouchableOpacity style={styles.primaryButton45} onPress={() => handlePress(saldo.linkDePago)}>
                                   <Text style={globalStyles.buttonText}>
                                     Link de Pago
                                   </Text>
 
                                 </TouchableOpacity> */}
-                                <LinearGradient
-                                  /*  colors={['#ba5050', '#ba5050','#dc7643','#e08050']} */
-                                  colors={[ '#c86443', '#d6783c', '#e08050', '#e88848']}
-                                  start={{ x: 0, y: 0 }}
-                                  end={{ x: 1, y: 0 }}
-                                  style={styles.primaryButton46}>
-                                  <TouchableOpacity onPress={() => handlePress(saldo.linkDePago)}>
-                                    <Text style={globalStyles.buttonText}>Link de Pago</Text>
-                                  </TouchableOpacity>
-                                </LinearGradient>
-                              </>
+                                  <LinearGradient
+                                    /*  colors={['#ba5050', '#ba5050','#dc7643','#e08050']} */
+                                    colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={styles.primaryButton46}>
+                                    <TouchableOpacity onPress={() => handlePress(saldo.linkDePago)}>
+                                      <Text style={globalStyles.buttonText}>Link de Pago</Text>
+                                    </TouchableOpacity>
+                                  </LinearGradient>
+                                </>
 
-                            ) : (
-                              <>
-                                <LinearGradient
-                                  colors={['#509d4f','#5ab759', '#5ab759', '#5ab759']}
-                                  start={{ x: 0, y: 0 }}
-                                  end={{ x: 1, y: 0 }}
-                                  style={styles.primaryButton45}>
-                                  <View /* style={globalStyles.paidSign} */ >
-                                  <Text style={[globalStyles.buttonText, { fontSize: modalsTitleFontSize }]}>
-                                    Pagado
-                                  </Text>
-                                </View>
-                                </LinearGradient>
+                              ) : (
+                                <>
+                                  <LinearGradient
+                                    colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={styles.primaryButton45}>
+                                    <View /* style={globalStyles.paidSign} */ >
+                                      <Text style={[globalStyles.buttonText, { fontSize: modalsTitleFontSize }]}>
+                                        Pagado
+                                      </Text>
+                                    </View>
+                                  </LinearGradient>
 
-                               
 
-                              </>
 
-                            )
-                          }
+                                </>
+
+                              )
+                            }
+
+                          </View>
+                        </BoxShadow>
+
+                      </View>
+                    ))
+                  )
+                  : (
+                    <>
+                    <View style={styles.noSeEncontraronContainer}>
+                      <View
+                        style={{
+                          marginTop: wp('1%'),
+                          backgroundColor: '#FFFFFF',/* '#FFFFFF' */
+                          marginHorizontal: wp('2%'),
+                          alignContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+
+                        <Text style={styles.titleMessage}>No encontramos pagos registrados</Text>
+
+                        <View style={{marginHorizontal: wp('3.5%'), alignContent: 'center',
+                          /* alignItems: 'center', */ /* backgroundColor: 'yellow', */}}>
+
+
+                          <Text style={{ marginTop: wp('2%'), marginBottom: wp('4%'), fontSize: wp('4%'), color: '#595960', }}>Por favor, intenta nuevamente más tarde.</Text>
+
+                          <Text style={{ fontSize: wp('4%'), color: '#595960', marginBottom: wp('1%') }}>Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente.</Text>
 
                         </View>
-                      </BoxShadow>
 
+                      </View>
                     </View>
-                  ))
-                )}
+                  </>
+                    
+                  )
+          }
         </View>
 
 
@@ -403,6 +437,29 @@ const styles = StyleSheet.create({
     color: 'gray',
     textAlign: 'center',
     marginTop: wp('8%'),
+  },
+  noSeEncontraronContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 1,
+    elevation: 5,
+    marginHorizontal: wp('1%'),
+  },
+  titleMessage: {
+    /* fontSize: 22, */
+    fontSize: wp('5%'),
+    marginTop: 10,
+    marginBottom: 5,
+    color: '#030136',
+    fontWeight: 'bold',
+    marginHorizontal: 0,
+    /*  justifyContent:'center' */
   },
 });
 

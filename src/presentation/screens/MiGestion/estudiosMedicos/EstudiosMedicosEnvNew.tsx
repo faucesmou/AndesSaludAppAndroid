@@ -280,17 +280,31 @@ if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPho
       <ScrollView>  
       {
         isConsulting ? (
+
+          <>
+
           <View
             style={{
               flex: 0.5,
-              marginTop: top + MarginTopDivider,
+              marginTop: top - hp('-5%'),
+              marginBottom: hp('6%'),
+              marginHorizontal: wp('9%'),
             }}
           >
-            <FullScreenLoader 
-            spinnerSize="giant" 
-            />
-         
+            <View style={styles.noDataContainer}>
+              <Text style={styles.noDataText}>
+                Aguardá un momento mientras enviamos tu solicitud
+              </Text>
+              <Text style={styles.noDataText}>
+                Esto puede tomar unos minutos. No salgas de esta vista hasta que termine el proceso.
+              </Text>
+
+            </View>
           </View>
+          <FullScreenLoader />
+
+        </>
+     
         )
           :
           <View style={globalStyles.containerEstudiosMedicosEnv}>
@@ -478,4 +492,28 @@ const styles = StyleSheet.create({
     fontSize: wp('4%'),
     textAlign: 'center',
   },
+  /* Cartel de aguarda un momento::  */
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: wp('4.5%'),
+    color: 'gray',
+    textAlign: 'center',
+    marginTop: wp('3%'),
+  },
 })
+
+/*      {/* <View
+            style={{
+              flex: 0.5,
+              marginTop: top + MarginTopDivider,
+            }}
+          >
+            <FullScreenLoader 
+            spinnerSize="giant" 
+            />
+         
+          </View> */ 

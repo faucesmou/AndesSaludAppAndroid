@@ -37,33 +37,33 @@ interface Props {
 
 
 export const HomeScreenUxNew = () => {
-  const { setShouldUpdateNotifications, getUserName, UserName  } = useAuthStore();
+  const { setShouldUpdateNotifications, getUserName, UserName } = useAuthStore();
 
   const [currentUserName, setCurrentUserName] = useState<string | null>(null)
 
-  function capitalizeWords(string:string) {
-    return string.replace(/\b\w+/g, function(word) {
+  function capitalizeWords(string: string) {
+    return string.replace(/\b\w+/g, function (word) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     });
   }
-/*   const currentUserNameInicial = getUserName();
-  const currentUserName = capitalizeWords(currentUserNameInicial);
-  console.log('currentUserName es: ', currentUserName); */
+  /*   const currentUserNameInicial = getUserName();
+    const currentUserName = capitalizeWords(currentUserNameInicial);
+    console.log('currentUserName es: ', currentUserName); */
 
 
   useEffect(() => {
     console.log('entrando al useEffect----->');
-      const currentUserNameInicial = getUserName(); // Obtención síncrona del nombre
-      if (currentUserNameInicial) {
-        const capitalizedUserName = capitalizeWords(currentUserNameInicial);
-        setCurrentUserName(capitalizedUserName); // Actualiza el estado
-        console.log('currentUserName es----->', currentUserName);
-      } else {
-        console.log('No se encontró el nombre de usuario');
-      }
-   
+    const currentUserNameInicial = getUserName(); // Obtención síncrona del nombre
+    if (currentUserNameInicial) {
+      const capitalizedUserName = capitalizeWords(currentUserNameInicial);
+      setCurrentUserName(capitalizedUserName); // Actualiza el estado
+      console.log('currentUserName es----->', currentUserName);
+    } else {
+      console.log('No se encontró el nombre de usuario');
+    }
+
   }, [UserName])
-  
+
   useEffect(() => {
     setShouldUpdateNotifications(true);
   }, []);
@@ -135,7 +135,7 @@ export const HomeScreenUxNew = () => {
   /* definicion de estilos de boton para mejorar su control respecto a la pantalla */
 
   /* const backColor = disabled ? globalColors.disabled : (color ? color : globalColors.background); */
-  
+
 
   const renderSecondaryButton = ({ onPress, label, color, disabled, iconName, description, textSize,
     descriptionSize, textOverflow, }: Props) => {
@@ -153,7 +153,7 @@ export const HomeScreenUxNew = () => {
         ]}
       >
         <View style={{ margin: '0%', /* backgroundColor: 'violet', */ }} >
-          <View style={{ alignItems: 'center', display: 'flex', justifyContent: 'center',  /* backgroundColor: 'violet', */ maxWidth: wp('42%'),}}  >
+          <View style={{ alignItems: 'center', display: 'flex', justifyContent: 'center',  /* backgroundColor: 'violet', */ maxWidth: wp('42%'), }}  >
             <IonIcon name={iconName} size={hp('3.3%')} color="#505050" style={styles.icon} />
           </View>
           <View style={styles.innerContainerNew}>
@@ -168,16 +168,16 @@ export const HomeScreenUxNew = () => {
 
   return (
     <View style={styles.screenContainer}>
-      <ScrollView   
-      contentContainerStyle={{ flexGrow: 1 }}
-  /*    scrollToOverflowEnabled={false}  
-     snapToInterval={2} 
-     bounces={false}  */
-    /*  persistentScrollbar={true} */
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+      /*    scrollToOverflowEnabled={false}  
+         snapToInterval={2} 
+         bounces={false}  */
+      /*  persistentScrollbar={true} */
       >
 
 
-     {/*  <View style={[styles.headerContainer, { height: headerHeight, backgroundColor: '#e1a159', },]}>
+        {/*  <View style={[styles.headerContainer, { height: headerHeight, backgroundColor: '#e1a159', },]}>
         <View style={{ width: wp('80%'), marginBottom: titleMarginBottom }}>
           <Text style={styles.headerText}>Inicio</Text>
         </View>
@@ -194,32 +194,32 @@ export const HomeScreenUxNew = () => {
           <NotiComponent3 />
         </View>
       </View> */}
-         <LinearGradient
-      colors={['#e49958','#e49958','#e1a159', '#e1a159','#e1a159', '#e49958','#e49958','#e49958', ]/* ['#e49958','#e49958','#e1a159', '#e1a159','#e1a159','#e1a159','#e1a159','#c88846','#daa36b' , '#e79340' ] */} // Degradado del color base
-      start={{ x: 0, y: 0 }} // Inicio del gradiente (esquina superior izquierda)
-      end={{ x: 1, y: 2 }} // Fin del gradiente (esquina inferior derecha)
-      style={[{ height: headerHeight }, styles.headerContainer]} // Estilo inline para ajustar tamaño y posición
-    >
-      <View style={{ width: '80%', marginBottom: titleMarginBottom }}>
-        <Text style={styles.headerText}>Inicio</Text>
-      </View>
-
-      <View>
-        <Pressable
-          onPress={() => {
-            navigation.navigate('Buzón');
-          }}
-          style={{ marginLeft: 0, marginBottom: iconMarginBottom }}
+        <LinearGradient
+          colors={['#e49958', '#e49958', '#e1a159', '#e1a159', '#e1a159', '#e49958', '#e49958', '#e49958',]/* ['#e49958','#e49958','#e1a159', '#e1a159','#e1a159','#e1a159','#e1a159','#c88846','#daa36b' , '#e79340' ] */} // Degradado del color base
+          start={{ x: 0, y: 0 }} // Inicio del gradiente (esquina superior izquierda)
+          end={{ x: 1, y: 2 }} // Fin del gradiente (esquina inferior derecha)
+          style={[{ height: headerHeight }, styles.headerContainer]} // Estilo inline para ajustar tamaño y posición
         >
-          <NotiMensajes IonIconSize={iconNotificationFontSize} />
-        </Pressable>
-        <NotiComponent3 />
-      </View>
-    </LinearGradient>
+          <View style={{ width: '80%', marginBottom: titleMarginBottom }}>
+            <Text style={styles.headerText}>Inicio</Text>
+          </View>
 
-      <View style={styles.cardContainer}>
-       {/*  <Credencial /> */}
-        <CredencialNew />
+          <View>
+            <Pressable
+              onPress={() => {
+                navigation.navigate('Buzón');
+              }}
+              style={{ marginLeft: 0, marginBottom: iconMarginBottom }}
+            >
+              <NotiMensajes IonIconSize={iconNotificationFontSize} />
+            </Pressable>
+            <NotiComponent3 />
+          </View>
+        </LinearGradient>
+
+        <View style={styles.cardContainer}>
+          {/*  <Credencial /> */}
+          <CredencialNew />
         </View>
 
         <View style={styles.imageContainer}>
@@ -242,7 +242,7 @@ export const HomeScreenUxNew = () => {
 
           <View style={styles.buttonsContainer}>
 
-        
+
 
             <View style={styles.rowContainer1}>
               {renderSecondaryButton({
@@ -288,8 +288,8 @@ export const HomeScreenUxNew = () => {
                 /*   onPress: handleOpenURL, */
                 label: 'Mi Salud',
                 iconName: 'fitness-outline',
-              /*   iconName: 'heart-circle-outline', */
-              /*   iconName: 'chatbubbles-outline', */
+                /*   iconName: 'heart-circle-outline', */
+                /*   iconName: 'chatbubbles-outline', */
                 description: 'Cartilla médica y emergencias',
                 textSize: { buttonsTitleFontSize },
                 descriptionSize: { DescriptionFontSize }
@@ -307,30 +307,32 @@ export const HomeScreenUxNew = () => {
           </View>
 
           <View style={styles.mensajeSoporteContainer}>
-             
-             {/*  <Text style={styles.text3New}>¿Necesitas asistencia?</Text> */}
+
+            {/*  <Text style={styles.text3New}>¿Necesitas asistencia?</Text> */}
 
             <Pressable
-             onPress={handleOpenURL}
-             style={styles.mensajeSoporteContainer}
+              onPress={handleOpenURL}
+              style={styles.mensajeSoporteContainer}
             >
 
               <View style={styles.containerText4New}>
 
-              <Text style={styles.text3New}>¿Necesitas asistencia?</Text>
-              <IonIcon name='chatbubbles-outline' color= { 'black' } size = {30} marginLeft={wp('2%')} /> 
+                <Text style={styles.text3New}>¿Necesitas asistencia?</Text>
+                <IonIcon name='chatbubbles-outline' color={'black'} size={wp('6%')} marginLeft={wp('1%')   } />
               </View>
               {/* <Text style={styles.text3New}>¿Necesitas asistencia?</Text> */}
 
               <View style={styles.containerText4New2}>
 
-              <Text style={styles.text4New}>Chateá con nuestro soporte</Text>
+                <Text style={styles.text4New}>Chateá con nuestro soporte</Text>
               </View>
 
             </Pressable>
+            
+           
           </View>
         </View>
-   {/*  <QuaternaryButton2
+        {/*  <QuaternaryButton2
               onPress={handleOpenURL}
               label={'¿Necesitas asistencia?'}
               iconName="chatbubbles-outline"
@@ -342,7 +344,7 @@ export const HomeScreenUxNew = () => {
 
 
 
-    </ScrollView> 
+      </ScrollView>
     </View>
   );
 };
@@ -368,7 +370,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     marginLeft: wp('10%'),
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
   cardContainer: {
     position: 'absolute',
@@ -401,8 +403,8 @@ const styles = StyleSheet.create({
   },
   mensajeSoporteContainer: {
     marginBottom: hp('1%'),
-    marginTop: hp('2%'),
-    alignContent:'center',
+    marginTop: hp('1.5%'),
+    alignContent: 'center',
     marginHorizontal: wp('5%'),
   },
   buttonsContainer: {
@@ -500,7 +502,7 @@ const styles = StyleSheet.create({
   },
   text2New: {
     fontSize: hp('2.8%'),
-    fontWeight:'bold',
+    fontWeight: 'bold',
     textAlign: 'center',
     flex: 1,
     width: wp('100%'),
@@ -513,7 +515,7 @@ const styles = StyleSheet.create({
   },
   text3New: {
     fontSize: hp('2%'),
-    fontWeight:'bold',
+    fontWeight: 'bold',
     textAlign: 'center',
     margin: 0,
     marginLeft: wp('0'),
@@ -522,37 +524,46 @@ const styles = StyleSheet.create({
     /* backgroundColor: '#e1a159', */
   },
   containerText4New: {
-   /*  backgroundColor: '#ebc103', */
+    /*  backgroundColor: '#ebc103', */
     /* backgroundColor: '#e6ba00', */
     /* backgroundColor: '#fbd1a5', */
     /* backgroundColor: '#e1a159', */
     borderRadius: 5,
-    paddingHorizontal: wp('11%'),
+   /*  paddingHorizontal: wp('11%'), */
+    marginHorizontal: wp('13%'),
     paddingVertical: 1,
     marginTop: wp('0%'),
-    flexDirection:'row',
- /*    backgroundColor: 'blue', */
-    alignItems:'center',
-    alignContent:'center'
+    flexDirection: 'row',
+    /*    backgroundColor: 'blue', */
+    alignItems: 'center',
+    alignContent: 'center'
   },
   containerText4New2: {
-    backgroundColor: '#ebc103',
+    backgroundColor: '#f4c55f', /* '#ebc103' */ /* #e1a159 #ffb71c ,#fdc141 */
     /* backgroundColor: '#e6ba00', */
     /* backgroundColor: '#fbd1a5', */
     /* backgroundColor: '#e1a159', */
-    borderRadius: 5,
+    borderRadius: 15,
     paddingHorizontal: 0,
     paddingVertical: 3,
-    marginTop: wp('1%'),
+    marginTop: wp('0.5%'),
     marginHorizontal: wp('7%'),
+    borderColor: 'white',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 5,
   },
   text4New: {
     fontSize: hp('1.8%'),
-    fontWeight:'bold',
-    textAlign: 'center', 
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginLeft: wp('0%'),
     flexWrap: 'wrap',
     color: 'black',
+    marginBottom: wp('0.5%'),
   },
   image: {
     width: wp('40%'), // Ajuste responsivo para la imagen
@@ -591,7 +602,7 @@ const styles = StyleSheet.create({
     marginBottom: hp('1%'),
     alignSelf: 'center',
     justifyContent: 'center',
-   
+
   },
   innerContainer: {
     flexDirection: 'column',
@@ -613,14 +624,14 @@ const styles = StyleSheet.create({
     maxWidth: wp('40%'),
     maxHeight: hp('10%'),
     minHeight: hp('7.2%'),
-      /* backgroundColor: 'violet', */
+    /* backgroundColor: 'violet', */
     flexWrap: 'wrap',
     overflow: 'hidden',
   },
   label: {
     fontSize: hp('1.5%'),
     color: 'black',
-    fontWeight:'bold',
+    fontWeight: 'bold',
     /*  width: wp('100%'), */
     /*  maxwidth: '100%', */
     marginBottom: hp('0%'),
@@ -630,13 +641,13 @@ const styles = StyleSheet.create({
     marginTop: hp('0.5%'),
     textAlign: 'center',
     flexWrap: 'wrap',
-  
+
 
   },
   description: {
     fontSize: hp('1%'),
-        color: 'black',
-   /*  color: '#707070', */
+    color: 'black',
+    /*  color: '#707070', */
     maxWidth: wp('40%'),
     minWidth: wp('40%'),
     marginTop: hp('0.3%'),

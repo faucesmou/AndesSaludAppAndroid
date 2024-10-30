@@ -402,75 +402,76 @@ export const Facturas = () => {
                 </View>
               )
                 :
-                (
+                Facturas.length > 0 ?
+                  (
 
-                  Facturas.map((factura, index) => (
+                    Facturas.map((factura, index) => (
 
 
-                    <View style={styles.cardWrapper}
+                      <View style={styles.cardWrapper}
 
-                      key={index}
+                        key={index}
 
-                    >
-                      <BoxShadow setting={{ ...shadowOpt, height: showAfiliados ? 210 : 105 }} >
-                        <View style={styles.card}>
+                      >
+                        <BoxShadow setting={{ ...shadowOpt, height: showAfiliados ? 210 : 105 }} >
+                          <View style={styles.card}>
 
-                          <Text style={globalStyles.resultText3}>Período: {factura.periodoString}</Text>
-                          <Text style={globalStyles.resultText2}>Estado del pago: {factura.pagados ? 'Pagado' : 'Pendiente'}</Text>
+                            <Text style={globalStyles.resultText3}>Período: {factura.periodoString}</Text>
+                            <Text style={globalStyles.resultText2}>Estado del pago: {factura.pagados ? 'Pagado' : 'Pendiente'}</Text>
 
-                          {!factura.pagados ?
-                            (
-                              <>
-                                <LinearGradient
+                            {!factura.pagados ?
+                              (
+                                <>
+                                  <LinearGradient
 
-                                  colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
-                                  start={{ x: 0, y: 0 }}
-                                  end={{ x: 1, y: 0 }}
-                                  style={globalStyles.primaryButton2}>
+                                    colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={globalStyles.primaryButton2}>
 
-                                  <TouchableOpacity
-                                    /* style={globalStyles.primaryButton2} */
-                                    onPress={() => handlePress(factura.linkMp)}
+                                    <TouchableOpacity
+                                      /* style={globalStyles.primaryButton2} */
+                                      onPress={() => handlePress(factura.linkMp)}
+                                    >
+                                      <Text style={globalStyles.buttonText}>
+                                        Link de Pago
+                                      </Text>
+                                    </TouchableOpacity>
+                                  </LinearGradient>
+
+                                </>
+
+                              ) :
+
+                              (
+                                factura.facturas === "Si" ? (
+
+                                  <LinearGradient
+                                    colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={globalStyles.paidButton}
                                   >
-                                    <Text style={globalStyles.buttonText}>
-                                      Link de Pago
-                                    </Text>
-                                  </TouchableOpacity>
-                                </LinearGradient>
+                                    <TouchableOpacity
+                                      onPress={async () => {
+                                        let existeFactura = factura.facturas;
+                                        let idUnico = factura.idUnico;
+                                        await FacturasRequest2(existeFactura, idUnico)
+                                      }}
+                                    >
 
-                              </>
+                                      <Text style={globalStyles.buttonText}>
+                                        Descargar
+                                      </Text>
 
-                            ) :
+                                    </TouchableOpacity>
+                                  </LinearGradient>
+                                )
+                                  :
+                                  (
+                                    <>
 
-                            (
-                              factura.facturas === "Si" ? (
-
-                                <LinearGradient
-                                  colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
-                                  start={{ x: 0, y: 0 }}
-                                  end={{ x: 1, y: 0 }}
-                                  style={globalStyles.paidButton}
-                                >
-                                  <TouchableOpacity
-                                    onPress={async () => {
-                                      let existeFactura = factura.facturas;
-                                      let idUnico = factura.idUnico;
-                                      await FacturasRequest2(existeFactura, idUnico)
-                                    }}
-                                  >
-
-                                    <Text style={globalStyles.buttonText}>
-                                      Descargar
-                                    </Text>
-
-                                  </TouchableOpacity>
-                                </LinearGradient>
-                              )
-                                :
-                                (
-                                  <>
-
-                                    {/* <TouchableOpacity
+                                      {/* <TouchableOpacity
                                       style={globalStyles.paidButton}
                                       onPress={async () => {
                                         await GenerarFactura2(factura.id, factura.facturas, factura.idUnico, String(factura.periodo));
@@ -480,35 +481,69 @@ export const Facturas = () => {
                                     </TouchableOpacity> */}
 
 
-                                    <LinearGradient
-                                      colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
-                                      start={{ x: 0, y: 0 }}
-                                      end={{ x: 1, y: 0 }}
-                                      style={globalStyles.paidButton}
-                                    >
-                                      <TouchableOpacity
-                                        onPress={async () => {
-                                          await GenerarFactura2(factura.id, factura.facturas, factura.idUnico, String(factura.periodo));
-                                        }}
+                                      <LinearGradient
+                                        colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 0 }}
+                                        style={globalStyles.paidButton}
                                       >
+                                        <TouchableOpacity
+                                          onPress={async () => {
+                                            await GenerarFactura2(factura.id, factura.facturas, factura.idUnico, String(factura.periodo));
+                                          }}
+                                        >
 
-                                        <Text style={globalStyles.buttonText}>{getButtonText2(factura.id)}</Text>
+                                          <Text style={globalStyles.buttonText}>{getButtonText2(factura.id)}</Text>
 
-                                      </TouchableOpacity>
-                                    </LinearGradient>
-                                  </>
+                                        </TouchableOpacity>
+                                      </LinearGradient>
+                                    </>
 
-                                )
+                                  )
 
-                            )
-                          }
+                              )
+                            }
+
+                          </View>
+                        </BoxShadow>
+
+                      </View>
+                    ))
+                  )
+
+                  :
+                  (
+                    <>
+                      <View style={styles.noSeEncontraronContainer}>
+                        <View
+                          style={{
+                            marginTop: wp('1%'),
+                            backgroundColor: '#FFFFFF',/* '#FFFFFF' */
+                            marginHorizontal: wp('2%'),
+                            alignContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+
+                          <Text style={styles.titleMessage}>No encontramos facturas registradas</Text>
+
+                          <View style={{marginHorizontal: wp('3.5%'), alignContent: 'center',
+                            /* alignItems: 'center', */ /* backgroundColor: 'yellow', */}}>
+
+
+                            <Text style={{ marginTop: wp('2%'), marginBottom: wp('4%'), fontSize: wp('4%'), color: '#595960', }}>Por favor, intenta nuevamente más tarde.</Text>
+
+                            <Text style={{ fontSize: wp('4%'), color: '#595960', marginBottom: wp('1%') }}>Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente.</Text>
+
+                          </View>
 
                         </View>
-                      </BoxShadow>
+                      </View>
+                    </>
 
-                    </View>
-                  ))
-                )}
+                  )
+
+          }
         </View >
 
 
@@ -558,5 +593,29 @@ const styles = StyleSheet.create({
     color: 'gray',
     textAlign: 'center',
     marginTop: wp('8%'),
+  },
+  /* cartel de No se encontraron comprobantes de factura */
+  noSeEncontraronContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 1,
+    elevation: 5,
+    marginHorizontal: wp('1%'),
+  },
+  titleMessage: {
+    /* fontSize: 22, */
+    fontSize: wp('5%'),
+    marginTop: 10,
+    marginBottom: 5,
+    color: '#030136',
+    fontWeight: 'bold',
+    marginHorizontal: 0,
+    /*  justifyContent:'center' */
   },
 });

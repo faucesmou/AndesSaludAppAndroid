@@ -39,6 +39,13 @@ export interface AuthState {
   idAfiliado?: string;
   idAfiliadoTitular?: string;
   cuilTitular: string;
+  nombreCompleto?:string;
+  numeroCredencial?:string;
+  tipoPlan?:string;
+  estadoAfiliacion?:string;
+  tipoPago?:string;
+  mail?:string;
+  numCelular?:string;
   idsFamiliares?: string[];
   idsEspecialidades?: string;
   idPrestacion?: string;
@@ -221,21 +228,36 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         const cuilTitular = respuestaFrancoMejorada.data[0].cuilTitular;
         const nombrePila = respuestaFrancoMejorada.data[0].nombre;
 
+        const nombreCompleto = respuestaFrancoMejorada.data[0].apellNomb;
+        const numeroCredencial = respuestaFrancoMejorada.data[0].nroAfiliado;
+        const tipoPlan = respuestaFrancoMejorada.data[0].planPrestacional;
+        const estadoAfiliacion = respuestaFrancoMejorada.data[0].estadoAfiliacion;
+        const tipoPago = respuestaFrancoMejorada.data[0].tipoPago;
+        const numCelular = respuestaFrancoMejorada.data[0].numCelular;
+        const mail = respuestaFrancoMejorada.data[0].mail;
+
    /*      const dniAfiliado = respuestaFrancoMejorada.data[0].nroDocumento;
         const usuarioAfiliado = respuestaFrancoMejorada.data[0].usuAPP;
         const passAfiliado = respuestaFrancoMejorada.data[0].passAPP; */
-        console.log('idAfiliado----------------->', idAfiliado);
+ /*        console.log('idAfiliado----------------->', idAfiliado);
         console.log('--> el idAfiliadoTitular es:', idAfiliadoTitular);
         console.log('--> el cuilTitular es:', cuilTitular);
         console.log('--> el nombrePila es:', nombrePila);
+
+        console.log('nombreCompleto----------------->', nombreCompleto);
+        console.log('--> el numeroCredencial es:', numeroCredencial);
+        console.log('--> el tipoPlan es:', tipoPlan);
+        console.log('--> el estadoAfiliacion es:', estadoAfiliacion); */
      
 
         /* Logica para establecer usuario y contraseña:  */
 
         if (idAfiliado != undefined && idAfiliadoTitular != undefined && cuilTitular != undefined) {
 
-          set({  idAfiliadoTitular: idAfiliadoTitular, cuilTitular: cuilTitular, UserName: nombrePila });
+          set({  idAfiliadoTitular: idAfiliadoTitular, cuilTitular: cuilTitular, UserName: nombrePila, nombreCompleto: nombreCompleto, numeroCredencial:numeroCredencial, tipoPlan:tipoPlan, estadoAfiliacion:estadoAfiliacion, tipoPago:tipoPago, numCelular:numCelular, mail:mail });
           console.log('los datos de idAfiliado, idAfiliadoTitular y cuilTitular fueron guardados en el context correctamente');
+          console.log('los datos de nombreCompleto, numeroCredencial, tipoPlan y estadoAfiliacion fueron guardados en el context correctamente');
+
           set({  status: 'authenticated', });
           return true;
         }

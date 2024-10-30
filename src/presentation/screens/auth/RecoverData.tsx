@@ -157,15 +157,17 @@ export const RecoverData = ({ navigation }: Props) => {
           <View style={styles.waveContainer}>
               <Svg
                 height={hp('13%')} // Ajusta el tamaño de la onda
-                width={wp('99%')}
+                width='100%'
+                /* width={wp('99%')} */
                 /*  color={'black'} */
                 viewBox="0 0 1440 320" // Vista para el SVG
-
+                preserveAspectRatio="none" // Esto evita que la onda se distorsione al ajustar el ancho
               >
                 <Path
                   fill="white" // Color de la sección inferior (fondo blanco)
                   /* para controlar los picos y valles modifica estos primeros valores:  */
-                  d="M0,40 C520,20 1140,420 1440,160 L1640,1090 L0,400Z"
+                  /* d="M0,40 C520,20 1140,420 1440,160 L1640,1090 L0,400Z" */
+                  d="M0,40 C520,20 1140,420 1440,160 L1440,320 L0,320Z" 
                 />
               </Svg>
             </View>

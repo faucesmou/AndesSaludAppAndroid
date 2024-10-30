@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Pressable, Dimensions } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, Image, Pressable, Dimensions, Linking } from 'react-native'
 import { globalColors, globalStyles } from '../../theme/theme'
 import { FlatList } from 'react-native-gesture-handler'
 import { PrimaryButton } from '../../components/shared/PrimaryButton'
@@ -51,6 +51,34 @@ let arrowMarginBottom: number  = hp('4%');
    arrowMarginBottom = hp('3%'); 
 }
 
+const [linkAndesSalud, setLinkAndesSalud] = useState("");
+
+let UrlAndes2 = `https://andessalud.com.ar/appManualUso.pdf`
+
+let UrlAndes = `https://www.andessalud.com.ar/`
+
+const handleOpenURLAndes = () => {
+  console.log('entrando a descarga de manual de uso');
+
+  setLinkAndesSalud(UrlAndes);
+}
+
+
+useEffect(() => {
+  const openURLAndesSalud = async () =>{
+    if(linkAndesSalud){
+      try{
+        await Linking.openURL(linkAndesSalud)
+      } catch (err) {
+        console.log('Error al intentar descargar el manual de uso:', err);
+      } finally {
+      
+        setLinkAndesSalud('');
+      }
+    }
+  }
+  openURLAndesSalud()
+}, [linkAndesSalud])
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
 
@@ -153,7 +181,15 @@ let arrowMarginBottom: number  = hp('4%');
             descriptionSize={buttonDescriptionFontSize}
           />
 
-
+        {/*   <TertiaryButton
+           onPress={handleOpenURLAndes}
+            label="Manual de uso y tutoriales"
+            color={globalColors.profile2}
+            iconName='extension-puzzle-outline'
+            description='Descargá la guía de uso'
+            textSize={buttonTextFontSize} 
+            descriptionSize={buttonDescriptionFontSize}
+          /> */}
 
           <TertiaryButton
             onPress={() => navigation.navigate('Formularios')}
@@ -255,14 +291,15 @@ const styles = StyleSheet.create({
 /*     backgroundColor: 'yellow' */
   },
   imageContainer: {
-    marginBottom: 30,
-    marginHorizontal:35,
-    marginTop: 40,
+    marginBottom: hp('1%'),
+    marginHorizontal:wp('7%'),
+    marginTop: hp('3%'),
     zIndex: 1.5,
     alignItems: 'center',
      justifyContent: 'center', 
     minHeight:'40%',
-    minWidth: '50%'
+    minWidth: '50%',
+    /* backgroundColor: 'yellow' */
   },
   innerContainer: {
     marginBottom: 15,

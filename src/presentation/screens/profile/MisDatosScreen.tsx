@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, View,TouchableOpacity, Clipboard  } from 'react-native'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { globalColors, globalStyles } from '../../theme/theme'
@@ -17,7 +17,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 export const MisDatosScreen = () => {
 
-  const { idAfiliadoTitular, idAfiliado } = useAuthStore();
+  const { idAfiliadoTitular, idAfiliado, nombreCompleto, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, mail, numCelular } = useAuthStore();
 
   const [isConsulting, setIsConsulting] = useState(false);
   const { top } = useSafeAreaInsets();
@@ -25,43 +25,44 @@ export const MisDatosScreen = () => {
 
   const [afiliado, setAfiliado] = useState(null);
 
-  useEffect(() => {
-    setIsConsulting(true);
 
-    const AfiliadosRequest = async () => {
-      try {
-        console.log('is posting en true! daled man ere');
-
-        const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/consultarAfiliadoJson?usuario=CHATBOT&password=DrtEchat%&administradora=F100376F-33F9-49FD-AFB9-EE53616E7F0C&datosAfiliado=${idAfiliado}`);
-        console.log('este es el response', response);
-
-        const mappedAfiliados = response.data.map((
-          item: {
-            apellNomb: any;
-            nroAfiliado: any;
-            edad: any;
-            estadoAfiliacion: any;
-            planPrestacional: any
-          }) => ({
-            apellidoYNombre: item.apellNomb,
-            nroAfiliado: item.nroAfiliado,
-            edad: item.edad,
-            estadoAfiliacion: item.estadoAfiliacion,
-            planPrestacional: item.planPrestacional
-
-          }));
-
-        setAfiliado(mappedAfiliados);
-        console.log('este es el mappedAfiliados:', mappedAfiliados);
-        setIsConsulting(false);
-
-      } catch (error) {
-        console.error('Error al obtener los datos de los afiliados:', error);
-      }
-    };
-    AfiliadosRequest()
-
-  }, [])
+  /*  useEffect(() => {
+     setIsConsulting(false);
+     const AfiliadosRequest = async () => {
+       setIsConsulting(true);
+       try {
+         console.log('is posting en true! daled man ere');
+ 
+         const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/consultarAfiliadoJson?usuario=CHATBOT&password=DrtEchat%&administradora=F100376F-33F9-49FD-AFB9-EE53616E7F0C&datosAfiliado=${idAfiliado}`);
+         console.log('este es el response', response);
+ 
+         const mappedAfiliados = response.data.map((
+           item: {
+             apellNomb: any;
+             nroAfiliado: any;
+             edad: any;
+             estadoAfiliacion: any;
+             planPrestacional: any
+           }) => ({
+             apellidoYNombre: item.apellNomb,
+             nroAfiliado: item.nroAfiliado,
+             edad: item.edad,
+             estadoAfiliacion: item.estadoAfiliacion,
+             planPrestacional: item.planPrestacional
+ 
+           }));
+ 
+         setAfiliado(mappedAfiliados);
+         console.log('este es el mappedAfiliados:', mappedAfiliados);
+         setIsConsulting(false);
+ 
+       } catch (error) {
+         console.error('Error al obtener los datos de los afiliados:', error);
+       }
+     };
+     AfiliadosRequest()
+ 
+   }, []) */
   const colorNaranja = globalColors.orange
 
 
@@ -72,59 +73,45 @@ export const MisDatosScreen = () => {
       marginTop: 0,
     }}
     >
-         <CustomHeader /* color={globalColors.black} */ titleSize={hp('4%')} />
+      <CustomHeader /* color={globalColors.black} */ titleSize={hp('4%')} />
 
-<BackButton Size={hp('4%')}/>
+      <BackButton Size={hp('4%')} />
 
       {/* <Text style={{ marginBottom: hp('1%'), fontSize: hp('3%'), textAlign: 'center', color: 'black' }}>Mis Datos</Text> */}
 
       <Text style={{
         marginBottom: wp('2%'),
-        marginTop: 0,
+        marginTop: wp('-1%'),
         fontSize: hp('3.5%'),
         textAlign: 'center',
         color: globalColors.gray2,
         fontWeight: 'bold'
       }}>Mis Datos</Text>
 
-      {/*    <BackButton onPress={() => navigation.navigate('home')} /> */}
-      {
-        isConsulting ? (
 
-          <View
-            style={{
-              flex: 0.5,
-              marginTop: top - hp('-4%'),
-              marginBottom: hp('6%'),
-            }}
-          >
-            <FullScreenLoader />
+      <View style={{ alignItems: 'center' }}>
+        <View style={styles.TertiaryButton}>
+          <View style={styles.container}>
+            <View style={{ alignItems: 'center' }}>
+
+            <Text style={[styles.text, { fontSize: hp('2%') }]}>{`${nombreCompleto}`}</Text>
+            </View>
+            <Text style={[styles.text, { fontSize: hp('2%') }]}>{`Numero de Afiliado: ${numeroCredencial}`}</Text>
+            {/*    <Text style={styles.text}>{`Edad: ${item.edad}`}</Text> */}
+            <Text style={[styles.text, { fontSize: hp('2%') }]}>{`Plan: ${tipoPlan}`}</Text>
+            <Text style={[styles.text, { fontSize: hp('2%') }]}>{`Estado: ${estadoAfiliacion}`}</Text>
+            <Text style={[styles.text, { fontSize: hp('2%') }]}>{`Tipo de Pago: ${tipoPago}`}</Text>
+            <Text style={[styles.text, { fontSize: hp('2%') }]}>{`Celular: ${numCelular}`}</Text>
+            <Text style={[styles.text, { fontSize: hp('2%') }]}>{`Correo: ${mail}`}</Text>
+
           </View>
 
-        )
-          :
-          <FlatList
-            data={afiliado}
-            renderItem={({ item }) => (
-              <View style={ { /* alignContent: 'center', */ alignItems:'center' }}>
-                <View style={styles.TertiaryButton}>
-                  <View style={styles.container}>
-                    <Text style={[styles.text, {fontSize:hp('2%')}]}>{`${item.apellidoYNombre}`}</Text>
-                    <Text style={[styles.text, {fontSize:hp('2%')}]}>{`Numero de Afiliado: ${item.nroAfiliado}`}</Text>
-                 {/*    <Text style={styles.text}>{`Edad: ${item.edad}`}</Text> */}
-                    <Text style={[styles.text, {fontSize:hp('2%')}]}>{`Plan: ${item.planPrestacional}`}</Text>
-                    <Text style={[styles.text, {fontSize:hp('2%')}]}>{`Estado: ${item.estadoAfiliacion}`}</Text>
-
-                  </View>
-
-                </View>
+        </View>
 
 
-              </View>
-            )
-            }
-          />
-      }
+      </View>
+
+
     </View>
   )
 }
@@ -138,15 +125,15 @@ const styles = StyleSheet.create({
     /* color: 'black', */
     color: globalColors.gray,
     fontWeight: 'bold',
-   
+
   },
   container: {
-    marginHorizontal:20,
-   marginTop: 10,
-   marginBottom:20,
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 20,
   },
-   //ESTILOS PARA EL BORDE (COPIADOS DE TERTIARY BUTTON):
-   TertiaryButton: {
+  //ESTILOS PARA EL BORDE (COPIADOS DE TERTIARY BUTTON):
+  TertiaryButton: {
     backgroundColor: 'white',
     minWidth: '95%',
     borderColor: 'white',
