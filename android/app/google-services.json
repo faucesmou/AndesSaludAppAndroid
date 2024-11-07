@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "104505840906",
+    "project_id": "andessalud-notificaciones",
+    "storage_bucket": "andessalud-notificaciones.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104505840906:android:e7e03e2c9aa1d2625c96f3",
+        "android_client_info": {
+          "package_name": "com.ar.andessalud.andessalud"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPk_QXup27_Lp6XlhshU9h30aWQyR9WU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
