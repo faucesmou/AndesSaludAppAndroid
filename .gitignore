@@ -69,3 +69,8 @@ yarn-error.log
 
 # Este archivo suele generarse automáticamente por Xcode, y en la mayoría de los casos no es necesario rastrearlo en Git
 ios/NavigationApp6.xcodeproj/project.xcworkspace/
+
+# Archivos de integración con Firebase para notificaciones push
+andessalud-notificaciones-5b8f48ecb194.json
+android/app/google-services.json
+app.json
