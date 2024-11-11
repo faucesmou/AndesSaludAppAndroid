@@ -298,6 +298,52 @@ export const HomeScreenUxNew = () => {
 
 
     useEffect(() => {
+    
+      const unsubscribe2 = messaging().setBackgroundMessageHandler(async remoteMessage =>  {
+        console.log('Notificación recibida en segundo plano:', remoteMessage);
+        try {
+          // Verificar si hay datos y si contienen la clave `default`
+          if (remoteMessage.data?.default) {
+            const data = JSON.parse(remoteMessage.data.default); // Parsear el JSON principal
+    
+            if (data.GCM) {
+              const gcmData = JSON.parse(data.GCM); // Parsear la parte de `GCM`
+    
+              // Extraer título, cuerpo y extraInfo
+              const title = gcmData.notification?.title || "Notificación de Andes Salud";
+              const body = gcmData.notification?.body || "Tienes un nuevo mensaje desde el home";
+              const extraInfo = gcmData.data?.extraInfo || "";
+              const notificacion = {
+                title: title,
+                body: body,
+                extraInfo : extraInfo
+              }
+              setGcmData(notificacion); 
+             /*  setModalVisibleNotificacion(true) */
+              console.log("El mensaje ha activado el setModalVisibleNotificacion.");
+              console.log("el mensaje title--->", title );
+              console.log("el mensaje body--->", body );
+              console.log("el mensaje extraInfo--->", extraInfo );
+              // Mostrar un Alert con la información de manera estructurada
+            /*   Alert.alert(
+                title,
+                `${body}\n\nInformación adicional: ${extraInfo}`,
+                [{ text: "OK", onPress: () => console.log("Alerta cerrada") }]
+              ); */
+            }
+          } else {
+            console.warn("El mensaje no contiene datos en el formato esperado.");
+          }
+        } catch (error) {
+          console.error("Error al procesar el mensaje desde homeScreen:", error);
+        }
+      });
+  
+      return unsubscribe2;
+    }, []);
+
+
+    useEffect(() => {
       if (gcmData) {
         setModalVisibleNotificacion(true);
         console.log("El mensaje ha activado el EFFECT DE setModalVisibleNotificacion.");
