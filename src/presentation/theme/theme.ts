@@ -479,7 +479,7 @@ export const globalStyles = StyleSheet.create({
       justifyContent: 'center',
     
     },
-      icon2: {
+      icon22: {
       marginRight: 5, 
       alignItems: 'flex-end',
     },
@@ -487,6 +487,61 @@ export const globalStyles = StyleSheet.create({
       alignItems: 'flex-end', 
       marginBottom: 0, 
       marginLeft:75
+    },
+
+     /* estilos para modal de aceptar notificaciones: */
+     modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContainer: {
+      width: '80%',
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 20,
+      alignItems: 'center',
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginVertical: 10,
+      color: '#ff5c5c',
+    },
+    modalMessage: {
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 20,
+      color: '#333',
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    allowButton: {
+      backgroundColor: '#28a745',
+      borderRadius: 5,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      marginRight: 10,
+    },
+    denyButton: {
+      backgroundColor: '#dc3545',
+      borderRadius: 5,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+    },
+    buttonTextModal: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    button: {
+      backgroundColor: '#ff5c5c',
+      borderRadius: 5,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
     },
 
 

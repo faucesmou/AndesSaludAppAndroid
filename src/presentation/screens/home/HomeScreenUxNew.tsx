@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, PixelRatio, Image, Pressable, Linking, ScrollView, Modal, TouchableOpacity, } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, PixelRatio, Image, Pressable, Linking, ScrollView, Modal, TouchableOpacity, Alert  } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
@@ -204,6 +204,8 @@ export const HomeScreenUxNew = () => {
 
     const [isModalVisible, setModalVisible] = useState(false);
     const [isModalVisibleGracias, setModalVisibleGracias] = useState(false);
+    const [isModalVisibleNotificacion, setModalVisibleNotificacion] = useState(false);
+    const [gcmData, setGcmData] = useState<any| null>(null);
 
     useEffect(() => {
       const checkPermission = async () => {
@@ -250,6 +252,58 @@ export const HomeScreenUxNew = () => {
 
 
 
+    useEffect(() => {
+    
+      const unsubscribe = messaging().onMessage(async remoteMessage => {
+        try {
+          // Verificar si hay datos y si contienen la clave `default`
+          if (remoteMessage.data?.default) {
+            const data = JSON.parse(remoteMessage.data.default); // Parsear el JSON principal
+    
+            if (data.GCM) {
+              const gcmData = JSON.parse(data.GCM); // Parsear la parte de `GCM`
+    
+              // Extraer título, cuerpo y extraInfo
+              const title = gcmData.notification?.title || "Notificación de Andes Salud";
+              const body = gcmData.notification?.body || "Tienes un nuevo mensaje desde el home";
+              const extraInfo = gcmData.data?.extraInfo || "";
+              const notificacion = {
+                title: title,
+                body: body,
+                extraInfo : extraInfo
+              }
+              setGcmData(notificacion); 
+             /*  setModalVisibleNotificacion(true) */
+              console.log("El mensaje ha activado el setModalVisibleNotificacion.");
+              console.log("el mensaje title--->", title );
+              console.log("el mensaje body--->", body );
+              console.log("el mensaje extraInfo--->", extraInfo );
+              // Mostrar un Alert con la información de manera estructurada
+            /*   Alert.alert(
+                title,
+                `${body}\n\nInformación adicional: ${extraInfo}`,
+                [{ text: "OK", onPress: () => console.log("Alerta cerrada") }]
+              ); */
+            }
+          } else {
+            console.warn("El mensaje no contiene datos en el formato esperado.");
+          }
+        } catch (error) {
+          console.error("Error al procesar el mensaje desde homeScreen:", error);
+        }
+      });
+  
+      return unsubscribe;
+    }, []);
+
+
+    useEffect(() => {
+      if (gcmData) {
+        setModalVisibleNotificacion(true);
+        console.log("El mensaje ha activado el EFFECT DE setModalVisibleNotificacion.");
+      }
+    }, [gcmData]);
+    
     return (
       <View style={styles.screenContainer}>
         <ScrollView
@@ -261,23 +315,7 @@ export const HomeScreenUxNew = () => {
         >
 
 
-          {/*  <View style={[styles.headerContainer, { height: headerHeight, backgroundColor: '#e1a159', },]}>
-        <View style={{ width: wp('80%'), marginBottom: titleMarginBottom }}>
-          <Text style={styles.headerText}>Inicio</Text>
-        </View>
-        
-        <View>
-          <Pressable
-            onPress={() => {
-              navigation.navigate('Buzón');
-            }}
-            style={{ marginLeft: 0, marginBottom: iconMarginBottom }}
-          >
-            <NotiMensajes IonIconSize={iconNotificationFontSize} />
-          </Pressable>
-          <NotiComponent3 />
-        </View>
-      </View> */}
+          
           <LinearGradient
             colors={['#e49958', '#e49958', '#e1a159', '#e1a159', '#e1a159', '#e49958', '#e49958', '#e49958',]/* ['#e49958','#e49958','#e1a159', '#e1a159','#e1a159','#e1a159','#e1a159','#c88846','#daa36b' , '#e79340' ] */} // Degradado del color base
             start={{ x: 0, y: 0 }} // Inicio del gradiente (esquina superior izquierda)
@@ -370,6 +408,26 @@ export const HomeScreenUxNew = () => {
                       <Text style={styles.modalTitle}>Muchas gracias!</Text>
                       <Text style={styles.modalMessage}>te enviaremos sólo mensajes esenciales</Text>
                       <TouchableOpacity style={styles.button} onPress={() => setModalVisibleGracias(false)}>
+                        <Text style={styles.buttonText}>Aceptar</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
+              )}
+            {isModalVisibleNotificacion && (
+                <Modal
+                  transparent={true}
+                  animationType="fade"
+                  visible={isModalVisibleNotificacion}
+                  onRequestClose={() => setModalVisibleNotificacion(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                      {/* <Icon name="alert-circle" size={40} color="#ff5c5c" /> */}
+                      <Text style={styles.modalTitle}>{gcmData?.title}</Text>
+                      <Text style={styles.modalMessage}>{gcmData?.body}</Text>
+                      <Text style={styles.modalMessage}>{gcmData?.extraInfo}</Text>
+                      <TouchableOpacity style={styles.button} onPress={() => setModalVisibleNotificacion(false)}>
                         <Text style={styles.buttonText}>Aceptar</Text>
                       </TouchableOpacity>
                     </View>
