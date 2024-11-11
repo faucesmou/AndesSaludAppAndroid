@@ -29,7 +29,7 @@ class FcmService : FirebaseMessagingService() {
         val notification = NotificationCompat.Builder(this, MainApplication.NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.logoBlanco3)  // Asegúrate de tener un icono en `res/drawable`
+            .setSmallIcon(R.drawable.logoblanco3)  // Asegúrate de tener un icono en `res/drawable`
             .setAutoCancel(true)
             .build()
         notificationManager.notify(1, notification)
