@@ -16,6 +16,7 @@ import { BuzonOrdenesC } from './BuzonOrdenesC';
 import { useNotificationStore } from '../../../store/notification-store';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import LinearGradient from 'react-native-linear-gradient';
+import { NotificacionesGenericas } from './NotificacionesGenericas';
 
 interface Notificacion {
   idOrden: string;
@@ -772,6 +773,7 @@ export const Buzon = () => {
 
 
          <BuzonOrdenesC/> 
+         <NotificacionesGenericas/> 
 
       </View >
     </View >

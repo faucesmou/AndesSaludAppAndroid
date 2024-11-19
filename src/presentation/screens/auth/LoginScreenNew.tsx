@@ -172,6 +172,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
               <Button style={styles.customButton}
                 disabled={isPosting}
                 onPress={onLoginGonza2}
+           /*      onPress={() => navigation.navigate('home')} */
               >
                 INGRESAR
               </Button>
