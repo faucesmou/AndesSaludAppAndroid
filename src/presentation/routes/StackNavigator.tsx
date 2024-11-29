@@ -5,7 +5,11 @@ import { ProductScreen } from '../screens/home/afiliados/ProductScreen';
 
 /* import { SettingsScreen } from '../screens/settings/Perfil'; */
 import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
+
+/* probando la persistencia del Login:  */
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+/* --------------- */
 
 import { HamburgerMenu } from '../components/shared/HamburgerMenu';
 import { useProfileStore } from '../store/profile-store';
@@ -45,6 +49,7 @@ import { ConsultaScreenUx } from '../screens/MiGestion/ordenConsulta/ConsultaScr
 import { EstudiosMedicosScreenUx } from '../screens/MiGestion/estudiosMedicos/EstudiosMedicosScreenUx';
 import { LoginScreenNew } from '../screens/auth/LoginScreenNew';
 import { EstudiosMedicosEnvNew } from '../screens/MiGestion/estudiosMedicos/EstudiosMedicosEnvNew';
+import { FullScreenLoader } from '../components/ui/FullScreenLoader';
 
 /* import { UserData } from '../screens/auth/userData'; */
 
@@ -105,7 +110,7 @@ const Stack = createStackNavigator<RootStackParams>();
 
 export const StackNavigator = () => {
 
-  const { status } = useAuthStore();
+  const { initializeAuth, status } = useAuthStore();
   const navigator = useNavigation();
 
   const email = useProfileStore(state => state.email);
@@ -116,6 +121,29 @@ export const StackNavigator = () => {
   })
   
   }, []) */
+
+/* probando la persistencia del Login: ---------------> */
+  const [isReady, setIsReady] = useState(false);
+
+
+  useEffect(() => {
+    (async () => {
+      console.log('inicializando la app con initializeAuth--->>');
+      
+      await initializeAuth();
+
+      setIsReady(true);
+      console.log('ha funcionado correctamente la inicialización!--->>');
+    })();
+  }, []);
+
+  if (!isReady) {
+    <FullScreenLoader />
+    console.log('aqui deberia mostrar un loader o algo asi mientras se cargan los datos---es el !isReady>>');
+    return null; // Muestra un loader o una pantalla inicial mientras se cargan los datos
+  }
+/* ----------------- */
+
 
 
   return (

@@ -21,6 +21,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 export const SettingsScreen = () => {
   const { logout } = useAuthStore()
+  const { clearAuthData } = useAuthStore()
   const { top } = useSafeAreaInsets()
   const setMedicalNotifications = useNotificationStore((state) => state.setMedicalNotifications);
   const setOrderNotifications = useNotificationStore((state) => state.setOrderNotifications);
@@ -168,8 +169,12 @@ export const SettingsScreen = () => {
 
       <TertiaryButton
         onPress={
-          logout
+          logout  
         }
+       /*    onPress={async () => {
+            await logout(); 
+            await clearAuthData(); 
+          }} */
         label="Cerrar Sesión"
         color={globalColors.profile2}
         iconName='power-outline'

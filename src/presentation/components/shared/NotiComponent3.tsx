@@ -12,7 +12,7 @@ interface Notificacion {
 
 const NotiComponent3 = () => {
 
-  console.log('Inicializando componente de notificaciones (NotiComponent3)->', );
+ /*  console.log('Inicializando componente de notificaciones (NotiComponent3)->', ); */
   
   const { idAfiliado, actualizarNotificaciones, setShouldUpdateNotifications } = useAuthStore();
   const setMedicalNotifications = useNotificationStore((state) => state.setMedicalNotifications);
@@ -26,7 +26,8 @@ const NotiComponent3 = () => {
 
     const fetchNotifications = async () => {
   const ProductsRequest = async () => {
-    console.log('Ingresando en ProductsRequest (Consulta de Estudios Medicos)');
+   /*  console.log('Ingresando en ProductsRequest (Consulta de Estudios Medicos)'); */
+    
     try {
    
       const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPBuzonActualizarORDENPRAC?idAfiliado=${idAfiliado}&IMEI=`);
@@ -42,7 +43,7 @@ const NotiComponent3 = () => {
             const notificacionesData = result.Resultado?.tablaDatos;
 
             if (!notificacionesData) {
-              console.log('En ProductsRequest notificacionesData es undefined: No hay notificaciones de Estudios Medicos para este usuario.');
+/*               console.log('En ProductsRequest notificacionesData es undefined: No hay notificaciones de Estudios Medicos para este usuario.'); */
               setMedicalNotifications([]);  
               
               return;
@@ -100,6 +101,7 @@ const NotiComponent3 = () => {
 
       if (!tablaDatos || !tablaDetalle) {
         console.log('En CombinedData2 tablaDatos o tablaDetalle es undefined: No hay notificaciones de ordenes de consulta para este afiliado.');
+        
         setOrderNotifications([]);
         return;
       }
@@ -154,17 +156,17 @@ const NotiComponent3 = () => {
       setOrderNotifications(combinedData); 
      
     } catch (error) {
-      console.log('Error en Noti Component 3. en CombinedData2 (las notficaciones de las ordenes de consulta):', error);
+     /*  console.log('Error en Noti Component 3. en CombinedData2 (las notficaciones de las ordenes de consulta):', error); */ /* DESCOMENTAR-----------------> */
 
     }
   }
 
     await ProductsRequest();
     await CombinedData2();
-    console.log('Si se consultaron las notificaciones-##############>', );
-    console.log('se actualizaron las notificaciones-', );
+    /* console.log('Si se consultaron las notificaciones-##############>', );
+    console.log('se actualizaron las notificaciones-', ); */
     setShouldUpdateNotifications(false);
-    console.log('se actualizo shouldUpdate a false-', );
+   /*  console.log('se actualizo shouldUpdate a false-', ); */
   }
 
   fetchNotifications()
@@ -172,12 +174,13 @@ const NotiComponent3 = () => {
 /*   const intervalId = setInterval(fetchNotifications, 500000000); 
   return () => clearInterval(intervalId); */
     }
-    console.log('No se consultaron las notificaciones------------>', );
+   /*  console.log('No se consultaron las notificaciones------------>', ); */
 
 
 }, [actualizarNotificaciones]);
 
-console.log('Finalizacion de lectura de componente de notificaciones (NotiComponent3)---->', );
+/* console.log('Finalizacion de lectura de componente de notificaciones (NotiComponent3)---->', );
+ */
 return null; 
 }
 

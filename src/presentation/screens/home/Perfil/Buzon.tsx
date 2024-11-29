@@ -773,7 +773,7 @@ export const Buzon = () => {
 
 
          <BuzonOrdenesC/> 
-         <NotificacionesGenericas/> 
+        {/*  <NotificacionesGenericas/>  */}
 
       </View >
     </View >

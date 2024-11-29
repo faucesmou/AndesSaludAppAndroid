@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, PixelRatio, Image, Pressable, Linking, ScrollView, Modal, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, PixelRatio, Image, Pressable, Linking, ScrollView, Modal, TouchableOpacity, Alert, ActivityIndicator  } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
@@ -24,6 +24,7 @@ import messaging from '@react-native-firebase/messaging';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { loadAuthData } from '../../store/auth/authService';
 
 interface Props {
   onPress: () => void;
@@ -40,9 +41,47 @@ interface Props {
 
 
 export const HomeScreenUxNew = () => {
-  const { setShouldUpdateNotifications, getUserName, UserName } = useAuthStore();
+
+  const { setShouldUpdateNotifications, getUserName, /* UserName  */} = useAuthStore();
+  const setAuthData = useAuthStore((state) => state.setAuthData);
+
+  
+
+  /* const { idAfiliadoTitular, cuilTitular, UserName,nombreCompleto, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail, status, idAfiliado } = useAuthStore(); */
+
+  const {  UserName, } = useAuthStore();
 
   const [currentUserName, setCurrentUserName] = useState<string | null>(null)
+
+ /*  useEffect(  () => {
+    if (idAfiliado) {
+     useAuthStore.getState().setAuthenticated(idAfiliado);
+     useAuthStore.getState().setDataStore(cuilTitular, nombreCompleto, idAfiliadoTitular, UserName, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail);
+    }
+  }, [idAfiliado, cuilTitular, nombreCompleto]); */
+
+
+/* Esta función y useEffect es fundamental--> */
+
+  useEffect(() => {
+    const fetchAuthData = async () => {
+      const data = await loadAuthData();
+      if (data) {
+        setAuthData(data);
+        console.log('Datos de autenticación cargados en el contexto desde AsyncStorage:', data);
+      }
+    };
+    fetchAuthData();
+  }, []);
+
+
+/* 
+console.log('datos obtenidos desde el context recuperado de asyncStorage.......---->>>');
+console.log('....idAfiliadoTitular---->>>', idAfiliadoTitular);
+console.log('.......cuilTitular---->>>', cuilTitular);
+console.log('.......UserName---->>>', UserName);
+console.log('.......nombreCompleto---->>>', nombreCompleto);
+console.log('.......status---->>>', status); */
 
   function capitalizeWords(string: string) {
     return string.replace(/\b\w+/g, function (word) {
@@ -75,6 +114,7 @@ export const HomeScreenUxNew = () => {
   const setOrderNotifications = useNotificationStore((state) => state.setOrderNotifications);
 
   const [ordenConsulta, setOrdenConsulta] = useState("");
+  
   let Url = `https://api.whatsapp.com/send?phone=542613300622&text=%C2%A1Hola%2C%20Pixi!%20Vengo%20de%20la%20APP%20y%20tengo%20algunas%20consultas.%20%F0%9F%91%8D`;
 
   const handleOpenURL = () => {
@@ -207,8 +247,11 @@ export const HomeScreenUxNew = () => {
   const [isModalVisibleNotificacion, setModalVisibleNotificacion] = useState(false);
   const [gcmData, setGcmData] = useState<any | null>(null);
 
+/* useEffect para chequear para saber si el usuario ya concedió permiso a notificaciones push o no, en caso de que no lo haya hecho se le muestra un cartel. */
   useEffect(() => {
     const checkPermission = async () => {
+      /* console.log('Se ejecutó el chequeo para saber si el usuario ya concedió permiso ') */
+
       const permission = await AsyncStorage.getItem('notificationPermission');
 
       // Mostrar el modal si nunca ha seleccionado permitir o denegar
@@ -225,6 +268,7 @@ export const HomeScreenUxNew = () => {
     checkPermission();
   }, []);
 
+/* Función para solicitar al servidor la inscripción en el Topic de SNS */
   const registerForPushNotifications = async () => {
     try {
       await messaging().requestPermission(); // Solicitar permiso al sistema
@@ -235,7 +279,7 @@ export const HomeScreenUxNew = () => {
       console.error("Error al obtener o enviar el token FCM:-->", error);
     }
   };
-
+/* funcion para gestionar el permiso concedido a notificaciones push */
   const handleAllow = async () => {
     setModalVisible(false);
     await AsyncStorage.setItem('notificationPermission', 'granted');
@@ -243,15 +287,14 @@ export const HomeScreenUxNew = () => {
     setModalVisibleGracias(true)
 
   };
-
+/* funcion para gestionar el permiso negado a notificaciones push */
   const handleDeny = async () => {
     setModalVisible(false);
     await AsyncStorage.setItem('notificationPermission', 'denied');
     console.log("El usuario se negó a recibir notificaciones-->");
   };
 
-
-
+/* useEffect para escuchar posibles notificaciones desde el topic de SNS y estructurar los datos recibidos: */
   useEffect(() => {
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -271,11 +314,8 @@ export const HomeScreenUxNew = () => {
 
           if (data.GCM) {
 
-          
-
             // Segundo análisis: Parsear el contenido de `GCM`
             const gcmData = JSON.parse(JSON.stringify(data.GCM)); // Convertir a string si es necesario
-
             console.log("Datos parseados (nivel 2):", gcmData);
 
             // Extraer título, cuerpo y extraInfo
@@ -311,7 +351,7 @@ export const HomeScreenUxNew = () => {
     return unsubscribe;
   }, []);
 
-
+/* useEffect para escuchar desde un Segundo Plano posibles notificaciones desde el topic de SNS y estructurar los datos recibidos:  */
   useEffect(() => {
 
     const unsubscribe2 = messaging().setBackgroundMessageHandler(async remoteMessage => {
@@ -357,7 +397,7 @@ export const HomeScreenUxNew = () => {
     return unsubscribe2;
   }, []);
 
-
+/* useEffect para activar el modal en caso de que tengamos nuevos datos recibidos */
   useEffect(() => {
     if (gcmData) {
       setModalVisibleNotificacion(true);

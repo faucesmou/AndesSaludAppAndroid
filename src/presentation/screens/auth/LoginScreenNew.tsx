@@ -1,11 +1,12 @@
 import { Layout, Text, Input, Button } from "@ui-kitten/components"
-import { Alert, StyleSheet, View, useWindowDimensions, Image, Linking, Modal, TouchableOpacity } from "react-native"
+import { Alert, StyleSheet, View, useWindowDimensions, Image, Linking, Modal, TouchableOpacity, ActivityIndicator } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 
 import { StackScreenProps } from "@react-navigation/stack";
 
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/auth/useAuthStore";
+import { loadAuthDataFromStorage } from "../../store/auth/authStore";
 import { MyIcon } from "../../components/ui/MyIcon";
 import { RootStackParams } from "../../routes/StackNavigator";
 import { FullScreenLoader } from "../../components/ui/FullScreenLoader";
@@ -14,8 +15,10 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Svg, { Path } from 'react-native-svg';
 import { Icon } from "react-native-vector-icons/Icon";
 
-
-
+/* prueba de persistencia de datos: */
+import { initializeAuth } from '../../store/auth/authService';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Props extends StackScreenProps<RootStackParams, 'LoginScreen'> { }
 
@@ -29,7 +32,8 @@ export const LoginScreenNew = ({ navigation }: Props) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
  
-  const { loginGonzaMejorado, guardarDatosLoginEnContext, loginGonzaMejorado2, setUserName } = useAuthStore();
+  const { loginGonzaMejorado, guardarDatosLoginEnContext,guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName,  } = useAuthStore();
+ /*  const { loadAuthDataFromStorage } = AuthStore(); */
 
 
   const [isPosting, setIsPosting] = useState(false)
@@ -82,19 +86,81 @@ export const LoginScreenNew = ({ navigation }: Props) => {
 
         if (idAfiliado) {
           // Llama a guardarDatosLoginEnContext con el idAfiliado actualizado
+          
           const datosGuardados = await guardarDatosLoginEnContext(idAfiliado);
-
           if (!datosGuardados) {
             console.log('No se pudieron guardar los datos de usuario desde el LoginScreen');
           }
         } else {
           console.log('idAfiliado no está disponible');
         }
+        if (loginExitoso) {
+          const { idAfiliado, cuilTitular, nombreCompleto, idAfiliadoTitular, UserName, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail } = useAuthStore.getState();
+         
+          if (idAfiliado) {
+         
+            await useAuthStore.getState().setAuthenticated(idAfiliado);
+            await useAuthStore.getState().setDataStore(cuilTitular, nombreCompleto, idAfiliadoTitular, UserName, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail);
+
+
+          } else {
+            console.log('idAfiliado no está disponible');
+          }
+        }
+
 
       } else {
         /* Alert.alert('Ups!', 'Usuario o contraseña incorrectos'); */
         setModalVisible(true)
         /*  console.log('Error durante el login:'); */
+      }
+    } catch (error) {
+      console.log('Error durante el login:', error);
+    } finally {
+      setIsPosting(false);
+    }
+  };
+
+  const onLoginGonza3 = async (form: { usuario: string; password: string }, setIsPosting: (status: boolean) => void, setModalVisible: (visible: boolean) => void) => {
+    if (form.password.length === 0 || form.usuario.length === 0) {
+      Alert.alert('Usuario y contraseña son obligatorios');
+      return;
+    }
+  
+    setIsPosting(true);
+  
+    try {
+      const loginExitoso = await loginGonzaMejorado2(form.usuario, form.password);
+  
+      if (loginExitoso) {
+        const { idAfiliado } = useAuthStore.getState();
+  
+        if (idAfiliado) {
+          // Guardamos los datos en AsyncStorage y en el contexto
+          const datosGuardados = await guardarDatosLoginEnContextMejorada(idAfiliado);
+         
+          if (!datosGuardados) {
+            console.log('No se pudieron guardar los datos de usuario desde el LoginScreen');
+          } else {
+            await AsyncStorage.setItem('authData', JSON.stringify(datosGuardados));
+            await saveAuthDataToStorage(datosGuardados); // Guarda en AsyncStorage
+          }
+        } else {
+          console.log('idAfiliado no está disponible');
+        }
+  
+        // Establece el estado de autenticación
+        if (loginExitoso) {
+          const { idAfiliado } = useAuthStore.getState();
+          if (idAfiliado) {
+            await useAuthStore.getState().setAuthenticated(idAfiliado);
+          } else {
+            console.log('idAfiliado no está disponible');
+          }
+        }
+  
+      } else {
+        setModalVisible(true);
       }
     } catch (error) {
       console.log('Error durante el login:', error);

@@ -6,6 +6,7 @@ import { StorageAdapter } from "../../config/adapters/storageAdapter";
 import { useNavigation, DrawerActions, NavigationProp } from '@react-navigation/native';
 import axios from "axios";
 import { xml2js } from 'xml-js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //Este es el Store que creamos con zustand para tener un Context de los datos y acceder a los mismos desde cualquier parte de la aplicacion.
 //@ts-ignore
@@ -91,6 +92,14 @@ export interface AuthState {
   GuardarIdCartillaSeleccionada: (idCartilla: string, nombreEspecialidadSeleccionada: string) => Promise<any[]>;
   setShouldUpdateNotifications: (estado: boolean) => void;
   guardarDatosLoginEnContext: (idAfiliado: string) => Promise<boolean>;
+  guardarDatosLoginEnContextMejorada: (idAfiliado: string) => Promise<boolean>;
+
+  /* prueba de persistencia de datos luego de cerrar app */
+  initializeAuth: () => Promise<void>;
+  setAuthenticated: (idAfiliado: string) => Promise<void>;
+  setDataStore: ( cuilTitular: string, nombreCompleto: any, idAfiliadoTitular: any, UserName: any, numeroCredencial: any, tipoPlan: any, estadoAfiliacion: any, tipoPago: any, numCelular: any, mail: any ) => Promise<void>;
+  clearAuthData: () => Promise<void>;
+  setAuthData: (data: Partial<AuthState>) => void;
 }
 
 
@@ -237,22 +246,6 @@ console.log('hola soy gonzalo estoy entrando a login---------->');
         const numCelular = respuestaFrancoMejorada.data[0].numCelular;
         const mail = respuestaFrancoMejorada.data[0].mail;
 
-   /*      const dniAfiliado = respuestaFrancoMejorada.data[0].nroDocumento;
-        const usuarioAfiliado = respuestaFrancoMejorada.data[0].usuAPP;
-        const passAfiliado = respuestaFrancoMejorada.data[0].passAPP; */
- /*        console.log('idAfiliado----------------->', idAfiliado);
-        console.log('--> el idAfiliadoTitular es:', idAfiliadoTitular);
-        console.log('--> el cuilTitular es:', cuilTitular);
-        console.log('--> el nombrePila es:', nombrePila);
-
-        console.log('nombreCompleto----------------->', nombreCompleto);
-        console.log('--> el numeroCredencial es:', numeroCredencial);
-        console.log('--> el tipoPlan es:', tipoPlan);
-        console.log('--> el estadoAfiliacion es:', estadoAfiliacion); */
-     
-
-        /* Logica para establecer usuario y contraseña:  */
-
         if (idAfiliado != undefined && idAfiliadoTitular != undefined && cuilTitular != undefined) {
 
           set({  idAfiliadoTitular: idAfiliadoTitular, cuilTitular: cuilTitular, UserName: nombrePila, nombreCompleto: nombreCompleto, numeroCredencial:numeroCredencial, tipoPlan:tipoPlan, estadoAfiliacion:estadoAfiliacion, tipoPago:tipoPago, numCelular:numCelular, mail:mail });
@@ -278,6 +271,7 @@ console.log('hola soy gonzalo estoy entrando a login---------->');
       return false;
     }
   },
+
 recuperarDatos: async (numeroAfiliado: string, dni: string) => {
   try {
 
@@ -592,15 +586,221 @@ recuperarDatos: async (numeroAfiliado: string, dni: string) => {
                       set({ status: 'authenticated', token: resp.token, user: resp.user });
                     },
 
-                      logout: async () => {
-                        await StorageAdapter.removeItem('token')
 
-                        set({ status: 'unauthenticated', token: undefined, user: undefined })
 
-                        console.log('se cerró la sesion gonzalito');
-                        return
+  /* FUNCIONES PARA LOGRAR LA PERSISTENCIA DE DATOS AL CERRAR Y ABRIR LA APP */
+ 
+ /* esta mejorada no funciona bien revisar si borrar o no */
+ guardarDatosLoginEnContextMejorada: async (idAfiliado: string) => {
+  try {
+    console.log('Iniciando consulta para recabar datos...');
 
-                      },
+    const respuestaFrancoMejorada = await axios.get(
+      `https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/consultarAfiliadoJson?usuario=${USUARIO}&password=${PASSWORD}&administradora=${ADMINISTRADORA}&datosAfiliado=${idAfiliado}`
+    );
+
+    if (respuestaFrancoMejorada?.data?.length > 0) {
+      const data = respuestaFrancoMejorada.data[0];
+      console.log('CONSTANTE DATA DE RESPUESTA DE FRANCO --->-->-->--->', data);
+
+      const datosParaGuardar = {
+        idAfiliado: data.idAfiliado,
+        idAfiliadoTitular: data.idAfiliadoTitular,
+        cuilTitular: data.cuilTitular,
+        nombrePila: data.nombre,
+        nombreCompleto: data.apellNomb,
+        numeroCredencial: data.nroAfiliado,
+        tipoPlan: data.planPrestacional,
+        estadoAfiliacion: data.estadoAfiliacion,
+        tipoPago: data.tipoPago,
+        numCelular: data.numCelular,
+        mail: data.mail,
+        status: 'authenticated',
+      };
+
+        // Guarda en AsyncStorage
+        await AsyncStorage.setItem('authData', JSON.stringify(datosParaGuardar));
+        console.log('Datos guardados correctamente en AsyncStorage.');
+        
+      // Guarda en el contexto de Zustand
+      set({
+        idAfiliadoTitular: datosParaGuardar.idAfiliadoTitular,
+        cuilTitular: datosParaGuardar.cuilTitular,
+        UserName: datosParaGuardar.nombrePila,
+        nombreCompleto: datosParaGuardar.nombreCompleto,
+        numeroCredencial: datosParaGuardar.numeroCredencial,
+        tipoPlan: datosParaGuardar.tipoPlan,
+        estadoAfiliacion: datosParaGuardar.estadoAfiliacion,
+        tipoPago: datosParaGuardar.tipoPago,
+        numCelular: datosParaGuardar.numCelular,
+        mail: datosParaGuardar.mail,
+        status: datosParaGuardar.status,
+      });
+
+    
+
+      return true;
+    } else {
+      console.error('No se encontraron datos para guardar.');
+      return false;
+    }
+  } catch (error) {
+    console.error('Error al guardar datos:', error);
+    return false;
+  }
+},
+// Función para inicializar el estado desde AsyncStorage
+/* initializeAuth2: async () => {
+  try {
+    const authData = await AsyncStorage.getItem('authData');
+    if (authData) {
+      const parsedData = JSON.parse(authData);
+
+      // Actualiza el contexto con los datos persistidos
+      set({
+        idAfiliadoTitular: parsedData.idAfiliadoTitular,
+        cuilTitular: parsedData.cuilTitular,
+        UserName: parsedData.nombrePila,
+        nombreCompleto: parsedData.nombreCompleto,
+        numeroCredencial: parsedData.numeroCredencial,
+        tipoPlan: parsedData.tipoPlan,
+        estadoAfiliacion: parsedData.estadoAfiliacion,
+        tipoPago: parsedData.tipoPago,
+        numCelular: parsedData.numCelular,
+        mail: parsedData.mail,
+        status: parsedData.status,
+      });
+
+      console.log('Estado restaurado desde AsyncStorage-------->.');
+    } else {
+      set({ status: 'unauthenticated' });
+      console.log('No se encontraron datos en AsyncStorage.');
+    }
+  } catch (error) {
+    console.error('Error al restaurar el estado:', error);
+    set({ status: 'unauthenticated' });
+  }
+}, */
+
+       // Función para inicializar el estado desde AsyncStorage
+   initializeAuth: async () => {
+    try {
+      const authData = await AsyncStorage.getItem('authData');
+      if (authData) {
+        const { status, idAfiliado } = JSON.parse(authData);
+        if (status === 'authenticated' && idAfiliado) {
+          console.log('el idAfiliado es el siguiente:--- esto desde initializeAuth> ', idAfiliado);
+          
+          set({ status, idAfiliado });
+        } else {
+          console.log('no se encontraron datos en asyncStorage ( aun no se guardan ) ')
+         /*  set({ status: 'unauthenticated' }); */
+        }
+      } else {
+        console.log('no se encontraron datos en asyncStorage ( aun no se guardan ) ')
+      }
+    } catch (error) {
+      console.error('Error al inicializar la autenticación:', error);
+      set({ status: 'unauthenticated' });
+    }
+  }, 
+
+
+// Función para guardar el estado de autenticación
+setAuthenticated: async (idAfiliado) => {
+  set({ status: 'authenticated', idAfiliado });
+  await AsyncStorage.setItem(
+    'authData',
+    JSON.stringify({ status: 'authenticated', idAfiliado })
+  );
+},
+setDataStore: async (cuilTitular, nombreCompleto, idAfiliadoTitular, UserName, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail   ) => {
+  set((state) => ({
+    ...state, // Mantener el estado existente
+    cuilTitular,
+    nombreCompleto, 
+    idAfiliadoTitular, 
+    UserName, 
+    numeroCredencial, 
+    tipoPlan, 
+    estadoAfiliacion, 
+    tipoPago,
+     numCelular,
+      mail 
+  }));
+  const currentData = JSON.parse(await AsyncStorage.getItem('authData') || '{}');
+  await AsyncStorage.setItem(
+    'authData',
+    JSON.stringify({ ...currentData, 
+      cuilTitular,
+      nombreCompleto,
+      idAfiliadoTitular, 
+      UserName, 
+      numeroCredencial, 
+      tipoPlan, 
+      estadoAfiliacion, 
+      tipoPago,
+       numCelular,
+        mail  })
+  );
+},
+ // Función para limpiar datos al cerrar sesión
+
+clearAuthData: async () => {
+  // Establecer todas las propiedades a undefined (mantener la estructura)
+  set((state) => ({
+    ...state, 
+    status: 'unauthenticated',
+    idAfiliado: undefined,
+    cuilTitular: undefined,
+    nombreCompleto: undefined,
+    idAfiliadoTitular: undefined,
+    UserName: undefined,
+    numeroCredencial: undefined,
+    tipoPlan: undefined,
+    estadoAfiliacion: undefined,
+    tipoPago: undefined,
+    numCelular: undefined,
+    mail: undefined,
+  }));
+
+  // Limpiar los datos en AsyncStorage
+  await AsyncStorage.setItem(
+    'authData',
+    JSON.stringify({
+      status: 'unauthenticated',
+      idAfiliado: undefined,
+      cuilTitular: undefined,
+      nombreCompleto: undefined,
+      idAfiliadoTitular: undefined,
+      UserName: undefined,
+      numeroCredencial: undefined,
+      tipoPlan: undefined,
+      estadoAfiliacion: undefined,
+      tipoPago: undefined,
+      numCelular: undefined,
+      mail: undefined,
+    })
+  );
+  console.log('se ejecutó clearAuthData de la sesion y se borraron todos los datos de asyncStorage');
+},
+logout: async () => {
+
+  await StorageAdapter.removeItem('token')
+  await AsyncStorage.removeItem('authData');
+ 
+  set({ status: 'unauthenticated', token: undefined})
+
+  console.log('se ejecutó logout de la sesion y se borro el token');
+  return
+
+},
+setAuthData: (data) =>
+  set((state) => ({
+    ...state,
+    ...data, // Sobrescribe los datos actuales con los nuevos
+  })),
+  
 
 
 }))
