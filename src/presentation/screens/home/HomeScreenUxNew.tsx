@@ -475,7 +475,7 @@ console.log('.......status---->>>', status); */
               <View style={styles.modalOverlay}>
                 <View style={styles.modalContainer}>
                   <Text style={styles.modalTitle}>¿Permites a Andes Salud enviarte notificaciones?</Text>
-                  <Text style={styles.modalMessage}>Esto te ayudará a recibir alertas importantes de salud.</Text>
+                  <Text style={styles.modalMessage}>Esto te ayudará a recibir información importante sobre nuestros beneficios y promociones.</Text>
                   <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
                       <Text style={styles.buttonText}>Permitir</Text>
