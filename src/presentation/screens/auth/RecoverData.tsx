@@ -113,7 +113,8 @@ export const RecoverData = ({ navigation }: Props) => {
 
 
   let UrlPixi = `https://api.whatsapp.com/send?phone=542613300622&text=%C2%A1Hola%2C%20Pixi!%20Vengo%20de%20la%20APP%20y%20tengo%20algunas%20consultas.%20%F0%9F%91%8D`
-  let UrlAndes = `https://www.andessalud.com.ar/`
+  let UrlAndes2 = `https://www.andessalud.com.ar/`
+    let UrlAndes = `https://www.andessalud.com.ar/register/`
 
   const handleOpenURLPixi = () => {
     console.log('entrando a whatsapp Pixi');

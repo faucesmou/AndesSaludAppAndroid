@@ -44,7 +44,8 @@ export const LoginScreenNew = ({ navigation }: Props) => {
     dni: '',
   })
   const [linkAndesSalud, setLinkAndesSalud] = useState("");
-  let UrlAndes = `https://www.andessalud.com.ar/`
+  let UrlAndes2 = `https://www.andessalud.com.ar/`
+  let UrlAndes = `https://www.andessalud.com.ar/register/`
 
   const handleOpenURLAndes = () => {
     console.log('entrando a Andes Salud');
