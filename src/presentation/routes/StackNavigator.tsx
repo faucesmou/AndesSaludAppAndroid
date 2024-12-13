@@ -50,6 +50,7 @@ import { EstudiosMedicosScreenUx } from '../screens/MiGestion/estudiosMedicos/Es
 import { LoginScreenNew } from '../screens/auth/LoginScreenNew';
 import { EstudiosMedicosEnvNew } from '../screens/MiGestion/estudiosMedicos/EstudiosMedicosEnvNew';
 import { FullScreenLoader } from '../components/ui/FullScreenLoader';
+import { FormulariosEspScreenNuevo } from '../screens/MiGestion/formulariosEspeciales/FormulariosEspScreenNuevo';
 
 /* import { UserData } from '../screens/auth/userData'; */
 
@@ -225,7 +226,8 @@ export const StackNavigator = () => {
       <Stack.Screen name="Enviado" component={EstudiosMedicosEnvNew} options={{ headerShown: true }} />
 
 {/* Obtener Formularios Especiales: */}
-      <Stack.Screen name="Formularios" component={FormulariosEspScreen} options={{ headerShown: true }} />
+     {/*  <Stack.Screen name="Formularios" component={FormulariosEspScreen} options={{ headerShown: true }} /> */}
+      <Stack.Screen name="Formularios" component={FormulariosEspScreenNuevo} options={{ headerShown: true }} />
 
       <Stack.Screen name="Formulario" component={FormularioElegido} options={{ headerShown: true }} />
 
