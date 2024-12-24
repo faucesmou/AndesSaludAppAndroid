@@ -51,6 +51,7 @@ import { LoginScreenNew } from '../screens/auth/LoginScreenNew';
 import { EstudiosMedicosEnvNew } from '../screens/MiGestion/estudiosMedicos/EstudiosMedicosEnvNew';
 import { FullScreenLoader } from '../components/ui/FullScreenLoader';
 import { FormulariosEspScreenNuevo } from '../screens/MiGestion/formulariosEspeciales/FormulariosEspScreenNuevo';
+import { CartillaMedicaScreenOtrasCartillas } from '../screens/MiSalud/cartillaMedica/CartillaMedicaScreenOtrasCartillas';
 
 /* import { UserData } from '../screens/auth/userData'; */
 
@@ -90,6 +91,7 @@ export type RootStackParams = {
   Formulario:undefined,
   CartillaScreen: undefined,
   Cartillas: undefined,
+  "Otras Cartillas":undefined,
   MiSalud: undefined,
   Formularios:undefined,
   Prestadores: { idCartilla: string };
@@ -208,7 +210,10 @@ export const StackNavigator = () => {
 {/* MI SALUD (CartillaScreen): */}
 
       <Stack.Screen name="Cartillas" component={CartillaMedicaScreen} options={{ headerShown: true }} /> 
+
+      <Stack.Screen name="Otras Cartillas" component={CartillaMedicaScreenOtrasCartillas} options={{ headerShown: true }} /> 
      {/* Desde CartilaMedicaScreen vamos a la especialidad: */}
+
       <Stack.Screen name="Prestadores" component={CartillaMedicaEspecialidad} options={{ headerShown: true }} />
 
       <Stack.Screen name="Estudios!" component={EstudiosMedicosScreen} options={{ headerShown: true, headerTitleStyle: { fontSize: 18 },  }} />

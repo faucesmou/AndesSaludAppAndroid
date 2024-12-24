@@ -18,7 +18,7 @@ import { RootStackParams } from '../../../routes/StackNavigator';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
 
-export const CartillaMedicaScreen = () => {
+export const CartillaMedicaScreenOtrasCartillas = () => {
   console.log('Entrando a CARTILLA MEDICA------->');
   const { idAfiliadoTitular, idAfiliado, GuardarIdCartillaSeleccionada } = useAuthStore();
   console.log('idAfiliadoTitular desde Cartilla Medica Screen---->', idAfiliadoTitular);
@@ -39,7 +39,7 @@ export const CartillaMedicaScreen = () => {
       setIsConsulting(true);
 
       try {
-        const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPObtenerCartillas?IMEI=&idAfiliado=${idAfiliado}&otrasCartillas=`)
+        const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPObtenerCartillas?IMEI=&idAfiliado=${idAfiliado}&otrasCartillas=1`)
 
         const xmlData = response.data;
 
@@ -54,19 +54,17 @@ export const CartillaMedicaScreen = () => {
             nombre: cartillasData.nombre[index]._text,
             idCartilla: cartillasData.idCartilla[index]._text,
           }))
-            .filter(cartilla => cartilla.nombre !== "Otras cartillas") // Filtramos el objeto otras cartillas ya que lo vamos a mostrar como botón al final
           : [{
             nombre: cartillasData.nombre._text,
             idCartilla: cartillasData.idCartilla._text,
-          }].filter(cartilla => cartilla.nombre !== "Otras cartillas");
-
+          }];
         setCartillas(mappedCartillas);
         console.log('mappedCartillas es: eeee:---->>.,', mappedCartillas);
+        
+      
+         setIsConsulting(false);
 
-
-        setIsConsulting(false);
-
-        /*   console.log('este es el mappedCartillas DE CARTILLA MEDICA---x--x-x--x->:', mappedCartillas); */
+      /*   console.log('este es el mappedCartillas DE CARTILLA MEDICA---x--x-x--x->:', mappedCartillas); */
         /*  console.log('este es el cartillas useState:', cartillas); */
 
       }
@@ -86,12 +84,12 @@ export const CartillaMedicaScreen = () => {
   return (
     <View
 
-      style={{ ...globalStyles.container, marginBottom: 0, }}
+      style={{...globalStyles.container, marginBottom:0, }}
 
     >
       <CustomHeader /* color={globalColors.gray2} */ titleSize={hp('4%')} />
 
-      <BackButton Size={hp('4%')} />
+      <BackButton Size={hp('4%')}/>
 
       <Text style={{
         marginBottom: 0,
@@ -102,105 +100,83 @@ export const CartillaMedicaScreen = () => {
         fontWeight: 'bold'
       }}>Especialidades</Text>
 
-      <View style={{ flex: 1, marginBottom: hp('2%'), marginTop: hp('1%') }}>
+      <View style={{  flex: 1, marginBottom: hp('2%'), marginTop: hp('1%') }}>
         <ScrollView >
           {
+          
+          isConsulting ? 
+           (
 
-            isConsulting ?
-              (
-
-                <View
-                  style={{
-                    flex: 0.5,
-                    marginTop: top - hp('-10%'),
-                    marginBottom: hp('6%'),
-                  }}
-                >
-                  <FullScreenLoader />
-                </View>
-
-              )
-              : isError ? (
-
-                <View style={styles.noDataContainer}>
-                  <Text style={styles.noDataText}>
-                    ¡Ups! Parece que algo salió mal.
-                  </Text>
-                  <Text style={styles.noDataText}>
-                    Por favor, intenta nuevamente más tarde.
-                  </Text>
-                  <Text style={styles.noDataText2}>
-                    Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
-                  </Text>
-                </View>
-              )
-                :
-
-                (
-
-
-                  cartillas.map(
-                    (cartilla, index) => (
-
-                      <View
-                        key={index}
-                        style={{ marginBottom: 5 }}
-                      >
-                        {/* mejora del estilo:  */}
-                        <Pressable
-                          onPress={() => {
-
-                            let idCartilla = cartilla.idCartilla;
-                            let nombre88 = cartilla.nombre;
-                            GuardarIdCartillaSeleccionada(idCartilla, nombre88);
-                            console.log('nombre es----->>>', cartilla.nombre);
-                            console.log('cartilla es----->>>', cartilla.nombre);
-                            console.log('nombre88----->>>', nombre88);
-                            navigation.navigate('Prestadores', {
-                              idCartilla: cartilla.idCartilla,
-                            })
-                          }
-                          }
-                        >
-                          <View key={index} style={styles.TertiaryButton}>
-                            <View style={styles.contentWrapper2}>
-                              <View style={styles.textWrapper}>
-                                <Text style={styles.descriptionText}>
-                                  {cartilla.nombre}
-                                </Text>
-                                {/*    <Text style={{ fontSize: 15, marginBottom: 10 }}>ID: {cartilla.idCartilla}</Text>  */}
-                              </View>
-                            </View>
-                          </View>
-                        </Pressable>
-
-
-                      </View>
-                    )
-
-                  )
-                )
-
-
-          }
-
-<Pressable
-        onPress={() => {
-          navigation.navigate('Otras Cartillas')
-        }
-        }
-      >
-        <View style={styles.TertiaryButton}>
-          <View style={styles.contentWrapper2}>
-            <View style={styles.textWrapper}>
-              <Text style={styles.descriptionText}>
-              OTRAS CARTILLAS
-              </Text>
-              
-            </View>
+            <View
+            style={{
+              flex: 0.5,
+              marginTop: top - hp('-10%'),
+              marginBottom: hp('6%'),
+            }}
+          >
+            <FullScreenLoader />
           </View>
-        </View>
-      </Pressable>
+
+           )
+           : isError ? (
+     
+          <View style={styles.noDataContainer}>
+                <Text style={styles.noDataText}>
+                ¡Ups! Parece que algo salió mal. 
+                </Text>
+                <Text style={styles.noDataText}>
+               Por favor, intenta nuevamente más tarde. 
+                </Text>
+                <Text style={styles.noDataText2}>
+                Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
+                </Text>
+              </View>
+           )
+           :
+           (
+          
+          
+          cartillas.map((cartilla, index) => (
+
+            <View 
+            key={index} 
+            style={{ marginBottom: 5 }} 
+            >
+           
+
+              {/* mejora del estilo:  */}
+              <Pressable
+                onPress={() => {
+                 
+                  let idCartilla = cartilla.idCartilla;
+                  let nombre88 = cartilla.nombre;
+                  GuardarIdCartillaSeleccionada(idCartilla, nombre88);
+                  console.log('nombre es----->>>',cartilla.nombre );
+                  console.log('cartilla es----->>>',cartilla.nombre );
+                  console.log('nombre88----->>>',nombre88 );
+                  navigation.navigate('Prestadores', { 
+                    idCartilla: cartilla.idCartilla,
+                })
+                }
+                }
+              >
+                <View key={index} style={styles.TertiaryButton}>
+                  <View style={styles.contentWrapper2}>
+                    <View style={styles.textWrapper}>
+                      <Text style={styles.descriptionText}>
+                      {cartilla.nombre}
+                      </Text>
+                      {/*    <Text style={{ fontSize: 15, marginBottom: 10 }}>ID: {cartilla.idCartilla}</Text>  */}
+                    </View>
+                  </View>
+                </View>
+              </Pressable>
+
+            </View>
+          ))
+          
+        )
+          }
 
         </ScrollView>
       </View>
@@ -210,7 +186,7 @@ export const CartillaMedicaScreen = () => {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create ({
   TertiaryButton: {
     backgroundColor: 'white',
     minWidth: '80%',
@@ -244,8 +220,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: 5,
   },
-  /* cartel de error: no se pudieron obtener las especialidades:  */
-  noDataContainer: {
+   /* cartel de error: no se pudieron obtener las especialidades:  */
+   noDataContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -254,13 +230,13 @@ const styles = StyleSheet.create({
     fontSize: wp('4.5%'),
     color: 'gray',
     textAlign: 'center',
-    marginTop: wp('3%'),
+    marginTop:wp('3%'),
   },
   noDataText2: {
     fontSize: wp('4%'),
     color: 'gray',
     textAlign: 'center',
-    marginTop: wp('8%'),
+    marginTop:wp('8%'),
   },
 })
 /* <FlatList

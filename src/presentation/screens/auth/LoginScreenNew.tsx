@@ -32,7 +32,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
  
-  const { loginGonzaMejorado, guardarDatosLoginEnContext,guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName,  } = useAuthStore();
+  const { loginGonzaMejorado, guardarDatosLoginEnContext,guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName, loginGonzaMejorado3 } = useAuthStore();
  /*  const { loadAuthDataFromStorage } = AuthStore(); */
 
 
@@ -79,7 +79,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
     setIsPosting(true);
 
     try {
-      const loginExitoso = await loginGonzaMejorado2(form.usuario, form.password);
+      const loginExitoso = await loginGonzaMejorado3(form.usuario, form.password);
 
       if (loginExitoso) {
         /* const idAfiliadoActual = idAfiliado */
@@ -173,7 +173,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
   let paddingTopNumber = hp('1%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
     paddingTopNumber = hp('1%');
-
+ 
   }
 
   return (

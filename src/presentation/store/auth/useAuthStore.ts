@@ -74,6 +74,7 @@ export interface AuthState {
 
   loginGonzaMejorado: (usuario: string, /* email: string,  */password: string, dni: string) => Promise<boolean>;
   loginGonzaMejorado2: (usuario: string, password: string, ) => Promise<boolean>;
+  loginGonzaMejorado3: (usuario: string, password: string, ) => Promise<boolean>;
   recuperarDatos: (numeroAfiliado: string, dni: string) => Promise<RecoverData | undefined>;
 
   /*  ObtenerFamiliares: (idAfiliado: string)=> Promise<string[]>; */
@@ -182,6 +183,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     try {
      /*  console.log('usuario y password recibido en loginGonza2:', usuario, password); */
 console.log('hola soy gonzalo estoy entrando a login---------->');
+console.log('usuario---------->',usuario );
+console.log('password---------->' ,password );
 
       // Realizando la petición a la API
       const resultadoLogin = await axios.get(
@@ -205,7 +208,9 @@ console.log('hola soy gonzalo estoy entrando a login---------->');
         /* cambio esto para abrir la app solucion temporal--------------- descomente el status authenticated-------------->>>  */
         set({ status: 'authenticated', idAfiliado: resultadoIdAfiliado, });
         return true; // Devuelve true si el login es exitoso
-      } else {
+      } 
+      
+      else {
         console.log('Usuario o contraseña incorrectos.');
         set({ status: 'unauthenticated' });
         return false; // Devuelve false si las credenciales son incorrectas
@@ -216,6 +221,71 @@ console.log('hola soy gonzalo estoy entrando a login---------->');
       return false; // Devuelve false si ocurre un error
     }
   },
+  loginGonzaMejorado3: async (usuario: string, password: string) => {
+    try {
+      console.log('hola soy gonzalo estoy entrando a login numero 3---------->');
+      console.log('usuario---------->',usuario );
+console.log('password---------->' ,password );
+
+      // Realizando la petición a la API
+      const resultadoLogin = await axios.get(
+        `https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPVerificaLoginSoyAfiliado?usuario=${usuario}&pass=${password}`
+      );
+    
+      const xmlData = resultadoLogin.data;
+
+      // Convertir XML a JSON
+      const result = xml2js(xmlData, { compact: true });
+
+        //@ts-ignore
+      const resultadoMensaje = result.Resultado?.fila?.mensaje?._text;
+      //@ts-ignore
+      const resultadoIdAfiliado = result.Resultado?.fila?.idAfiliado?._text;
+      console.log('resultadoMensaje en loginGonza3----->:', resultadoMensaje);
+      console.log('resultadoIdAfiliado en loginGonza3----->:', resultadoIdAfiliado);
+
+      if (resultadoMensaje === 'Usuario y pass correctos') {
+        console.log('Ingreso aprobado');
+        /* cambio esto para abrir la app solucion temporal--------------- descomente el status authenticated-------------->>>  */
+        set({ status: 'authenticated', idAfiliado: resultadoIdAfiliado, });
+        return true; // Devuelve true si el login es exitoso
+      } else {
+            console.log('Usuario o contraseña incorrectos en WebServicePrestacional. Intentando con el segundo endpoint...');
+
+            // Segunda consulta al endpoint alternativo
+            const payload = {
+                email: usuario,
+                pass: password,
+            };
+
+            const resultadoAlternativo = await axios.post(
+                'https://cotizador.createch.com.ar/login/home',
+                payload
+            );
+
+            console.log('Resultado del segundo intento: resultadoAlternativo :--->', resultadoAlternativo);
+            console.log('Resultado del segundo intento: resultadoAlternativo.meta.IdAfiliado :--->', resultadoAlternativo.data.meta.IdAfiliado);
+
+            const resultadoIdAfiliado = resultadoAlternativo.data.meta.IdAfiliado
+            console.log('resultadoIdAfiliadoo :--->',resultadoIdAfiliado);
+
+
+            if (resultadoAlternativo.data.status === 200 /* && resultadoAlternativo.data.success */) {
+                console.log('Ingreso aprobado con el segundo endpoint.');
+                set({ status: 'authenticated', idAfiliado: resultadoIdAfiliado });
+                return true;
+            } else {
+                console.log('Usuario o contraseña incorrectos en el segundo endpoint.');
+                set({ status: 'unauthenticated' });
+                return false;
+            }
+        }
+    } catch (error) {
+        console.error('Error al intentar iniciar sesión:', error);
+        set({ status: 'unauthenticated' });
+        return false;
+    }
+},
   guardarDatosLoginEnContext: async (idAfiliado) => {
 
 
