@@ -218,10 +218,12 @@ export const LoginScreenNew = ({ navigation }: Props) => {
             <View style={styles.bottomSection}>
               <View>
                 <Text style={styles.text}>
-                  Por favor, ingresa tu Usuario y Contraseña para continuar:
+                 {/*  Por favor, ingresá tu Número de Credencial y Contraseña para continuar: */}
+                 Por favor, ingresá tu Usuario y Contraseña para continuar:
                 </Text>
                 <Input
                   placeholder="Usuario"
+                  /* placeholder="Número de Credencial o Correo electrónico" */
                   style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
                   autoCapitalize="none"
                   value={form.usuario}

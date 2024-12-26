@@ -92,16 +92,31 @@ console.log('.......status---->>>', status); */
     const currentUserName = capitalizeWords(currentUserNameInicial);
     console.log('currentUserName es: ', currentUserName); */
 
+    // Función para recortar el nombre a las primeras 3 palabras si excede el límite
+const recortarNombre = (texto: string | null) => {
+const palabras = texto.split(' ').filter(palabra => palabra !== ''); // Separar palabras
+if (palabras.length > 3) {
+  return palabras.slice(0, 3).join(' '); // Recortar y unir las primeras 3 palabras
+}
+return texto; // Devolver el texto original si tiene 3 o menos palabras
+};
 
   useEffect(() => {
+
+
+
     console.log('entrando al useEffect----->');
     const currentUserNameInicial = getUserName(); // Obtención síncrona del nombre
+
+// Aplicar recorte al nombre antes de usarlo
+/* const nombreRecortado = recortarNombre(currentUserNameInicial); */
+
     if (currentUserNameInicial) {
       const capitalizedUserName = capitalizeWords(currentUserNameInicial);
       setCurrentUserName(capitalizedUserName); // Actualiza el estado
       console.log('currentUserName es----->', currentUserName);
     } else {
-      console.log('No se encontró el nombre de usuario');
+      console.log('No se encontró el nombre de usuario o correo');
     }
 
   }, [UserName])
@@ -449,7 +464,7 @@ console.log('.......status---->>>', status); */
           <View style={styles.innerContainer2}>
 
             {currentUserName ? (
-              <Text style={styles.text2New}>¡Hola, {currentUserName}!</Text>
+              <Text style={styles.text2New}>¡Hola, {recortarNombre(currentUserName)}!</Text>
             )
               :
               (

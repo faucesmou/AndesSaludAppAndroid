@@ -183,8 +183,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     try {
      /*  console.log('usuario y password recibido en loginGonza2:', usuario, password); */
 console.log('hola soy gonzalo estoy entrando a login---------->');
-console.log('usuario---------->',usuario );
-console.log('password---------->' ,password );
+/* console.log('usuario---------->',usuario );
+console.log('password---------->' ,password ); */
 
       // Realizando la petición a la API
       const resultadoLogin = await axios.get(

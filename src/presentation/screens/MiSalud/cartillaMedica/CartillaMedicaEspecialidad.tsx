@@ -69,6 +69,15 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
   
 
+  function capitalizeWords(input: string | undefined): string {
+    if (!input) {
+      return "";
+    }
+    return input.replace(/\b\p{L}+/gu, function (word) {
+      return word.charAt(0).toLocaleUpperCase() + word.slice(1).toLocaleLowerCase();
+    });
+  }
+
   useEffect(() => {
 
     const CartillaRequest = async () => {
@@ -541,7 +550,7 @@ const filtrarPorTodos = () => {
         color: globalColors.gray2,
         fontWeight: 'bold',
 
-      }}>{nombreEspecialidadSeleccionada}</Text>
+      }}>{capitalizeWords(nombreEspecialidadSeleccionada)}</Text>
 
 
       <View style={[styles.container, { gap: dynamicGap, }]}>

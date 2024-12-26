@@ -38,7 +38,21 @@ const CredencialNew = () => {
     // Dividimos el texto por espacios y filtramos para eliminar espacios en blanco
     const palabras = texto.split(' ').filter(palabra => palabra !== '');
     return palabras.length;
+
   };
+
+  // Función para recortar el nombre a las primeras 3 palabras si excede el límite
+const recortarNombre = (texto: string) => {
+  const palabras = texto.split(' ').filter(palabra => palabra !== ''); // Separar palabras
+  if (palabras.length > 3) {
+    return palabras.slice(0, 3).join(' '); // Recortar y unir las primeras 3 palabras
+  }
+  return texto; // Devolver el texto original si tiene 3 o menos palabras
+};
+
+// Aplicar recorte al nombre antes de usarlo
+const nombreRecortado = recortarNombre(datosCredencial.nombreAfiliado);
+  
   const dividirNombre = (nombreCompleto:string) => {
     const palabras = nombreCompleto.split(' ');
     if (palabras.length > 3) {
@@ -169,7 +183,7 @@ const CredencialNew = () => {
                       cantidadPalabras >= 3 && { /* width: '60%' */ width: wp('60%') },
                       cantidadPalabras === 2 && { /* width: '50%' */ width: wp('50%') },
                       ]} >
-                      <Text style={{ color: 'white', fontSize: hp('1.7%') }}>{datosCredencial.nombreAfiliado}</Text>
+                      <Text style={{ color: 'white', fontSize: hp('1.7%') }}>{nombreRecortado}</Text>
                       <Text style={{ color: 'white', fontSize: hp('1.7%') }}>{datosCredencial.numAfiliado}</Text>
                       <Text style={{ color: 'white', fontSize: hp('1.7%') }}>{datosCredencial.fecVencimiento}</Text>
                     </View>
