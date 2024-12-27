@@ -26,6 +26,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { loadAuthData } from '../../store/auth/authService';
 
+/* prueba de buscar actualizaciones */
+
+/* import { checkForUpdate, checkVersion } from 'react-native-app-version'; */
+import { checkVersion } from "react-native-check-version";
+
 interface Props {
   onPress: () => void;
   label?: string;
@@ -42,7 +47,7 @@ interface Props {
 
 export const HomeScreenUxNew = () => {
 
-  const { setShouldUpdateNotifications, getUserName, /* UserName  */} = useAuthStore();
+  const { setShouldUpdateNotifications, getUserName, actualizacionDisponible, setActualizacionDisponible, setHasCheckedForUpdate, hasCheckedForUpdate} = useAuthStore();
   const setAuthData = useAuthStore((state) => state.setAuthData);
 
   
@@ -52,6 +57,43 @@ export const HomeScreenUxNew = () => {
   const {  UserName, } = useAuthStore();
 
   const [currentUserName, setCurrentUserName] = useState<string | null>(null)
+  const [mostrarActualizacion, setMostrarActualizacion] = useState(false);
+  const [linkActualizar, setLinkActualizar] = useState("");
+
+/*   const handleOpenURLActualizar = () => {
+    setLinkActualizar(UrlActualizar);
+  }; */
+  
+  let UrlActualizar = 'https://play.google.com/store/apps/details?id=com.ar.andessalud.andessalud'
+
+
+  useEffect(() => {
+    const checkForUpdate2 = async () => {
+      try {
+        const version  = await checkVersion();
+
+        if (version.needsUpdate) {
+          
+          console.log('Nueva versión disponible:', version );
+          console.log(`La App tiene la actualización pendiente: (version .updateType) ${version.updateType} .`);
+          setMostrarActualizacion(true)
+          setActualizacionDisponible(true)
+          
+        } 
+        console.log('se consultaron actualizaciones pero no se encontraron nuevas versiones disponibles' );
+        /* setActualizacionDisponible(false);  */
+ /*        console.log('Nueva versión--> version---->>>:', version );
+        console.log('version.needsUpdate---->>>:', version.needsUpdate );
+        console.log('version.updateType---->>>:', version.updateType ); */
+      } catch (error) {
+        console.error('Error al verificar actualizaciones:', error);
+      } finally {
+        setHasCheckedForUpdate(true); // Marca como chequeado
+      }
+    };
+
+    checkForUpdate2();
+  }, [hasCheckedForUpdate]);
 
  /*  useEffect(  () => {
     if (idAfiliado) {
@@ -129,12 +171,14 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
   const setOrderNotifications = useNotificationStore((state) => state.setOrderNotifications);
 
   const [ordenConsulta, setOrdenConsulta] = useState("");
+ 
   
   let Url = `https://api.whatsapp.com/send?phone=542613300622&text=%C2%A1Hola%2C%20Pixi!%20Vengo%20de%20la%20APP%20y%20tengo%20algunas%20consultas.%20%F0%9F%91%8D`;
 
   const handleOpenURL = () => {
     setOrdenConsulta(Url);
   };
+
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const { top, bottom } = useSafeAreaInsets();
@@ -302,11 +346,27 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
     setModalVisibleGracias(true)
 
   };
+/* funcion para gestionar el permiso concedido a notificaciones push */
+  const handleActualizar = async () => { 
+    setMostrarActualizacion(false);
+    try {
+      await Linking.openURL(UrlActualizar);
+    } catch (err) {
+      console.log('error al intentar ingresar a la actualización:', err);
+    } 
+
+  };
+
 /* funcion para gestionar el permiso negado a notificaciones push */
   const handleDeny = async () => {
     setModalVisible(false);
     await AsyncStorage.setItem('notificationPermission', 'denied');
     console.log("El usuario se negó a recibir notificaciones-->");
+  };
+  /* funcion para gestionar el boton de cerrar el modal de actualizaciones  */
+  const handleCerrarActualizacion = async () => {
+    setMostrarActualizacion(false);
+    console.log("El usuario se negó a actualizar la app-->");
   };
 
 /* useEffect para escuchar posibles notificaciones desde el topic de SNS y estructurar los datos recibidos: */
@@ -477,6 +537,32 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
 
         {/*   <ScrollView> */}
         <View style={styles.bigContentContainer}>
+
+          {/* primera prueba de modal actualizaciones */}
+
+          {mostrarActualizacion && (
+            <Modal
+              transparent={true}
+              animationType="fade"
+              visible={mostrarActualizacion}
+              onRequestClose={() => setMostrarActualizacion(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.modalTitle}>Ya puedes descargar la nueva actualización de nuestra App!</Text>
+                  <Text style={styles.modalMessage}>¡Esto te permitirá disfrutar de las mejoras más recientes!</Text>
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.allowButton} onPress={handleActualizar}>
+                      <Text style={styles.buttonText}>Actualizar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.denyButton} onPress={handleCerrarActualizacion}>
+                      <Text style={styles.buttonText}>Cerrar</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          )}
 
           {/* primera prueba de modal inicio */}
 

@@ -71,6 +71,11 @@ export interface AuthState {
   setUserName: (user: string) => void;
   setUserLastName: (pass: string) => void;
   actualizarNotificaciones: boolean;
+  actualizacionDisponible: boolean;
+  setActualizacionDisponible: (estado: boolean) => void;
+  hasCheckedForUpdate: boolean; // Nueva bandera
+  setHasCheckedForUpdate: (estado: boolean) => void;
+
 
   loginGonzaMejorado: (usuario: string, /* email: string,  */password: string, dni: string) => Promise<boolean>;
   loginGonzaMejorado2: (usuario: string, password: string, ) => Promise<boolean>;
@@ -93,6 +98,7 @@ export interface AuthState {
   GuardarIdCartillaSeleccionada: (idCartilla: string, nombreEspecialidadSeleccionada: string) => Promise<any[]>;
   setShouldUpdateNotifications: (estado: boolean) => void;
   guardarDatosLoginEnContext: (idAfiliado: string) => Promise<boolean>;
+
   guardarDatosLoginEnContextMejorada: (idAfiliado: string) => Promise<boolean>;
 
   /* prueba de persistencia de datos luego de cerrar app */
@@ -134,7 +140,11 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   setUserLastName: (UserLastName) => set({ UserLastName }),
   getUserName: () => get().UserName,
   getUserLastName: () => get().UserLastName,
+  actualizacionDisponible: false, // Valor inicial
+  setActualizacionDisponible: (estado) => set({ actualizacionDisponible: estado }),
   actualizarNotificaciones: false,
+  hasCheckedForUpdate: false, // Inicialmente no se ha chequeado
+  setHasCheckedForUpdate: (estado) => set({ hasCheckedForUpdate: estado }),
   setShouldUpdateNotifications: (value: boolean) => set({ actualizarNotificaciones: value }),
 
   loginGonzaMejorado: async (usuario: string, password: string, dni: string) => {

@@ -43,7 +43,8 @@ interface AutorizadasData {
 }
 
 export const Buzon = () => {
-  const { idAfiliado } = useAuthStore();
+  const { idAfiliado, actualizacionDisponible } = useAuthStore();
+  console.log('El estado de actualizacionDisponible es:::::-->', actualizacionDisponible);
  /*  console.log('idAfiliado es---------------------->:', idAfiliado); */
   
 
@@ -72,6 +73,7 @@ export const Buzon = () => {
 
   useEffect(() => {
     console.log('Se ha activado el useEffect de Buzon');
+  
     setIsConsulting(true);
     const ProductsRequest = async () => {
       /* let camote = '301936D8-6482-4625-82DD-38A932A4FC5A' */
@@ -774,6 +776,33 @@ export const Buzon = () => {
 
          <BuzonOrdenesC/> 
         {/*  <NotificacionesGenericas/>  */}
+
+        {actualizacionDisponible && (
+          <View style={styles.ContainerEstudiosMedicosTitleAfuera} >
+        <Pressable
+        onPress={() => {
+          console.log('se tocó el titulo actualizar');
+          Linking.openURL('https://play.google.com/store/apps/details?id=com.ar.andessalud.andessalud')
+        }
+        }
+        >
+          <Text style={styles.titleEstudiosMedicosAfuera}  >
+          Actualizar App
+          </Text>
+        </Pressable>
+        </View >
+        /*  <View style={styles.ContainerEstudiosMedicosTitleAfuera} >
+          <Pressable
+            onPress={() => {
+              console.log('se toco el titulo estudios medicos');
+              modifyEstMedicVisible()
+            }
+            }
+          >
+            <Text style={styles.titleEstudiosMedicosAfuera} >Estudios Médicos:</Text>
+          </Pressable>
+        </View> */
+      )}
 
       </View >
     </View >
