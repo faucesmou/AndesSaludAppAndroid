@@ -110,7 +110,7 @@ export const HomeScreenUxNew = () => {
       const data = await loadAuthData();
       if (data) {
         setAuthData(data);
-        console.log('Datos de autenticación cargados en el contexto desde AsyncStorage:', data);
+        console.log('Datos de autenticación cargados en el contexto desde AsyncStorage:');
       }
     };
     fetchAuthData();
@@ -137,21 +137,19 @@ console.log('.......status---->>>', status); */
     // Función para recortar el nombre a las primeras 3 palabras si excede el límite
 const recortarNombre = (texto: string | null) => {
 const palabras = texto.split(' ').filter(palabra => palabra !== ''); // Separar palabras
-if (palabras.length > 3) {
-  return palabras.slice(0, 3).join(' '); // Recortar y unir las primeras 3 palabras
+if (palabras.length > 2) {
+  return palabras.slice(0, 4).join(' '); // Recortar y unir las primeras 2 palabras
 }
 return texto; // Devolver el texto original si tiene 3 o menos palabras
 };
 
-  useEffect(() => {
-
-
-
-    console.log('entrando al useEffect----->');
-    const currentUserNameInicial = getUserName(); // Obtención síncrona del nombre
-
 // Aplicar recorte al nombre antes de usarlo
 /* const nombreRecortado = recortarNombre(currentUserNameInicial); */
+
+  useEffect(() => {
+
+    console.log('entrando al useEffect----->');
+    const currentUserNameInicial = getUserName(); 
 
     if (currentUserNameInicial) {
       const capitalizedUserName = capitalizeWords(currentUserNameInicial);
@@ -317,7 +315,7 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
       if (!permission) {
         setModalVisible(true);
       } else if (permission === 'granted') {
-        console.log('El permiso ya ha sido concedido capo')
+        console.log('El permiso ya ha sido concedido ')
         //revisar si hace falta activar de nuevo el token
         //registerForPushNotifications() 
         // Activar función si ya ha permitido notificaciones ESTO DEBE HACERSE SIEMPRE ? 
@@ -549,8 +547,9 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
             >
               <View style={styles.modalOverlay}>
                 <View style={styles.modalContainer}>
-                  <Text style={styles.modalTitle}>Ya puedes descargar la nueva actualización de nuestra App!</Text>
-                  <Text style={styles.modalMessage}>¡Esto te permitirá disfrutar de las mejoras más recientes!</Text>
+                  <Text style={styles.modalTitle}>¡Hay una nueva versión disponible! </Text>
+                  <Text style={styles.modalMessage}>Actualizá tu app para disfrutar de las últimas mejoras.</Text>
+                  <Text style={styles.modalMessage}>Si preferís hacerlo más tarde, podés acceder al enlace desde tu Buzón.</Text>
                   <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.allowButton} onPress={handleActualizar}>
                       <Text style={styles.buttonText}>Actualizar</Text>
@@ -1065,21 +1064,23 @@ const styles = StyleSheet.create({
   modalContainer: {
     width: '80%',
     backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
+    borderRadius: 20,
+    padding: wp('3.5%'),
     alignItems: 'center',
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: wp('4.8%'),
     fontWeight: 'bold',
-    marginVertical: 10,
-    color: '#ff5c5c',
+    marginVertical: wp('2%'),
+    color: '#ff4c4c' /* '#ff5c5c' */,
+    textAlign: 'center',
   },
   modalMessage: {
-    fontSize: 16,
+    fontSize: wp('4%'),
     textAlign: 'center',
-    marginBottom: 20,
-    color: '#333',
+    marginBottom: wp('2%'),
+    color: '#555555',
+   /*  fontWeight:'bold' */
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -1087,14 +1088,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   allowButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#4CAF50',/* '#28a745' */
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginRight: 10,
   },
   denyButton: {
-    backgroundColor: '#dc3545',
+    backgroundColor: '#dc3545',/* '#98FB98' */
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,
