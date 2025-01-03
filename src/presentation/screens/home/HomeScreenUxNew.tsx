@@ -22,6 +22,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import messaging from '@react-native-firebase/messaging';
 import axios from 'axios';
+
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { loadAuthData } from '../../store/auth/authService';
@@ -309,13 +311,13 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
     const checkPermission = async () => {
       /* console.log('Se ejecutó el chequeo para saber si el usuario ya concedió permiso ') */
 
-      const permission = await AsyncStorage.getItem('notificationPermission');
+      const permission = await AsyncStorage.getItem('notificationPermissionn');
 
       // Mostrar el modal si nunca ha seleccionado permitir o denegar
       if (!permission) {
         setModalVisible(true);
       } else if (permission === 'granted') {
-        console.log('El permiso ya ha sido concedido ')
+        console.log('El permiso ya ha sido concedido cambiar a !permission antes de salir ')
         //revisar si hace falta activar de nuevo el token
         //registerForPushNotifications() 
         // Activar función si ya ha permitido notificaciones ESTO DEBE HACERSE SIEMPRE ? 
@@ -331,20 +333,29 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
       await messaging().requestPermission(); // Solicitar permiso al sistema
       const token = await messaging().getToken();
       console.log('el token obtenido es---->', token)
-      await axios.post('https://gmfp.createch.com.ar/api/notificaciones', { token });
+      await axios.post('https://gmfp.createch.com.ar/api/notificacionesPrueba', { token });
     } catch (error) {
-      console.error("Error al obtener o enviar el token FCM:-->", error);
+      console.log("Error al obtener o enviar el token desde la original FCM:-->", error);
+      if (error.response) {
+        console.log('Respuesta del servidor:error.response.data>', error.response.data);
+        console.log('Estado del servidor:error.response.status>', error.response.status);
+      } else if (error.request) {
+        console.log('La solicitud fue hecha pero no se recibió respuesta alguna');
+      } else {
+        console.log('Error en la configuración:error.message>', error.message);
+      }
     }
   };
-/* funcion para gestionar el permiso concedido a notificaciones push */
+
+
   const handleAllow = async () => {
     setModalVisible(false);
     await AsyncStorage.setItem('notificationPermission', 'granted');
-    registerForPushNotifications(); // Llamar a la función para registrar el token
+    registerForPushNotifications(); 
     setModalVisibleGracias(true)
 
   };
-/* funcion para gestionar el permiso concedido a notificaciones push */
+/* funcion para gestionar la redireccion a un actualización disponible en play store */
   const handleActualizar = async () => { 
     setMostrarActualizacion(false);
     try {

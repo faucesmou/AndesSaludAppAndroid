@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Dimensions, Linking } from 'react-native'
+import { Text, View, Dimensions, Linking, ScrollView } from 'react-native'
 import { StackActions, type NavigationProp, useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAuthStore } from '../../../store/auth/useAuthStore'
@@ -132,6 +132,10 @@ export const SettingsScreen = () => {
       <BackButton />
       {/*    <Text style={{marginBottom: 10}}> Settings Screen</Text> */}
 
+<ScrollView>
+
+  
+
       <MisDatosScreen />
 
       <TertiaryButton
@@ -195,6 +199,8 @@ export const SettingsScreen = () => {
     
       /> */}
 
+
+</ScrollView>
     </View>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View,TouchableOpacity, Clipboard  } from 'react-native'
+import { Dimensions, StyleSheet, Text, View,TouchableOpacity, Clipboard, ScrollView  } from 'react-native'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { globalColors, globalStyles } from '../../theme/theme'

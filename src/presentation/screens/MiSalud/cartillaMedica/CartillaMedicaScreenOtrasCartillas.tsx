@@ -18,6 +18,8 @@ import { RootStackParams } from '../../../routes/StackNavigator';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
 
+
+
 export const CartillaMedicaScreenOtrasCartillas = () => {
   console.log('Entrando a CARTILLA MEDICA------->');
   const { idAfiliadoTitular, idAfiliado, GuardarIdCartillaSeleccionada } = useAuthStore();
