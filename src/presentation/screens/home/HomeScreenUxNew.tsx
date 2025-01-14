@@ -317,7 +317,7 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
       if (!permission) {
         setModalVisible(true);
       } else if (permission === 'granted') {
-        console.log('El permiso ya ha sido concedido cambiar a !permission antes de salir ')
+        console.log('El permiso ya ha sido concedido cambiar a  ')
         //revisar si hace falta activar de nuevo el token
         //registerForPushNotifications() 
         // Activar función si ya ha permitido notificaciones ESTO DEBE HACERSE SIEMPRE ? 

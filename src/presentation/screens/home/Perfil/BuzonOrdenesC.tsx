@@ -34,7 +34,7 @@ interface Rechazo {
   idOrden: string,
   estado: string;
   comentarioRechazo: string;
-  nombrePrestacion:string;
+  nombrePrestacion: string;
 }
 interface AutorizadasData {
 
@@ -96,31 +96,31 @@ export const BuzonOrdenesC = () => {
 
 
   // Obtener las notificaciones y la función para actualizarlas del store
- /*  const orderNotifications = useNotificationStore.getState().orderNotifications; */
-/*   const setOrderNotifications = useNotificationStore((state) => state.setOrderNotifications); */
-const { orderNotifications, setOrderNotifications } = useNotificationStore.getState();
-/*   const notifications = useNotificationStore((state) => state.notifications);
-  const setNotifications = useNotificationStore((state) => state.setNotifications); */
+  /*  const orderNotifications = useNotificationStore.getState().orderNotifications; */
+  /*   const setOrderNotifications = useNotificationStore((state) => state.setOrderNotifications); */
+  const { orderNotifications, setOrderNotifications } = useNotificationStore.getState();
+  /*   const notifications = useNotificationStore((state) => state.notifications);
+    const setNotifications = useNotificationStore((state) => state.setNotifications); */
 
   useEffect(() => {
     console.log('Se ha activado el useEffect de BuzonOrdenesC');
     setIsConsulting(true);
 
     const CombinedData2 = async () => {
-      
+
       try {
         setIsConsulting(true);
         const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPBuzonActualizarORDENAMB?idAfiliado=${idAfiliado}&IMEI=`);
 
         const xmlData = response.data;
         const result = xml2js(xmlData, { compact: true });
-  
+
         // Extraer datos de tablaDatos y tablaDetalle
         //@ts-ignore
         const tablaDatos = result.Resultado?.tablaDatos;
-         //@ts-ignore
+        //@ts-ignore
         const tablaDetalle = result.Resultado?.tablaDetalle;
-        
+
 
         if (!tablaDatos || !tablaDetalle) {
           console.log('En CombinedData tablaDatos o tablaDetalle es undefined: No hay datos disponibles.');
@@ -129,9 +129,9 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
           return;
         }
 
-   /*      function extractData(data: any[]): string[] {
-          return data ? data.map((item: any) => (item._text || '').trim()) : [];
-        } */
+        /*      function extractData(data: any[]): string[] {
+               return data ? data.map((item: any) => (item._text || '').trim()) : [];
+             } */
 
         // Definir y verificar los datos extraídos
         const idOrden = tablaDatos.idOrden ? tablaDatos.idOrden.map((item: any) => (item._text || '').trim()) : [];
@@ -171,7 +171,7 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
           codPrestacion: codPrestacion[index] || ''
         }));
 
-     /*    console.log('Datos combinados----------------------------->>>:', combinedData);  */
+        /*    console.log('Datos combinados----------------------------->>>:', combinedData);  */
 
         // Primero, definimos una función para convertir las fechas a objetos Date
         const parseDate = (dateString: string) => {
@@ -190,39 +190,39 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
 
         // Calcular la fecha de hace 2 semanas desde 'now'
         const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
-   /*      console.log('Fecha de hace 2 semanas:', twoWeeksAgo); */
+        /*      console.log('Fecha de hace 2 semanas:', twoWeeksAgo); */
         // Calcular la fecha de hace 1 semana desde 'now'
         const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-/*         console.log('Fecha de hace 1 semana:', oneWeekAgo); */
+        /*         console.log('Fecha de hace 1 semana:', oneWeekAgo); */
 
         // Filtramos las notificaciones basándonos en la fecha de vencimiento
         const filteredNotificaciones = combinedData.filter((notificacion: Notificacion) => {
           const fecFinalizacionDate = parseDate(notificacion.fecVencimiento);
-       /*    console.log('fecFinalizacionDate: ', fecFinalizacionDate); */
+          /*    console.log('fecFinalizacionDate: ', fecFinalizacionDate); */
           return fecFinalizacionDate >= twoWeeksAgo;
           /*  Retenemos solo las notificaciones cuya fecha de vencimiento es igual o posterior a la fecha actual ( return fecFinalizacionDate >= twoWeeksAgo; )
           o a la fecha dos semanas posterior al vencimiento:  return fecFinalizacionDate >= twoWeeksAgo; */
         });
 
         /* Se ordenan de la mas reciente a la mas antigua: */
-        const notificacionesOrdenadas = filteredNotificaciones.sort((a:any, b:any) => {
+        const notificacionesOrdenadas = filteredNotificaciones.sort((a: any, b: any) => {
           const dateA = parseDate(a.fecSolicitud);
           const dateB = parseDate(b.fecSolicitud);
           return dateB.getTime() - dateA.getTime();
         })
 
         setNotificacionesOrdenConsulta(notificacionesOrdenadas);
-       
+
         setIsConsulting(false);
-    
+
       } catch (error) {
         console.log('Error al obtener combinar y guardar los datos de ordenes de consulta:', error);
         setIsConsulting(false);
-       /*  setModalVisible2(true); */
+        /*  setModalVisible2(true); */
       }
     };
-    
- CombinedData2()
+
+    CombinedData2()
 
   }, [/* idAfiliado, */ listadoEstMedicosVisible]);
 
@@ -230,75 +230,75 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
     afiliado: string,
     idOrden: string,
     estado: string,
-    codAutorizacion:string,
+    codAutorizacion: string,
     fecVencimiento: string,
     nombrePrestacion: string,
     prestador: string,
     dom1Prestador: string,
     dom2Prestador: string,
     coseguro: string,
-    ) => {
-      const { orderNotifications, setOrderNotifications } = useNotificationStore.getState();
+  ) => {
+    const { orderNotifications, setOrderNotifications } = useNotificationStore.getState();
     console.log('Se activo PracticaResueltaRequest de BuzonOrdenesC. Id de la Consulta Seleccionada->:', idOrden);
-   try {
-    if (estado === 'RECHAZOPRACTICA' ) {
-      console.log('En PracticaResueltaRequest de orden de consulta el estado === RECHAZOPRACTICA ');
-      setIsConsulting(false);
-      const rechazoInfo = [{
+    try {
+      if (estado === 'RECHAZOPRACTICA') {
+        console.log('En PracticaResueltaRequest de orden de consulta el estado === RECHAZOPRACTICA ');
+        setIsConsulting(false);
+        const rechazoInfo = [{
+          idOrden: idOrden,
+          estado: 'Esta practica fue rechazada',
+          nombrePrestacion: nombrePrestacion,
+          comentarioRechazo: '',
+        }];
+        setRechazoData(rechazoInfo)
+        setModalVisible3(true);
+
+        // Mapeamos las notificaciones y actualizamos solo la que corresponde a idOrden
+        const updatedNotifications = orderNotifications.map(notification =>
+          notification.idOrden === idOrden
+            ? { ...notification, visto: 'visto' }
+            : notification
+        );
+
+        setOrderNotifications(updatedNotifications); /* este es el context */
+
+        return;
+      }
+      const ordenInfo = [{
+        afiliado: afiliado,
         idOrden: idOrden,
-        estado: 'Esta practica fue rechazada',
+        estado: estado,
+        codAutorizacion: codAutorizacion,
+        fecVencimiento: fecVencimiento,
         nombrePrestacion: nombrePrestacion,
         comentarioRechazo: '',
+        prestador: prestador,
+        dom1Prestador: dom1Prestador,
+        dom2Prestador: dom2Prestador,
+        coseguro: coseguro,
       }];
-      setRechazoData(rechazoInfo)
-      setModalVisible3(true);
 
- // Mapeamos las notificaciones y actualizamos solo la que corresponde a idOrden
- const updatedNotifications = orderNotifications.map(notification =>
-  notification.idOrden === idOrden
-    ? { ...notification, visto: 'visto' }
-    : notification
-);
 
-      setOrderNotifications(updatedNotifications); /* este es el context */
-     
-      return;
-    }
-    const ordenInfo = [{
-      afiliado: afiliado,
-      idOrden: idOrden,
-      estado: estado,
-      codAutorizacion: codAutorizacion,
-      fecVencimiento: fecVencimiento,
-      nombrePrestacion: nombrePrestacion,
-      comentarioRechazo: '',
-      prestador: prestador,
-      dom1Prestador: dom1Prestador,
-      dom2Prestador: dom2Prestador,
-      coseguro: coseguro,
-    }];
-  
+      // Actualizamos el contexto para avisar que la notificación fue vista
 
-     // Actualizamos el contexto para avisar que la notificación fue vista
-  
-     const updatedNotifications = orderNotifications.map(notification =>
-       notification.idOrden === idOrden
-         ? { ...notification, visto: 'visto' }
-         : notification
-     );
- 
-     setOrderNotifications(updatedNotifications); // Actualizar el estado global
+      const updatedNotifications = orderNotifications.map(notification =>
+        notification.idOrden === idOrden
+          ? { ...notification, visto: 'visto' }
+          : notification
+      );
+
+      setOrderNotifications(updatedNotifications); // Actualizar el estado global
 
       //Actualizamos el contexto para avisar que la notificacion fue vista
       // consultamos el context para que modifique solo la que abre el usuario:
-      
 
-    setModalData(ordenInfo);
-    setModalVisible(true);
-  } catch(error){
-    console.error('Error al obtener las notificaciones de ordenes de consulta (BuzonOrdenesC):', error);
-    setModalVisible2(true);
-  }
+
+      setModalData(ordenInfo);
+      setModalVisible(true);
+    } catch (error) {
+      console.error('Error al obtener las notificaciones de ordenes de consulta (BuzonOrdenesC):', error);
+      setModalVisible2(true);
+    }
   }
 
   const getButtonText = (notificacion: string) => {
@@ -325,18 +325,18 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
     setListadoEstMedicosVisible(prevState => !prevState);
   };
 
-  function capitalizeWords(string:string) {
-    return string.replace(/\b\w+/g, function(word) {
+  function capitalizeWords(string: string) {
+    return string.replace(/\b\w+/g, function (word) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     });
   }
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   return (
     <>
-     <View style={styles.ContainerEstudiosMedicosTitleAfuera} >
+      <View style={styles.ContainerEstudiosMedicosTitleAfuera} >
         <Pressable
           onPress={() => {
-           
+
             modifyEstMedicVisible()
           }
           }
@@ -348,13 +348,13 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
         (
           <View style={{ marginBottom: 40, marginTop: 5, /* backgroundColor: 'blue', */ maxHeight: '89%', minHeight: '40%', width: '100%', marginHorizontal: wp('9%'), }}>
 
-<ScrollView nestedScrollEnabled={true}>
-            
-            {isConsulting ?
-              (
-                <View style={styles.LoaderContainer}>
+            <ScrollView nestedScrollEnabled={true}>
 
-                  <View style={styles.noDataContainer}>
+              {isConsulting ?
+                (
+                  <View style={styles.LoaderContainer}>
+
+                    <View style={styles.noDataContainer}>
                       <Text style={styles.noDataText}>
                         Aguardá un momento
                       </Text>
@@ -363,132 +363,132 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
                       </Text>
 
                     </View>
-                  <FullScreenLoader />
-                </View>
-              )
-              :
-              error ? (
-                <>
-                  <View style={styles.errorContainerBuzon} >
-                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>  
+                    <FullScreenLoader />
+                  </View>
+                )
+                :
+                error ? (
+                  <>
+                    <View style={styles.errorContainerBuzon} >
+                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
 
-                  <View style={styles.imageContainer}>
+                      <View style={styles.imageContainer}>
 
-                    <View
-                      style={styles.innerContainer}
-                    >
-                      <Image source={require('../../../assets/images/logogris.png')}
-                        style={styles.image}
-                        resizeMode="contain"
-                      />
+                        <View
+                          style={styles.innerContainer}
+                        >
+                          <Image source={require('../../../assets/images/logogris.png')}
+                            style={styles.image}
+                            resizeMode="contain"
+                          />
+                        </View>
+
+                      </View>
                     </View>
 
-                  </View>
-                  </View>
+                  </>
+                ) :
+                  notificacionesOrdenConsulta.length > 0 ?
+                    (
+                      <>
 
-                </>
-              ) :
-              notificacionesOrdenConsulta.length > 0 ?
-                  (
-                    <>
-                     
-                     <Text style={{
-        marginBottom: wp('2%'),
-        marginTop: 0,
-        fontSize: hp('2%'),
-        textAlign: 'center',
-        color: globalColors.gray2,
-        fontWeight: 'bold',
-        marginHorizontal: wp('9%'),
-      }}>Presiona en las notificaciones para acceder a los detalles:</Text>
-                      {notificacionesOrdenConsulta.map((notificacion, index) => (
-                      <Pressable
-                      key={index} 
-                        onPress={() => {
-                         PracticaResueltaRequest(
-                          notificacion.afiliado,
-                          notificacion.idOrden, 
-                          notificacion.codEstado,
-                          notificacion.codAutorizacion, 
-                          notificacion.fecVencimiento,
-                          notificacion.nombrePrestacion,
-                          notificacion.prestador,
-                          notificacion.dom1Prestador,
-                           notificacion.dom2Prestador,
-                          notificacion.coseguro,
-                           ) 
-                        }}
+                        <Text style={{
+                          marginBottom: wp('2%'),
+                          marginTop: 0,
+                          fontSize: hp('2%'),
+                          textAlign: 'center',
+                          color: globalColors.gray2,
+                          fontWeight: 'bold',
+                          marginHorizontal: wp('9%'),
+                        }}>Presiona en las notificaciones para acceder a los detalles:</Text>
+                        {notificacionesOrdenConsulta.map((notificacion, index) => (
+                          <Pressable
+                            key={index}
+                            onPress={() => {
+                              PracticaResueltaRequest(
+                                notificacion.afiliado,
+                                notificacion.idOrden,
+                                notificacion.codEstado,
+                                notificacion.codAutorizacion,
+                                notificacion.fecVencimiento,
+                                notificacion.nombrePrestacion,
+                                notificacion.prestador,
+                                notificacion.dom1Prestador,
+                                notificacion.dom2Prestador,
+                                notificacion.coseguro,
+                              )
+                            }}
 
-                      >
-                        <View style={styles.TertiaryButton}>
-                          {/*  <Text style={{ fontSize: 16, textAlign: 'center' }}>{notificacion.afiliado}</Text> */}
-                          <View style={styles.contentWrapper2}>
-                            <View style={styles.textWrapper}>
+                          >
+                            <View style={styles.TertiaryButton}>
+                              {/*  <Text style={{ fontSize: 16, textAlign: 'center' }}>{notificacion.afiliado}</Text> */}
+                              <View style={styles.contentWrapper2}>
+                                <View style={styles.textWrapper}>
 
-                              {notificacion.afiliado && (
-                                <Text style={styles.buttonText}>
-                                  {/* {notificacion.afiliado} */}
-                                  {capitalizeWords(notificacion.afiliado)}
-                                </Text>
-                              )}
-                              {notificacion.codEstado && (
-                                <Text style={styles.descriptionText}>
+                                  {notificacion.afiliado && (
+                                    <Text style={styles.buttonText}>
+                                      {/* {notificacion.afiliado} */}
+                                      {capitalizeWords(notificacion.afiliado)}
+                                    </Text>
+                                  )}
+                                  {notificacion.codEstado && (
+                                    <Text style={styles.descriptionText}>
 
-                                  Estado:{
-                                    getButtonText(notificacion.codEstado)
-                                  }
-                                </Text>
-                              )}
-                              {notificacion.fecSolicitud && (
-                                <Text style={styles.descriptionText}>
-                                  Solicitud: {notificacion.fecSolicitud}
-                                </Text>
-                              )}
+                                      Estado:{
+                                        getButtonText(notificacion.codEstado)
+                                      }
+                                    </Text>
+                                  )}
+                                  {notificacion.fecSolicitud && (
+                                    <Text style={styles.descriptionText}>
+                                      Solicitud: {notificacion.fecSolicitud}
+                                    </Text>
+                                  )}
+                                </View>
+
+                              </View>
+
+                            </View>
+                          </Pressable>
+                        )
+                        )}
+                      </>
+                    ) :
+                    (
+                      <>
+                        <View style={styles.errorContainerBuzon} >
+                          <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
+
+                          <View style={styles.imageContainer}>
+
+                            <View
+                              style={styles.innerContainer}
+                            >
+                              <Image source={require('../../../assets/images/logogris.png')}
+                                style={styles.image}
+                                resizeMode="contain"
+                              />
                             </View>
 
                           </View>
-
                         </View>
-                      </Pressable>
-                      )
-                      ) }  
-                    </>
-                  ) :
-                  (
-                    <>
-                    <View style={styles.errorContainerBuzon} >
-                        <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>  
-  
-                    <View style={styles.imageContainer}>
-  
-                      <View
-                        style={styles.innerContainer}
-                      >
-                        <Image source={require('../../../assets/images/logogris.png')}
-                          style={styles.image}
-                          resizeMode="contain"
-                        />
-                      </View>
-  
-                    </View>
-                    </View>
-  
-                  </>
-                  )
-            }
-       
-            
-            <>
-              {modalVisible && (
-                <View style={styles.overlay} />
-              )}
+
+                      </>
+                    )
+              }
+
+
+              <>
+                {modalVisible && (
+                  <View style={styles.overlay} />
+                )}
 
                 <Modal
                   /*    key={index} */
                   animationType="fade"
                   // La animación de entrada y salida duracion en milisegundos
-                /*   animationInTiming={50} 
-                  animationOutTiming={50}  */
+                  /*   animationInTiming={50} 
+                    animationOutTiming={50}  */
                   transparent={true}
                   visible={modalVisible}
                   onRequestClose={closeModal}
@@ -538,87 +538,87 @@ const { orderNotifications, setOrderNotifications } = useNotificationStore.getSt
                     </View>
                   </View>
                 </Modal>
-            </>
-            <>
-              {modalVisible3 && (
-                <View style={styles.overlay} />
-              )}
+              </>
+              <>
+                {modalVisible3 && (
+                  <View style={styles.overlay} />
+                )}
 
-              <Modal
-                /*    key={index} */
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible3}
-                onRequestClose={closeModal}
-              >
-              
-                <View style={styles.centeredView}>
-                  <View style={styles.modalViewEstudioRechazado}>
-                    <Text style={styles.textStyletTitle}>Órden rechazada: </Text>
-                    <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
-                      {rechazoData.map((data, index) => (
-                        <>
-                          <View style={{ marginTop: 10, marginBottom: 20 }}>
+                <Modal
+                  /*    key={index} */
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalVisible3}
+                  onRequestClose={closeModal}
+                >
 
-                            <Text style={styles.textStyleOrdenRechazada}>idOrden: {data.idOrden}</Text>
-                            <Text style={styles.textStyleOrdenRechazada}>Estado: {data.estado}</Text>
-                            {/* <Text style={styles.textStyleOrdenRechazada}>Detalle: {data.comentarioRechazo}</Text> */}
-                          
-                          </View>
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalViewEstudioRechazado}>
+                      <Text style={styles.textStyletTitle}>Órden rechazada: </Text>
+                      <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
+                        {rechazoData.map((data, index) => (
+                          <>
+                            <View style={{ marginTop: 10, marginBottom: 20 }}>
 
-                          <Divider />
-                        </>
-                      ))}
-                    </ScrollView>
-                    <Pressable
-                      style={styles.button}
-                      onPress={closeModal}
-                    >
-                      <Text style={styles.textCloseStyle}>Cerrar</Text>
-                    </Pressable>
+                              <Text style={styles.textStyleOrdenRechazada}>idOrden: {data.idOrden}</Text>
+                              <Text style={styles.textStyleOrdenRechazada}>Estado: {data.estado}</Text>
+                              {/* <Text style={styles.textStyleOrdenRechazada}>Detalle: {data.comentarioRechazo}</Text> */}
+
+                            </View>
+
+                            <Divider />
+                          </>
+                        ))}
+                      </ScrollView>
+                      <Pressable
+                        style={styles.button}
+                        onPress={closeModal}
+                      >
+                        <Text style={styles.textCloseStyle}>Cerrar</Text>
+                      </Pressable>
+                    </View>
                   </View>
-                </View>
-              </Modal>
-            </>
-            <>
-              {modalVisible2 && (
-                <View style={styles.overlay} />
-              )}
+                </Modal>
+              </>
+              <>
+                {modalVisible2 && (
+                  <View style={styles.overlay} />
+                )}
 
-              <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible2}
-                onRequestClose={closeModal}
-              >
-              
-                <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                    <Text style={styles.textStyletTitlePracticaNoEncontrada}>No se encontró la solicitud de práctica indicada</Text>
-                    <Text style={styles.textStyletTitlePracticaNoEncontrada}>Por favor intente nuevamente más tarde</Text>
-                    <Pressable
-                      style={styles.button}
-                      onPress={closeModal}
-                    >
-                      <Text style={styles.textCloseStyle}>Cerrar</Text>
-                    </Pressable>
+                <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalVisible2}
+                  onRequestClose={closeModal}
+                >
+
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <Text style={styles.textStyletTitlePracticaNoEncontrada}>No se encontró la solicitud de práctica indicada</Text>
+                      <Text style={styles.textStyletTitlePracticaNoEncontrada}>Por favor intente nuevamente más tarde</Text>
+                      <Pressable
+                        style={styles.button}
+                        onPress={closeModal}
+                      >
+                        <Text style={styles.textCloseStyle}>Cerrar</Text>
+                      </Pressable>
+                    </View>
                   </View>
-                </View>
-              </Modal>
+                </Modal>
               </>
             </ScrollView>
 
-      </View>
-          ) :
-          (
-            <></>
-         
-          )
-        }
+          </View>
+        ) :
+        (
+          <></>
+
+        )
+      }
     </>
   );
 };
- {/* <Pressable
+{/* <Pressable
             style={styles.button}
            
           >
@@ -635,8 +635,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: wp('20%'),
     minWidth: wp('20%'),
-    maxHeight:wp('20%'),
-   
+    maxHeight: wp('20%'),
+
   },
   innerContainer: {
     /* marginBottom: 15,
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
-     /* backgroundColor: 'blue', */
+    /* backgroundColor: 'blue', */
   },
   image: {
     /*   flex: 1, */
@@ -708,8 +708,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'black',
-/*     fontSize: 18, */
-     fontSize: hp('1.9%'),
+    /*     fontSize: 18, */
+    fontSize: hp('1.9%'),
     fontWeight: 'normal',
   },
   descriptionText: {
@@ -718,47 +718,47 @@ const styles = StyleSheet.create({
   },
   errorContainerBuzon: {
     marginTop: hp('1%'),
-    marginBottom:wp('1%'),
+    marginBottom: wp('1%'),
     padding: 10,
-/*     backgroundColor: 'violet', */
+    /*     backgroundColor: 'violet', */
     borderRadius: 5,
-    marginHorizontal:35,
+    marginHorizontal: 35,
   },
   ContainerEstudiosMedicosTitleAfuera: {
     marginTop: 10,
-    marginBottom:5,
+    marginBottom: 0,
     padding: 5,
     backgroundColor: globalColors.white22 /* yellow3 *//*  '#9dcaf1' *//* '#d7e5f8' */,
     borderRadius: 15,
-    borderWidth:0,
+    borderWidth: 0,
     borderColor: globalColors.white22,
-    marginHorizontal:10,
-    minWidth:'80%',
-    maxWidth:'80%',
+    marginHorizontal: 10,
+    minWidth: '80%',
+    maxWidth: '80%',
   },
   titleEstudiosMedicosAfuera: {
     marginBottom: 5,
     fontSize: hp('2.5%'),
     fontFamily: 'Quicksand-Light',
     textAlign: 'center',
-    minWidth:'100%',
-    color:'white',
-    fontWeight:'bold',
+    minWidth: '100%',
+    color: 'white',
+    fontWeight: 'bold',
   },
   ContainerEstudiosMedicosTitle: {
     marginTop: 10,
-    marginBottom:5,
+    marginBottom: 5,
     padding: 5,
     backgroundColor: '#9dcaf1'/* '#d7e5f8' */,
     borderRadius: 5,
-    marginHorizontal:35,
+    marginHorizontal: 35,
   },
   titleErrorBuzon: {
     marginBottom: 5,
     fontSize: 18,
     fontFamily: 'Quicksand-Light',
     textAlign: 'center',
-    marginHorizontal:20,
+    marginHorizontal: 20,
     color: 'black'
   },
   titleEstudiosMedicos: {
@@ -818,22 +818,22 @@ const styles = StyleSheet.create({
     maxHeight: '30%', // Ajusta la altura según sea necesario
   },
   // altura del scrollView: 
-   scrollViewContent: {
+  scrollViewContent: {
     flexGrow: 0,
   },
   button: {
     borderRadius: 25,
     borderColor: 'gray',
     paddingHorizontal: 25,
-    paddingVertical:10,
+    paddingVertical: 10,
     borderWidth: 0.3,
   },
   textStyle: {
     color: 'black',
     fontWeight: 'normal',
-   /*  textAlign: 'justify', */
+    /*  textAlign: 'justify', */
     marginTop: 7,
-/*     lineHeight: 18, */
+    /*     lineHeight: 18, */
   },
   textContenedorMensajeCod: {
     color: 'black',
@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
     textAlign: 'center',
-   
+
   },
   valueCoseguro: {
     color: '#cf6c2f',
@@ -865,13 +865,13 @@ const styles = StyleSheet.create({
   textStyleOrdenConsulta: {
     color: 'black',
     fontWeight: 'normal',
- /*    textAlign: 'justify', */
+    /*    textAlign: 'justify', */
     marginTop: 7,
   },
   textStyleOrdenRechazada: {
     color: 'black',
     fontWeight: 'normal',
-/*     textAlign: 'justify', */
+    /*     textAlign: 'justify', */
     marginTop: 7,
   },
   textStyletTitle: {
@@ -888,7 +888,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 4,
     fontSize: 18,
-    marginBottom:5,
+    marginBottom: 5,
   },
   textStylePractica: {
     color: 'black',
@@ -918,7 +918,7 @@ const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
     overflow: 'hidden',
-   /*  top: 0, */
+    /*  top: 0, */
     left: 0,
     right: 0,
     bottom: 0,
@@ -936,13 +936,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: wp('5%'),
-    marginTop:wp('0%'),
+    marginTop: wp('0%'),
   },
   noDataText: {
     fontSize: wp('4%'),
     color: 'gray',
     textAlign: 'center',
-    marginTop:wp('0%'),
+    marginTop: wp('0%'),
   },
 
 });

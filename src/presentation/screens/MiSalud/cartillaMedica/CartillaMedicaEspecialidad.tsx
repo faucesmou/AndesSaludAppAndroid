@@ -79,8 +79,6 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
     });
   }
 
-  
-
   useEffect(() => {
 
     const CartillaRequest = async () => {

@@ -18,13 +18,11 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 
 interface Notificacion {
-  idOrden: string;
-  afiliado: string;
-  fecSolicitud: string;
-  estado: string;
-  domicilio?: string;
-  fecFinalizacion: string;
-  comentarioRechazo?: string;
+  id: string;
+  title: string;
+  body: string;
+  extraInfo: string;
+  timestamp: string;
 }
 interface Rechazo {
   idOrden: string,
@@ -41,17 +39,25 @@ interface AutorizadasData {
   prestacionDET: string;
 }
 
+interface Notification {
+  timestamp: string;
+  [key: string]: any; // Otras propiedades que puedan existir
+}
+
 export const NotificacionesGenericas = () => {
   const { idAfiliado } = useAuthStore();
   console.log('idAfiliado es---------------------->:', idAfiliado);
 
 
   const { top } = useSafeAreaInsets();
-  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
+  const [notificaciones, setNotificaciones] = useState([]);
+ /*  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]); */
+
   const [isConsulting, setIsConsulting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [listadoEstMedicosVisible, setListadoEstMedicosVisible] = useState(false);
+  const [listadoNotificacionesVisible, setlistadoNotificacionesVisible] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
@@ -80,36 +86,56 @@ export const NotificacionesGenericas = () => {
         setIsConsulting(true)
         const response = await axios({
           method: "get",
-          url: "https://jqsccdqrh0.execute-api.us-east-1.amazonaws.com/messages/unread",
+          url: "https://dzwytx4yka.execute-api.us-east-1.amazonaws.com/primera/messages",
           data: {}, // Enviar un objeto vacío como body
         });
+      
+        console.log("Datos recibidos------>:", response.data);
+        console.log("Tipo de response.data.body:", typeof response.data.body);
+console.log("Contenido de response.data.body:", response.data.body);
+        // Asegúrate de que response.data.body sea un array
+     /*  const dataNoti = Array.isArray(response.data.body) ? response.data.body : []; */
+     
+      const dataNoti = JSON.parse(response.data.body)
+      console.log("dataNoti--------->>>", dataNoti);
+     /*  setNotificaciones(dataNoti); */
+      /*   let dataNoti = response.data.body; */
+        console.log("response.data.body--EHEH---->:", response.data.body);
+
+            // Ordenar el array por timestamp en orden descendente
+    const sortedNoti = dataNoti.sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
+    // Tomar los primeros 4 objetos más recientes
+    const recentNoti = sortedNoti.slice(0, 4);
+
+    console.log("Notificaciones recientes (últimos 4):", recentNoti);
 
 
-        console.log("Datos recibidos:", response.data);
-
-        // Procesar y guardar los datos en el estado
-        const formattedData = response.data.map((notificacion:any) => ({
-          id: notificacion.messageId,
-          title: notificacion.title || "Sin título",
-          body: notificacion.messageBody || "Sin mensaje",
-          extraInfo: notificacion.extraInfo || "",
-          timestamp: notificacion.timestamp || "",
-        }));
-
-        console.log("formattedData--------->>>",formattedData );
-        setNotificaciones(formattedData); // Guardar las notificaciones formateadas
-        // Guardar los datos en el estado
-        setNotificaciones(response.data);
-        setIsConsulting(false)
+        setNotificaciones(recentNoti);
+       /*  console.log("notificaciones--------->>>", notificaciones);
+        setIsConsulting(false) */
       } catch (error) {
         console.error("Error al obtener las notificaciones:", error);
         setIsConsulting(false)
       }
     };
     fetchNotificaciones();
-  }, []);
+  }, [listadoNotificacionesVisible]);
+
+  useEffect(() => {
+    if (notificaciones.length > 0) {
+      console.log("notificaciones--------->>>", notificaciones);
+      setIsConsulting(false);
+    }
+  }, [notificaciones]); // Se ejecutará cada vez que notificaciones cambie
+
+  useEffect(() => {
     
- 
+    console.log("notificaciones actualizado:", notificaciones);
+    setIsConsulting(false);
+  }, [notificaciones]); // Se ejecutará cada vez que `notificaciones` cambie.
 
 
 
@@ -135,6 +161,9 @@ export const NotificacionesGenericas = () => {
   };
   const modifyEstMedicVisible = () => {
     setListadoEstMedicosVisible(prevState => !prevState);
+  };
+  const modifyNotificacionesVisible = () => {
+    setlistadoNotificacionesVisible(prevState => !prevState);
   };
 
   const handlePress = (idOrden: string/* url: string */) => {
@@ -192,298 +221,278 @@ export const NotificacionesGenericas = () => {
   const color = globalColors.gray;
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   /*  console.log('estas son las notificaciones:', notificaciones); */
+  console.log("notificaciones--------->>>", notificaciones); //BORRAR ESTOOOOO----------------------zzz
+
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingHorizontal: 10,
-        marginTop: 0,
-        backgroundColor: 'white',
-        marginBottom: 0,
-      }}
-    >
-      <CustomHeader /* color={globalColors.black}  */ titleSize={hp('4%')} />
+      
+    <>
 
-      <BackButton Size={hp('4%')} />
+      <View style={styles.ContainerEstudiosMedicosTitleAfuera} >
+        
+        <Pressable
+         onPress={() => {
+           console.log('se toco el titulo Notificaciones genéricas');
+           
+           modifyNotificacionesVisible()
+         }
+         }
+        >
+          <Text style={styles.titleEstudiosMedicosAfuera} >Notificaciones genéricas:</Text>
+        </Pressable>
+      </View>
 
-      <View
-        style={{
-          /* marginBottom: 30, */
-          marginBottom: wp('1%'),
-          marginTop: 10,
-          alignItems: 'center',
-          /* backgroundColor: 'orange', */
-          maxHeight: '80%',
-          minHeight: '80%',
-          marginHorizontal: wp('1%')
-          /* wp('2%') */
-        }}>
 
-        <View style={styles.ContainerMainTitle} >
 
-          {/*  <Text style={styles.MainTitle} >Notificaciones</Text> */}
-          {/* <Text style={styles.MainTitle} >Selecciona el tipo de solicitud</Text> */}
+      {listadoNotificacionesVisible ? (
+        <View style={{ /* marginBottom: 30,  */marginTop: wp('1%'),   /* backgroundColor: 'green', */ maxHeight: '80%', minHeight: '40%', width: '100%', marginHorizontal: wp('9%'),/* wp('4%') */ }}>
 
-         
 
-        </View>
-
-        <View style={styles.ContainerEstudiosMedicosTitleAfuera} >
-          <Pressable
-            onPress={() => {
-              console.log('se toco el titulo Notificaciones genéricas');
-              fetchNotificaciones();
-            }
-            }
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
           >
-            <Text style={styles.titleEstudiosMedicosAfuera} >Notificaciones genéricas:</Text>
-          </Pressable>
-        </View>
 
-
-
-        {listadoEstMedicosVisible ? (
-          <View style={{ /* marginBottom: 30,  */marginTop: wp('1%'),   /* backgroundColor: 'green', */ maxHeight: '80%', minHeight: '40%', width: '100%', marginHorizontal: wp('9%'),/* wp('4%') */ }}>
-
-
-            <ScrollView
-              contentContainerStyle={{ flexGrow: 1 }}
-            >
-
-              {isConsulting ?
-                (
-                  <View style={styles.LoaderContainer}>
-                    <FullScreenLoader />
-                  </View>
-                )
-                :
-                error ? (
-                  <>
-                    <View style={styles.errorContainerBuzon} >
-                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
-
-                      <View style={styles.imageContainer}>
-
-                        <View
-                          style={styles.innerContainer}
-                        >
-                          <Image source={require('../../../assets/images/logogris.png')}
-                            style={styles.image}
-                            resizeMode="contain"
-                          />
-                        </View>
-
-                      </View>
-                    </View>
-
-                  </>
-                ) :
-                  notificaciones.length > 0 ?
-                    (
-                      <>
-
-
-{notificaciones.map((notificacion, index) => (
-            <Pressable
-              key={notificacion.id} // Usa `id` como clave única
-              onPress={() => {
-                console.log(`Se tocó la notificación: ${notificacion.id}`);
-                // Aquí podrías mostrar el modal y pasar `notificacion` como datos
-              }}
-            >
-              <View style={styles.TertiaryButton}>
-                <View style={styles.contentWrapper2}>
-                  <View style={styles.textWrapper}>
-                    {notificacion.title && (
-                      <Text style={styles.buttonText}>
-                        {notificacion.title}
-                      </Text>
-                    )}
-                    {notificacion.body && (
-                      <Text style={styles.descriptionText}>
-                        {notificacion.body}
-                      </Text>
-                    )}
-                    {notificacion.extraInfo && (
-                      <Text style={styles.descriptionText}>
-                        {notificacion.extraInfo}
-                      </Text>
-                    )}
-                    {notificacion.timestamp && (
-                      <Text style={styles.descriptionText}>
-                        {new Date(notificacion.timestamp).toLocaleString()}
-                      </Text>
-                    )}
-                  </View>
+            { isConsulting ?
+              (
+                <View style={styles.LoaderContainer}>
+                  <FullScreenLoader />
                 </View>
-              </View>
-            </Pressable>
-          ))}
-        </>
-                    ) :
-                    (
-                      <>
-                        <View style={styles.errorContainerBuzon} >
-                          <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
+              )
+              :
+              notificaciones.length === 0 ? (
+                <>
+                  <View style={styles.errorContainerBuzon} >
+                    <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
 
-                          <View style={styles.imageContainer}>
+                    <View style={styles.imageContainer}>
 
-                            <View
-                              style={styles.innerContainer}
-                            >
-                              <Image source={require('../../../assets/images/logogris.png')}
-                                style={styles.image}
-                                resizeMode="contain"
-                              />
+                      <View
+                        style={styles.innerContainer}
+                      >
+                        <Image source={require('../../../assets/images/logogris.png')}
+                          style={styles.image}
+                          resizeMode="contain"
+                        />
+                      </View>
+
+                    </View>
+                  </View>
+
+                </>
+              ) :
+                notificaciones.length > 0 ?
+                  (
+                    <>
+
+              {/*   <Text style={{
+                          marginBottom: wp('2%'),
+                          marginTop: 0,
+                          fontSize: hp('2%'),
+                          textAlign: 'center',
+                          color: globalColors.gray2,
+                          fontWeight: 'bold',
+                          marginHorizontal: wp('9%'),
+                        }}>Presiona en las notificaciones para acceder a los detalles:</Text> */}
+
+                      {notificaciones.map((notificacion, index) => (
+                        <Pressable
+                          /* key={notificacion.id}  */// Usa `id` como clave única
+                          key={index}
+                          onPress={() => {
+                            console.log(`Se tocó en la notificación: ${notificacion.id}`);
+                            // Aquí podrías mostrar el modal y pasar `notificacion` como datos
+                          }}
+                        >
+                          <View style={styles.TertiaryButton}>
+                            <View style={styles.contentWrapper2}>
+                              <View style={styles.textWrapper}>
+                                {notificacion.title && (
+                                  <Text style={styles.buttonText}>
+                                    {notificacion.title}
+                                  </Text>
+                                )}
+                                {notificacion.body && (
+                                  <Text style={styles.descriptionText}>
+                                    {notificacion.body}
+                                  </Text>
+                                )}
+                                {notificacion.extraInfo && (
+                                  <Text style={styles.descriptionText}>
+                                    {notificacion.extraInfo}
+                                  </Text>
+                                )}
+                                {notificacion.timestamp && (
+                                  <Text style={styles.descriptionText}>
+                                    {new Date(notificacion.timestamp).toLocaleString()}
+                                  </Text>
+                                )}
+                              </View>
                             </View>
-
                           </View>
+                        </Pressable>
+                      ))}
+                    </>
+                  ) :
+                  (
+                    <>
+                      <View style={styles.errorContainerBuzon} >
+                        <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
+
+                        <View style={styles.imageContainer}>
+
+                          <View
+                            style={styles.innerContainer}
+                          >
+                            <Image source={require('../../../assets/images/logogris.png')}
+                              style={styles.image}
+                              resizeMode="contain"
+                            />
+                          </View>
+
                         </View>
+                      </View>
 
-                      </>
-                    )
-              }
+                    </>
+                  )
+            }
 
-              <>
-                {modalVisible && (
-                  <View style={styles.overlay} />
-                )}
+            <>
+              {modalVisible && (
+                <View style={styles.overlay} />
+              )}
 
-                <Modal
-                  /*    key={index} */
-                  animationType="fade"
-                  transparent={true}
-                  visible={modalVisible}
-                  onRequestClose={closeModal}
-                >
+              <Modal
+                /*    key={index} */
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={closeModal}
+              >
 
-                  <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                      <Text style={styles.textStyletTitle}>Estudios autorizados: </Text>
-                      <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
-                        {/*  {modalData.map((data, index) => ( */}
-                        {modalData && modalData.map((data, index) => (
-                          <>
-                            <View
-                              key={index}
-                              style={{ marginTop: 10 }}>
-                              <Text style={styles.textStyleContenedor}>
-                                <Text style={styles.textStyleMensajeCodigo}>Compartile este código a tu prestador o clínica para que lo pueda autorizar:</Text>
-                              </Text>
-                              <Text style={styles.valueCoseguro}>{data.palabraClaveENC}</Text>
-                              {/*  <Text style={styles.textStyle}>Codigo Autorización: {data.palabraClaveENC}</Text> */}
-                              <Text style={styles.textStyle}>Fec. Vencimiento: {data.fecVencimientoENC}</Text>
-                              <Text style={styles.textStyle}>Prestador: {data.nombreConvenio}</Text>
-                              <Text style={styles.textStyle}>Dirección:{data.domRenglon1}{data.domRenglon2}</Text>
-                              <Text style={styles.textStyleCoseguro}>Coseguro: ${data.coseguroENC}</Text>
-                              <Text style={styles.textStylePractica}>Práctica: {data.prestacionDET}</Text>
-                              {/* <Text style={styles.textStylePractica}>Id orden: {data.idOrden}</Text> */}
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.textStyletTitle}>Notificación: </Text>
+                    <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
+                      {/*  {modalData.map((data, index) => ( */}
+                      {modalData && modalData.map((data, index) => (
+                        <>
+                          <View
+                            key={index}
+                            style={{ marginTop: 10 }}>
+                            <Text style={styles.textStyleContenedor}>
+                              <Text style={styles.textStyleMensajeCodigo}>Compartile este código a tu prestador o clínica para que lo pueda autorizar:</Text>
+                            </Text>
+                            <Text style={styles.valueCoseguro}>{data.palabraClaveENC}</Text>
+                            {/*  <Text style={styles.textStyle}>Codigo Autorización: {data.palabraClaveENC}</Text> */}
+                            <Text style={styles.textStyle}>Fec. Vencimiento: {data.fecVencimientoENC}</Text>
+                            <Text style={styles.textStyle}>Prestador: {data.nombreConvenio}</Text>
+                            <Text style={styles.textStyle}>Dirección:{data.domRenglon1}{data.domRenglon2}</Text>
+                            <Text style={styles.textStyleCoseguro}>Coseguro: ${data.coseguroENC}</Text>
+                            <Text style={styles.textStylePractica}>Práctica: {data.prestacionDET}</Text>
+                            {/* <Text style={styles.textStylePractica}>Id orden: {data.idOrden}</Text> */}
 
-                              {/*    <Text style={styles.textStylePractica}>idOrden: {data.idOrdenDET}</Text> */}
+                            {/*    <Text style={styles.textStylePractica}>idOrden: {data.idOrdenDET}</Text> */}
 
-                              {/*   <Text style={styles.textStylePractica}>idOrden: {data.idOrdenDET}</Text> */}
+                            {/*   <Text style={styles.textStylePractica}>idOrden: {data.idOrdenDET}</Text> */}
 
-                             {/*  <TouchableOpacity style={styles.primaryButton45} onPress={() => handlePress(data.idOrden)}>
+                            {/*  <TouchableOpacity style={styles.primaryButton45} onPress={() => handlePress(data.idOrden)}>
                                 <Text style={styles.buttonText2}>
                                   Link de Descarga
                                 </Text>
                               </TouchableOpacity> */}
 
-                            </View>
+                          </View>
 
-                            <Divider />
-                          </>
-                        ))}
-                      </ScrollView>
-                      <Pressable
-                        style={styles.button}
-                        onPress={closeModal}
-                      >
-                        <Text style={styles.textCloseStyle}>Cerrar</Text>
-                      </Pressable>
-                    </View>
+                          <Divider />
+                        </>
+                      ))}
+                    </ScrollView>
+                    <Pressable
+                      style={styles.button}
+                      onPress={closeModal}
+                    >
+                      <Text style={styles.textCloseStyle}>Cerrar</Text>
+                    </Pressable>
                   </View>
-                </Modal>
-              </>
-              <>
-                {modalVisible3 && (
-                  <View style={styles.overlay} />
-                )}
+                </View>
+              </Modal>
+            </>
+            <>
+              {modalVisible3 && (
+                <View style={styles.overlay} />
+              )}
 
-                <Modal
-                  /*    key={index} */
-                  animationType="fade"
-                  transparent={true}
-                  visible={modalVisible3}
-                  onRequestClose={closeModal}
-                >
+              <Modal
+                /*    key={index} */
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible3}
+                onRequestClose={closeModal}
+              >
 
-                  <View style={styles.centeredView}>
-                    <View style={styles.modalViewEstudioRechazado}>
-                      <Text style={styles.textStyletTitle}>Estudio rechazado: </Text>
-                      <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
-                        {rechazoData.map((data, index) => (
-                          <>
-                            <View key={index} style={{ marginTop: 10, marginBottom: 20 }}>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalViewEstudioRechazado}>
+                    <Text style={styles.textStyletTitle}>Estudio rechazado: </Text>
+                    <ScrollView contentContainerStyle={[styles.scrollViewContent, { flexGrow: 1 }]}>
+                      {rechazoData.map((data, index) => (
+                        <>
+                          <View key={index} style={{ marginTop: 10, marginBottom: 20 }}>
 
-                              <Text style={styles.textStyleOrdenRechazada}>Estado: {data.estado}</Text>
-                              {/*  <Text style={styles.textStyleOrdenRechazada}>Detalle:</Text>   */}
-                              <Text style={styles.textStyleMensajeCodigo}>Detalle: {data.comentarioRechazo}</Text>
-                              <Text style={styles.textStyleOrdenRechazada}>idOrden: {data.idOrden}</Text>
+                            <Text style={styles.textStyleOrdenRechazada}>Estado: {data.estado}</Text>
+                            {/*  <Text style={styles.textStyleOrdenRechazada}>Detalle:</Text>   */}
+                            <Text style={styles.textStyleMensajeCodigo}>Detalle: {data.comentarioRechazo}</Text>
+                            <Text style={styles.textStyleOrdenRechazada}>idOrden: {data.idOrden}</Text>
 
-                            </View>
+                          </View>
 
-                            <Divider />
-                          </>
-                        ))}
-                      </ScrollView>
-                      <Pressable
-                        style={styles.button}
-                        onPress={closeModal}
-                      >
-                        <Text style={styles.textCloseStyle}>Cerrar</Text>
-                      </Pressable>
-                    </View>
+                          <Divider />
+                        </>
+                      ))}
+                    </ScrollView>
+                    <Pressable
+                      style={styles.button}
+                      onPress={closeModal}
+                    >
+                      <Text style={styles.textCloseStyle}>Cerrar</Text>
+                    </Pressable>
                   </View>
-                </Modal>
-              </>
-              <>
-                {modalVisible2 && (
-                  <View style={styles.overlay} />
-                )}
+                </View>
+              </Modal>
+            </>
+            <>
+              {modalVisible2 && (
+                <View style={styles.overlay} />
+              )}
 
-                <Modal
-                  animationType="fade"
-                  transparent={true}
-                  visible={modalVisible2}
-                  onRequestClose={closeModal}
-                >
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible2}
+                onRequestClose={closeModal}
+              >
 
-                  <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                      <Text style={styles.textStyletTitlePracticaNoEncontrada}>No se encontró la solicitud de práctica indicada</Text>
-                      <Text style={styles.textStyletTitlePracticaNoEncontrada}>Por favor intente nuevamente más tarde</Text>
-                      <Pressable
-                        style={styles.button}
-                        onPress={closeModal}
-                      >
-                        <Text style={styles.textCloseStyle}>Cerrar</Text>
-                      </Pressable>
-                    </View>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.textStyletTitlePracticaNoEncontrada}>No se encontró la solicitud de práctica indicada</Text>
+                    <Text style={styles.textStyletTitlePracticaNoEncontrada}>Por favor intente nuevamente más tarde</Text>
+                    <Pressable
+                      style={styles.button}
+                      onPress={closeModal}
+                    >
+                      <Text style={styles.textCloseStyle}>Cerrar</Text>
+                    </Pressable>
                   </View>
-                </Modal>
-              </>
-            </ScrollView>
+                </View>
+              </Modal>
+            </>
+          </ScrollView>
 
-          </View>
-        ) :
-          <></>
-        }
+        </View>
+      ) :
+        <></>
+      }
 
+</>
 
-
-      </View >
-    </View >
   );
 };
 
@@ -616,10 +625,10 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
   },
   ContainerEstudiosMedicosTitleAfuera: {
-    marginTop: 5,
-    marginBottom: wp('0%'),
+    marginTop: 10,
+    marginBottom: 5,
     padding: 5,
-    backgroundColor: '#e1a159'/* '#fbd1a5' *//* globalColors.earthYellow2  *//* brown2 *//* 'brown' *//* '#97e3b0' *//* '#d7e5f8' */,
+    backgroundColor: '#e1a159',
     borderRadius: 15,
     borderWidth: 0,
     borderColor: globalColors.earthYellow2,
@@ -879,3 +888,52 @@ const styles = StyleSheet.create({
    coseguroDET: practicaResueltaData.tablaDetalle.coseguroDET[index]._text, */
 
 /*  if (practicaResueltaData &&   practicaResueltaData.tablaEncabezado && practicaResueltaData.tablaDetalle) */
+
+  /* console.log("Datos recibidos------>:", response.data);
+        //verificamos si recibimos un array:
+
+        if (response.data && Array.isArray(response.data.body)) {
+          
+          const formattedData = response.data.body.map((notificacion: any) => ({
+            id: notificacion.messageId,
+            title: notificacion.title || "Sin título",
+            body: notificacion.messageBody || "Sin mensaje",
+            extraInfo: notificacion.extraInfo || "",
+            timestamp: notificacion.timestamp || "",
+          }));
+
+          console.log("formattedData--------->>>", formattedData);
+          setNotificaciones(formattedData);
+        } // Guardar las notificaciones formateadas
+
+        else {
+          console.error('La respuesta del servidor no es un arreglo válido');
+        } */
+
+          
+        /* if (response.data && typeof response.data.body === 'string' ) {
+
+          try {
+            const parsedData = JSON.parse(response.data.body);
+            if (parsedData) { 
+          const formattedData = response.data.body.map((notificacion: any) => ({
+            id: notificacion.messageId,
+            title: notificacion.title || "Sin título",
+            body: notificacion.messageBody || "Sin mensaje",
+            extraInfo: notificacion.extraInfo || "",
+            timestamp: new Date(notificacion.timestamp),
+          }));
+  
+          console.log("formattedData--------->>>", formattedData);
+          setNotificaciones(formattedData);
+        } else {
+          console.error('La respuesta del servidor no contiene datos en la propiedad "body"');
+          setNotificaciones([]); 
+        }} catch (error) {
+          console.error('Error al parsear la respuesta del servidor:', error);
+        }
+        } else {
+          console.error('La respuesta del servidor no es un arreglo válido en la propiedad "body"');
+          setNotificaciones(dataNoti);
+          console.log("notificaciones--------->>>", notificaciones);
+        } */

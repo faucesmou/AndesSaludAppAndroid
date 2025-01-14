@@ -398,7 +398,7 @@ export const Buzon = () => {
   /* Función para solicitar los mensajes guardados de SNS */
   const registerForPushNotifications = async () => {
     try {
-    /*   await messaging().requestPermission(); */ // guardar token en el context para obtenerlo aqui.
+      /*   await messaging().requestPermission(); */ // guardar token en el context para obtenerlo aqui.
       /* const token = getToken(); */
       /* console.log('el token obtenido es---->', token) */
       await axios.post('https://dzwytx4yka.execute-api.us-east-1.amazonaws.com/primera/messages',/*  { token } */);
@@ -788,7 +788,7 @@ export const Buzon = () => {
 
 
         <BuzonOrdenesC />
-        {/*  <NotificacionesGenericas/>  */}
+        <NotificacionesGenericas />
 
         {actualizacionDisponible && (
           <View style={styles.ContainerEstudiosMedicosTitleAfuera} >
@@ -817,19 +817,19 @@ export const Buzon = () => {
           </View> */
         )}
 
-<View style={styles.ContainerEstudiosMedicosTitleAfuera} >
-            <Pressable
-              onPress={() => {
-                console.log('se tocó el titulo actualizar');
-                Linking.openURL('https://play.google.com/store/apps/details?id=com.ar.andessalud.andessalud')
-              }
-              }
-            >
-              <Text style={styles.titleEstudiosMedicosAfuera}  >
-                Consultar Notificaciones!
-              </Text>
-            </Pressable>
-          </View >
+        {/* <View style={styles.ContainerEstudiosMedicosTitleAfuera} >
+          <Pressable
+            onPress={() => {
+              console.log('se tocó el titulo actualizar');
+              Linking.openURL('https://play.google.com/store/apps/details?id=com.ar.andessalud.andessalud')
+            }
+            }
+          >
+            <Text style={styles.titleEstudiosMedicosAfuera}  >
+              Consultar Notificaciones!
+            </Text>
+          </Pressable>
+        </View > */}
 
       </View >
     </View >
