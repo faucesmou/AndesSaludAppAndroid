@@ -214,9 +214,10 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
 
                                 {cartilla.nombre !== "No se encontraron Farmacias disponibles" && (
                                   <Text style={{ fontSize: 17, marginBottom: 2, color: "black", marginTop: 5 }}>
-                                    Teléfonos: {cartilla.telefono}
+                                    Teléfonos: {cartilla.telefono !== "" ? cartilla.telefono : "No Disponible"}
                                   </Text>
                                 )}
+
                                 <Text style={{ fontSize: 17, marginBottom: 10, color: "black" }}>{cartilla.domicilio}</Text>
                               </View>
                             </View>

@@ -71,6 +71,7 @@ export const CartillaFarmaciaProvincias = () => {
 
         setIsConsulting(false);
 
+
       }
       catch (error) {
         console.error('Error al obtener los formularios:', error);
@@ -166,7 +167,7 @@ export const CartillaFarmaciaProvincias = () => {
                                 <Text style={styles.descriptionText}>
                                   {cartilla.nombre}
                                 </Text>
-                                   <Text style={{ fontSize: 15, marginBottom: 10, color:"black" }}>ID PROVINCIA: {cartilla.idProvincia}</Text> 
+{/*                                    <Text style={{ fontSize: 15, marginBottom: 10, color:"black" }}>ID PROVINCIA: {cartilla.idProvincia}</Text>  */}
                               </View>
                             </View>
                           </View>
