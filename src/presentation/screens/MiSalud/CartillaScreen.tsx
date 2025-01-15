@@ -205,6 +205,19 @@ export const CartillaScreen = () => {
           />
 
         </View>
+        <View style={{ marginTop: hp('1%'), marginHorizontal:wp('3%') }}>
+
+          <TertiaryButton
+            onPress={() => navigation.navigate('Cartilla Farmacias')}
+            label="Cartilla de Farmacias"
+            color={globalColors.profile2}
+            iconName='medkit-outline'
+            description='Accedé a todas las cartillas'
+            textSize={buttonTextFontSize} 
+            descriptionSize={buttonDescriptionFontSize}
+          />
+
+        </View>
       </View>
 
     </View >

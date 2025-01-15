@@ -237,7 +237,7 @@ console.log("Contenido de response.data.body:", response.data.body);
          }
          }
         >
-          <Text style={styles.titleEstudiosMedicosAfuera} >Notificaciones genéricas:</Text>
+          <Text style={styles.titleEstudiosMedicosAfuera} >Notificaciones Andes Salud:</Text>
         </Pressable>
       </View>
 

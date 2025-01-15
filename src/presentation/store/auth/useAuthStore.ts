@@ -54,6 +54,10 @@ export interface AuthState {
   idAfiliadoSeleccionado?: string;
   idCartillaSeleccionada?: string;
   nombreEspecialidadSeleccionada?: string;
+  idZona?: string;
+  nombreProvincia?: string;
+  idDepartamento?: string;
+  nombreDepartamento?: string;
   cadena: string;
   imagen1: string | undefined;
   imagenes: (string | null)[];
@@ -96,6 +100,8 @@ export interface AuthState {
   logout: () => Promise<void>;
   registerUser: (email: string, password: string, fullName: string) => Promise<void>;
   GuardarIdCartillaSeleccionada: (idCartilla: string, nombreEspecialidadSeleccionada: string) => Promise<any[]>;
+  GuardarIdMacroZonaSeleccionada: (idZona: string, nombreProvincia: string) => Promise<any[]>;
+  GuardarIdDepartamentoSeleccionado: (idDepartamento: string, nombreDepartamento: string) => Promise<any[]>;
   setShouldUpdateNotifications: (estado: boolean) => void;
   guardarDatosLoginEnContext: (idAfiliado: string) => Promise<boolean>;
 
@@ -631,6 +637,26 @@ recuperarDatos: async (numeroAfiliado: string, dni: string) => {
                     return [];
                   } catch (error) {
                     console.log('ha ocurrido un error al guardar idCartilla o el nombreEspecialidad en el useAuthStore');
+                    return [];
+                  }
+                },
+                GuardarIdMacroZonaSeleccionada: async (idZona: string, nombreProvincia: string): Promise<string[]> => {
+                  try {
+                    set({ idZona: idZona, nombreProvincia: nombreProvincia })
+
+                    return [];
+                  } catch (error) {
+                    console.log('ha ocurrido un error al guardar idZona o el nombreProvincia en el useAuthStore');
+                    return [];
+                  }
+                },
+                GuardarIdDepartamentoSeleccionado: async (idDepartamento: string, nombreDepartamento: string): Promise<string[]> => {
+                  try {
+                    set({ idDepartamento: idDepartamento, nombreDepartamento: nombreDepartamento })
+
+                    return [];
+                  } catch (error) {
+                    console.log('ha ocurrido un error al guardar idDepartamento o el nombreDepartamento en el useAuthStore');
                     return [];
                   }
                 },

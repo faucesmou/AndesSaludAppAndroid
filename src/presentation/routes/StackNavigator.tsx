@@ -52,6 +52,9 @@ import { EstudiosMedicosEnvNew } from '../screens/MiGestion/estudiosMedicos/Estu
 import { FullScreenLoader } from '../components/ui/FullScreenLoader';
 import { FormulariosEspScreenNuevo } from '../screens/MiGestion/formulariosEspeciales/FormulariosEspScreenNuevo';
 import { CartillaMedicaScreenOtrasCartillas } from '../screens/MiSalud/cartillaMedica/CartillaMedicaScreenOtrasCartillas';
+import { CartillaFarmaciaProvincias } from '../screens/MiSalud/cartillaFarmacia/CartillaFarmaciaProvincias';
+import { CartillaFarmaciaDepartamento } from '../screens/MiSalud/cartillaFarmacia/CartillaFarmaciaDepartamento';
+import { CartillaFarmaciaDepartamentoSeleccionado } from '../screens/MiSalud/cartillaFarmacia/CartillaFarmaciaDepartamentoSeleccionado';
 
 /* import { UserData } from '../screens/auth/userData'; */
 
@@ -76,6 +79,9 @@ export type RootStackParams = {
   "Enviando": undefined,
   Credencial: undefined,
   Cartilla: undefined,
+  "Cartilla Farmacias": undefined,
+  "Cartillas Farmacias": undefined,
+  "Farmacias": undefined,
   LoginScreen: undefined,
   LoginScreenNew: undefined,
   LoginScreen2: undefined,
@@ -95,6 +101,7 @@ export type RootStackParams = {
   MiSalud: undefined,
   Formularios:undefined,
   Prestadores: { idCartilla: string };
+  Departamentos: { idCartilla: string };
   EstudiosMedicos: undefined, 
   "Estudios Médicos": undefined,
   "Estudios": undefined,
@@ -216,6 +223,13 @@ export const StackNavigator = () => {
 
       <Stack.Screen name="Prestadores" component={CartillaMedicaEspecialidad} options={{ headerShown: true }} />
 
+      <Stack.Screen name="Cartillas Farmacias" component={CartillaFarmaciaDepartamento} options={{ headerShown: true }} />
+      <Stack.Screen name="Farmacias" component={CartillaFarmaciaDepartamentoSeleccionado} options={{ headerShown: true }} />
+
+{/* MI SALUD (Cartilla Farmacia): */}
+
+<Stack.Screen name="Cartilla Farmacias" component={CartillaFarmaciaProvincias} options={{ headerShown: true }} /> 
+
       <Stack.Screen name="Estudios!" component={EstudiosMedicosScreen} options={{ headerShown: true, headerTitleStyle: { fontSize: 18 },  }} />
    <Stack.Screen name="Estudios" component={EstudiosMedicosScreenUx} options={{ headerShown: true, headerTitleStyle: { fontSize: 18 },  }} /> 
       
@@ -266,3 +280,20 @@ export const StackNavigator = () => {
     
 
     {/*  <Stack.Screen name='Cartilla' component={TopTabsNavigator} options={{ headerShown: true }} /> */}
+
+
+    /* 
+        // Integra farmacias y teléfonos.
+        const mappedIntegrado = mappedCartillas.map((farmacia: any) => {
+          // Encuentra los teléfonos asociados a la farmacia actual.
+          const telefonos = mappedTelefonos
+            .filter((telefono: any) => telefono.idFarmacia === farmacia.idFarmacia)
+            .map((tel:any) => tel.telefono)
+            .join(", "); // Concatena los teléfonos con comas.
+
+          return {
+            idFarmacia: farmacia.idFarmacia,
+            nombre: farmacia.nombre,
+            telefono: telefonos || "", // Si no hay teléfonos, deja un string vacío.
+          };
+        }); */
