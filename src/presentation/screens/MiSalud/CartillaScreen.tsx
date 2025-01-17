@@ -1,5 +1,5 @@
-import React from 'react'
-import { Alert, Dimensions, Linking, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
+import { Alert, Dimensions, Linking, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { globalColors } from '../../theme/theme'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -45,7 +45,8 @@ export const CartillaScreen = () => {
      iconMarginBottom = hp('6%'); 
      arrowMarginBottom = hp('3%');
   }
-
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
 
   const handlePhonePress2 = (phoneNumber: any) => {
     Alert.alert(
@@ -55,7 +56,7 @@ export const CartillaScreen = () => {
         {
           text: 'Llamar',
           onPress: () => {
-            // Aquí mostrarías un mensaje indicando que la acción se realizaría en un dispositivo físico
+            
             console.log('Llamar:', phoneNumber);
             Linking.openURL(`tel:${phoneNumber}`)
               .then(() => {
@@ -75,6 +76,31 @@ export const CartillaScreen = () => {
       ]
     );
   };
+
+  const handlePhonePress3 = (phoneNumber: string) => {
+    setSelectedPhoneNumber(phoneNumber);
+    setModalVisible(true);
+  };
+
+  const handleAllow = () => {
+    setModalVisible(false);
+    Linking.openURL(`tel:${selectedPhoneNumber}`)
+      .then(() => {
+        console.log('Llamada iniciada correctamente');
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Ups!',
+          'No se pudo llamar al número indicado, por favor verifica que sea válido'
+        );
+        console.log('El error al intentar hacer la llamada es el siguiente:', err);
+      });
+  };
+
+  const handleDeny = () => {
+    setModalVisible(false);
+  };
+
 
   return (
     <View
@@ -113,12 +139,6 @@ export const CartillaScreen = () => {
             fontWeight:'bold',
             marginLeft: wp('0%'),
             marginBottom: hp('1%')
-            /* fontSize: 35,
-            textAlign: 'center',
-            marginLeft: '12%',
-            color: 'white', */
-            /*   backgroundColor: 'yellow' */
-
           }} >
             Mi Salud
           </Text>
@@ -151,6 +171,32 @@ export const CartillaScreen = () => {
         </View>
       </View>
 
+      {isModalVisible && (
+        <Modal
+          transparent={true}
+          animationType="fade"
+          visible={isModalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>
+                ¿Deseas llamar al número {selectedPhoneNumber}?
+              </Text>
+
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
+                  <Text style={styles.buttonText}>Llamar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.denyButton} onPress={handleDeny}>
+                  <Text style={styles.buttonText}>Cancelar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
       <View style={styles.bigContentContainer} >
         <View style={styles.emergencyContainer} >
           <View style={{ marginBottom: 15 }}>
@@ -160,32 +206,25 @@ export const CartillaScreen = () => {
           <View >
 
             <Text style={styles.emergencyProvincesTitle}> Mendoza</Text>
-            <TouchableOpacity onPress={() => handlePhonePress2('0810-333-9743')}>
+            <TouchableOpacity onPress={() => handlePhonePress3('0810-333-9743')}>
               <Text style={styles.emergencyProvincesNumbers}> 0810-333-9743</Text>
             </TouchableOpacity>
 
-            {/*     <Text style={styles.emergencyProvincesNumbers}> 0810-333-9743</Text> */}
-            
-           {/*  <Text style={styles.emergencyProvincesTitle}> San Juan</Text>
-            <TouchableOpacity onPress={() => handlePhonePress2('264-631-3531')}>
-              <Text style={styles.emergencyProvincesNumbers}> 264-631-3531</Text>
-            </TouchableOpacity> */}
-
-            {/* <Text style={styles.emergencyProvincesNumbers}> 264-631-3531</Text> */}
+          
             <Text style={styles.emergencyProvincesTitle}> San Luis</Text>
-            <TouchableOpacity onPress={() => handlePhonePress2('265-742-8786')}>
+            <TouchableOpacity onPress={() => handlePhonePress3('265-742-8786')}>
               <Text style={styles.emergencyProvincesNumbers}> 265-742-8786</Text>
           
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handlePhonePress2('266-443-5700')}>
+            <TouchableOpacity onPress={() => handlePhonePress3('266-443-5700')}>
               <Text style={styles.emergencyProvincesNumbers}> 266-443-5700</Text>
             </TouchableOpacity>
             <Text style={styles.emergencyProvincesTitle}> Córdoba</Text>
-            <TouchableOpacity onPress={() => handlePhonePress2('0810-444-351111')}>
+            <TouchableOpacity onPress={() => handlePhonePress3('0810-444-351111')}>
               <Text style={styles.emergencyProvincesNumbers}> 0810-444-351111</Text>
           
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handlePhonePress2('0810-333-351111')}>
+            <TouchableOpacity onPress={() => handlePhonePress3('0810-333-351111')}>
               <Text style={styles.emergencyProvincesNumbers}> 0810-333-351111</Text>
             </TouchableOpacity>
           </View>
@@ -327,6 +366,62 @@ const styles = StyleSheet.create({
     /*   fontSize: 20, */
     textAlign: 'center'
   },
+/* mejora de modal que pregunta si desea llamar----------ZZZZ */
+callButton: {
+  backgroundColor: '#007bff',
+  padding: 15,
+  borderRadius: 5,
+},
+callButtonText: {
+  color: '#fff',
+  fontSize: 16,
+},
+modalOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+modalContainer: {
+  width: '80%',
+  backgroundColor: '#fff',
+  borderRadius: 10,
+  padding: 20,
+  alignItems: 'center',
+},
+modalTitle: {
+  fontSize: 18,
+  marginBottom: 20,
+  textAlign: 'center',
+  color:"black"
+},
+buttonContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  width: '100%',
+},
+allowButton: {
+  flex: 1,
+  backgroundColor: '#28a745',
+  padding: 10,
+  borderRadius: 5,
+  marginRight: 5,
+  alignItems: 'center',
+},
+denyButton: {
+  flex: 1,
+  backgroundColor: '#dc3545',
+  padding: 10,
+  borderRadius: 5,
+  marginLeft: 5,
+  alignItems: 'center',
+},
+buttonText: {
+  color: '#fff',
+  fontSize: 16,
+},
+
+
 
 });
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { type NavigationProp, useNavigation } from '@react-navigation/native';
-import { Text, View, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Pressable, Modal, TouchableOpacity, Linking, Alert } from 'react-native';
 
 import axios from 'axios';
 
@@ -24,7 +24,7 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
 
   const { idAfiliadoTitular, idAfiliado, GuardarIdCartillaSeleccionada, idZona, idDepartamento, nombreDepartamento, GuardarIdDepartamentoSeleccionado } = useAuthStore();
 
-  console.log('idDepartamento seleccionado---->', idDepartamento);
+
 
 
   const { top } = useSafeAreaInsets();
@@ -33,8 +33,53 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
 
   const [isConsulting, setIsConsulting] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
 
-  const navigation = useNavigation<NavigationProp<RootStackParams>>()
+/* Buscador de farmacias por el nombre:  */
+
+const [searchText, setSearchText] = useState(''); // Estado para el texto de búsqueda
+  const [filteredCartillas, setFilteredCartillas] = useState(cartillas); // Estado para las cartillas filtradas
+
+
+ // Función para manejar la búsqueda
+ const handleSearch = (text: string) => {
+  setSearchText(text);
+
+  // Filtrar cartillas cuyo nombre contenga el texto ingresado (sin importar mayúsculas/minúsculas)
+  const filtered = cartillas.filter((cartilla) =>
+    cartilla.nombre.toLowerCase().includes(text.toLowerCase())
+  );
+
+  setFilteredCartillas(filtered);
+};
+
+  /* const navigation = useNavigation<NavigationProp<RootStackParams>>() */
+  const handlePhonePress3 = (phoneNumber: string) => {
+    setSelectedPhoneNumber(phoneNumber);
+    setModalVisible(true);
+  };
+
+  const handleAllow = () => {
+    setModalVisible(false);
+    Linking.openURL(`tel:${selectedPhoneNumber}`)
+      .then(() => {
+        console.log('Llamada iniciada correctamente');
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Ups!',
+          'No se pudo llamar al número indicado, por favor verifica que sea válido'
+        );
+        console.log('El error al intentar hacer la llamada es el siguiente:', err);
+      });
+  };
+
+  const handleDeny = () => {
+    setModalVisible(false);
+  };
+
+
 
   function capitalizeWords(input: string | undefined): string {
     if (!input) {
@@ -56,6 +101,7 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
         const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPBuscarFarmaciasCartilla?IMEI=&idAfiliado=${idAfiliado}&idZona=${idDepartamento}`)
 
         const xmlData = response.data;
+        console.log('ESTE es el id del departamento seleccionado:--> ', idDepartamento);
 
         // Convertir XML a JSON
         const result = xml2js(xmlData, { compact: true });
@@ -63,45 +109,70 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
         const cartillasData = result.Resultado.fila.tablaFarmacias;
         const cartillasTelefonos = result.Resultado.fila.tablaTelefonos;
 
+        console.log('cartillasData-----------<<<<<', cartillasData);
+        console.log('cartillasTelefonos-----------<<<<<', cartillasTelefonos);
+
         // Verificar si cartillasData es un array o un objeto y procesar en consecuencia
         const mappedCartillas = Array.isArray(cartillasData.idFarmacia)
           ? cartillasData.idFarmacia.map((_: any, index: number) => ({
             nombre: cartillasData.nombre[index]._text,
             idFarmacia: cartillasData.idFarmacia[index]._text,
             domicilio: cartillasData.domicilio[index]._text,
-            /*   telefono: cartillasData.telefono[index]._text || "", */
-          })) : [{ "domicilio": "", "idFarmacia": "", "nombre": "No se encontraron Farmacias disponibles", "telefono": "" }];
+          })) : cartillasData.idFarmacia // Si no es un array, procesarlo como objeto único
+            ? [
+              {
+                nombre: cartillasData.nombre._text,
+                idFarmacia: cartillasData.idFarmacia._text,
+                domicilio: cartillasData.domicilio._text,
+              },
+            ]
+            : [{ domicilio: "", idFarmacia: "", nombre: "No se encontraron Farmacias disponibles" }];
 
+        console.log('mappedCartillas-----------<<<<<', mappedCartillas);
 
-        const mappedTelefonos = Array.isArray(cartillasTelefonos.idFarmaciaTel)
-          ? cartillasTelefonos.idFarmaciaTel.map((_: any, index: number) => ({
-            idFarmacia: cartillasTelefonos.idFarmaciaTel[index]._text,
-            telefono: cartillasTelefonos.telefono[index]._text
-          })) : [];
+        if (cartillasTelefonos) {
 
-        // Integra farmacias y teléfonos.
-        const mappedIntegrado = mappedCartillas.map((farmacia: any) => {
-          // Encuentra los teléfonos asociados a la farmacia actual.
-          const telefonos = mappedTelefonos
-            .filter((telefono: any) => telefono.idFarmacia === farmacia.idFarmacia)
-            .map((tel: any) => tel.telefono)
-            .join(", "); // Concatena los teléfonos con comas.
+          const mappedTelefonos = Array.isArray(cartillasTelefonos.idFarmaciaTel)
+            ? cartillasTelefonos.idFarmaciaTel.map((_: any, index: number) => ({
+              idFarmacia: cartillasTelefonos.idFarmaciaTel[index]._text,
+              telefono: cartillasTelefonos.telefono[index]._text
+            })) : cartillasTelefonos.idFarmaciaTel // Si no es un array, procesarlo como objeto único
+              ? [
+                {
+                  idFarmacia: cartillasTelefonos.idFarmaciaTel._text,
+                  telefono: cartillasTelefonos.telefono._text,
+                },
+              ]
+              : [];
 
-          return {
-            idFarmacia: farmacia.idFarmacia,
-            nombre: farmacia.nombre,
-            domicilio: farmacia.domicilio,
-            telefono: telefonos || "", // Si no hay teléfonos, deja un string vacío.
-          };
-        });
-        console.log('este es el mappedIntegrado MI MAN:---------->>>>>>>>', mappedIntegrado);
+          console.log('mappedTelefonos-----------<<<<<', mappedTelefonos);
 
-        // Actualiza el estado con los datos integrados.
-        if (Array.isArray(mappedIntegrado)) {
+          // Integra farmacias y teléfonos.
+          const mappedIntegrado = mappedCartillas.map((farmacia: any) => {
+            // Encuentra los teléfonos asociados a la farmacia actual.
+            const telefonos = mappedTelefonos
+              .filter((telefono: any) => telefono.idFarmacia === farmacia.idFarmacia)
+              .map((tel: any) => tel.telefono)
+              .join(", "); // Concatena los teléfonos con comas.
 
-          setCartillas(mappedIntegrado);
+            return {
+              idFarmacia: farmacia.idFarmacia,
+              nombre: farmacia.nombre,
+              domicilio: farmacia.domicilio,
+              telefono: telefonos || "No disponible",
+            };
+          });
+          console.log('este es el mappedIntegrado MI MAN:---------->>>>>>>>', mappedIntegrado);
+
+          // Actualiza el estado con los datos integrados.
+          if (Array.isArray(mappedIntegrado)) {
+
+            setCartillas(mappedIntegrado);
+          }
         } else {
-          console.error("Error en el formato de los datos");
+          // Si no existe tablaTelefonos, usa mappedCartillas directamente
+          console.log("No se encontró tablaTelefonos, usando solo datos de farmacias.");
+          setCartillas(mappedCartillas);
         }
 
         /*   setCartillas(mappedCartillas);
@@ -146,6 +217,33 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
 
       <View style={{ flex: 1, marginBottom: hp('2%'), marginTop: hp('1%') }}>
         <ScrollView >
+
+          {isModalVisible && (
+            <Modal
+              transparent={true}
+              animationType="fade"
+              visible={isModalVisible}
+              onRequestClose={() => setModalVisible(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.modalTitle}>
+                    ¿Deseas llamar al número {selectedPhoneNumber}?
+                  </Text>
+
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
+                      <Text style={styles.buttonText}>Llamar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.denyButton} onPress={handleDeny}>
+                      <Text style={styles.buttonText}>Cancelar</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          )}
+
           {
 
             isConsulting ?
@@ -177,6 +275,7 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
                 </View>
               )
                 :
+                
 
                 (
 
@@ -191,31 +290,112 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
                         {/* mejora del estilo:  */}
                         <Pressable
                         /*   onPress={() => {
-
-                            let idDepartamento = cartilla.idZona;
-                            let nombreDepartamento = cartilla.nombre;
-                            GuardarIdDepartamentoSeleccionado(idDepartamento, nombreDepartamento);
-                            console.log('idDepartamento es----->>>', idDepartamento);
-                            console.log('nombreDepartamento----->>>', nombreDepartamento);
-                            navigation.navigate('Prestadores', {
-                              idCartilla: cartilla.idZona,
-                            })
-                          }
-                          } */
+                             */
                         >
                           <View key={index} style={styles.TertiaryButton}>
                             <View style={styles.contentWrapper2}>
                               <View style={styles.textWrapper}>
                                 <Text style={styles.descriptionText}>
-                                  {capitalizeWords(cartilla.nombre)}
+                                 Farmacia {capitalizeWords(cartilla.nombre)}
                                 </Text>
 
-                                {/*  <Text style={{ fontSize: 17, marginBottom: 2, color: "black", marginTop: 5 }}>Teléfonos: {cartilla.telefono}</Text> */}
-
-                                {cartilla.nombre !== "No se encontraron Farmacias disponibles" && (
+                                {/*  {cartilla.nombre !== "No se encontraron Farmacias disponibles" && (
                                   <Text style={{ fontSize: 17, marginBottom: 2, color: "black", marginTop: 5 }}>
                                     Teléfonos: {cartilla.telefono !== "" ? cartilla.telefono : "No Disponible"}
                                   </Text>
+                                )} */}
+
+                                {cartilla.nombre !== 'No se encontraron Farmacias disponibles' && (
+                                  <View>
+
+                                    {/*       {cartilla.telefono && (
+                                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 5 }}>
+                                        <Text style={{ fontSize: 17, color: 'black' }}>Teléfonos: </Text>
+                                        {cartilla.telefono
+                                          .split(/[,;\s]+/) 
+                                          .map((phone, idx) => (
+                                            <Text
+                                              key={idx}
+                                              style={[styles.phoneText, { marginRight: 10, 
+                                              color:'#4285F4',    
+                                            }]}
+                                              onPress={() => handlePhonePress3(phone)}
+                                            >
+                                              {phone}
+                                            </Text>
+                                          ))}
+                                      </View>
+                                    )} */}
+
+                                    {/*   {cartilla.telefono && (
+                                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 5 }}>
+                                        <Text style={{ fontSize: 17, color: 'black' }}>Teléfonos: </Text>
+                                        {cartilla.telefono
+                                          .split(/[,;\s]+/) 
+                                          .map((phone, idx) => (
+                                            <Text
+                                              key={idx}
+                                              style={[
+                                                styles.phoneText,
+                                                {
+                                                  marginRight: 10,
+                                                  color: phone === "No disponible" ? 'gray' : '#4285F4',
+                                                },
+                                              ]}
+                                              onPress={phone === "No disponible" ? undefined : () => handlePhonePress3(phone)} 
+                                            >
+                                              {phone}
+                                            </Text>
+                                          ))}
+
+                                      </View>
+                                    )} */}
+                                    {cartilla.telefono && (
+                                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 5 }}>
+                                        <Text style={{ fontSize: 17, color: 'black' }}>Teléfonos: </Text>
+                                        {cartilla.telefono.toLowerCase().trim() === 'no disponible' ? (
+
+                                          // Caso "No disponible"
+                                          <Text
+                                            style={[
+                                              styles.phoneText,
+                                              {
+                                                marginRight: 10,
+                                                color: 'gray', // Color gris para no disponible
+                                                textDecorationLine: 'none', // Sin subrayado
+                                              },
+                                            ]}
+                                          >
+                                            No disponible
+                                          </Text>
+                                        ) : (
+                                          // Caso de teléfonos válidos
+                                          cartilla.telefono
+                                            .split(/[,;\s]+/) // Divide los números en un array
+                                            .map((phone, idx) => {
+                                              const cleanedPhone = phone.trim(); // Limpia los espacios extra
+                                              return (
+                                                <Text
+                                                  key={idx}
+                                                  style={[
+                                                    styles.phoneText,
+                                                    {
+                                                      marginRight: 10,
+                                                      color: '#4285F4', // Azul para números clickeables
+                                                    
+                                                    },
+                                                  ]}
+                                                  onPress={() => handlePhonePress3(cleanedPhone)} // Ejecuta la acción al presionar
+                                                >
+                                                  {cleanedPhone}
+                                                </Text>
+                                              );
+                                            })
+                                        )}
+                                      </View>
+                                    )}
+
+                                  </View>
                                 )}
 
                                 <Text style={{ fontSize: 17, marginBottom: 10, color: "black" }}>{cartilla.domicilio}</Text>
@@ -297,6 +477,67 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: wp('8%'),
   },
+  /* mejora de modal que pregunta si desea llamar----------ZZZZ */
+  callButton: {
+    backgroundColor: '#007bff',
+    padding: 15,
+    borderRadius: 5,
+  },
+  callButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: "black"
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  allowButton: {
+    flex: 1,
+    backgroundColor: '#28a745',
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 5,
+    alignItems: 'center',
+  },
+  denyButton: {
+    flex: 1,
+    backgroundColor: '#dc3545',
+    padding: 10,
+    borderRadius: 5,
+    marginLeft: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  phoneText: {
+    fontSize: 17,
+    color: '#007bff',
+  },
+
+
+
 })
 /* <FlatList
         data={products}
@@ -308,3 +549,5 @@ const styles = StyleSheet.create({
           />
         )}
       /> */
+
+/*  <Text style={{ fontSize: 17, marginBottom: 2, color: "black", marginTop: 5 }}>Teléfonos: {cartilla.telefono}</Text> */
