@@ -310,9 +310,9 @@ console.log("Contenido de response.data.body:", response.data.body);
                                     {notificacion.title}
                                   </Text>
                                 )}
-                                {notificacion.body && (
+                                {notificacion.messageBody && (
                                   <Text style={styles.descriptionText}>
-                                    {notificacion.body}
+                                    {notificacion.messageBody}
                                   </Text>
                                 )}
                                 {notificacion.extraInfo && (

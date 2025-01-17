@@ -415,7 +415,7 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
             /*  setModalVisibleNotificacion(true) */
             console.log("El mensaje ha activado el setModalVisibleNotificacion.");
             console.log("el mensaje title--->", title);
-            console.log("el mensaje body--->", body);
+            console.log("el mensaje body-------------------->", body);
             console.log("el mensaje extraInfo--->", extraInfo);
             // Mostrar un Alert con la información de manera estructurada
             /*   Alert.alert(

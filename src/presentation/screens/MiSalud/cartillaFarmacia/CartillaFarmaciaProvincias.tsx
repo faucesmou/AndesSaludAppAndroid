@@ -36,6 +36,16 @@ export const CartillaFarmaciaProvincias = () => {
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
 
+  function capitalizeWords(input: string | undefined): string {
+    if (!input) {
+      return "";
+    }
+    return input.replace(/\b\p{L}+/gu, function (word) {
+      return word.charAt(0).toLocaleUpperCase("es-ES") + word.slice(1).toLocaleLowerCase("es-ES");
+    });
+  }
+
+
   useEffect(() => {
 
     const CartillaRequest = async () => {
@@ -165,7 +175,7 @@ export const CartillaFarmaciaProvincias = () => {
                             <View style={styles.contentWrapper2}>
                               <View style={styles.textWrapper}>
                                 <Text style={styles.descriptionText}>
-                                  {cartilla.nombre}
+                                  {capitalizeWords(cartilla.nombre)}
                                 </Text>
 {/*                                    <Text style={{ fontSize: 15, marginBottom: 10, color:"black" }}>ID PROVINCIA: {cartilla.idProvincia}</Text>  */}
                               </View>

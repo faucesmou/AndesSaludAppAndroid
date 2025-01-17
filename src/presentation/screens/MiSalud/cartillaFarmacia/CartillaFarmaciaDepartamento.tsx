@@ -33,11 +33,7 @@ export const CartillaFarmaciaDepartamento = () => {
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
 
- /*  function capitalizeWords(string: string) {
-    return string.replace(/\b\w+/g, function (word) {
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    });
-  } */
+
     function capitalizeWords(input: string | undefined): string {
       if (!input) {
         return "";

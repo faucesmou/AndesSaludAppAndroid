@@ -19,6 +19,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
 import BuscadorFarmacia from './buscadorFarmacia';
 import BuscadorFarmacia2 from './buscadorFarmacia2';
+import LinearGradient from 'react-native-linear-gradient';
 
 export const CartillaFarmaciaDepartamentoSeleccionado = () => {
 
@@ -38,23 +39,23 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
 
-/* Buscador de farmacias por el nombre:  */
+  /* Buscador de farmacias por el nombre:  */
 
-const [searchText, setSearchText] = useState(''); // Estado para el texto de búsqueda
+  const [searchText, setSearchText] = useState(''); // Estado para el texto de búsqueda
   const [filteredCartillas, setFilteredCartillas] = useState(cartillas); // Estado para las cartillas filtradas
 
 
- // Función para manejar la búsqueda
- const handleSearch = (text: string) => {
-  setSearchText(text);
+  // Función para manejar la búsqueda
+  const handleSearch = (text: string) => {
+    setSearchText(text);
 
-  // Filtrar cartillas cuyo nombre contenga el texto ingresado (sin importar mayúsculas/minúsculas)
-  const filtered = cartillas.filter((cartilla) =>
-    cartilla.nombre.toLowerCase().includes(text.toLowerCase())
-  );
+    // Filtrar cartillas cuyo nombre contenga el texto ingresado (sin importar mayúsculas/minúsculas)
+    const filtered = cartillas.filter((cartilla) =>
+      cartilla.nombre.toLowerCase().includes(text.toLowerCase())
+    );
 
-  setFilteredCartillas(filtered);
-};
+    setFilteredCartillas(filtered);
+  };
 
   /* const navigation = useNavigation<NavigationProp<RootStackParams>>() */
   const handlePhonePress3 = (phoneNumber: string) => {
@@ -218,7 +219,7 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
       }}>{capitalizeWords(departamento)}:</Text>
 
       <View style={{ flex: 1, marginBottom: hp('2%'), marginTop: hp('1%') }}>
-    {/*     <ScrollView >
+        {/*     <ScrollView >
 
           {isModalVisible && (
             <Modal
@@ -362,63 +363,81 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
 
 
         </ScrollView> */}
-      
-    {isModalVisible && (
-      <Modal
-        transparent={true}
-        animationType="fade"
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>
-              ¿Deseas llamar al número {selectedPhoneNumber}?
-            </Text>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
-                <Text style={styles.buttonText}>Llamar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.denyButton} onPress={handleDeny}>
-                <Text style={styles.buttonText}>Cancelar</Text>
-              </TouchableOpacity>
+
+        {isModalVisible && (
+          <Modal
+            transparent={true}
+            animationType="fade"
+            visible={isModalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>
+                  ¿Deseas llamar al número {selectedPhoneNumber}?
+                </Text>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
+                    <Text style={styles.buttonText}>Llamar</Text>
+                  </TouchableOpacity>
+                  
+                  {/* <LinearGradient
+                    colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    >
+                  <TouchableOpacity style={styles.denyButton} onPress={handleDeny}>
+                    <Text style={styles.buttonText}>Cancelar</Text>
+                  </TouchableOpacity>
+                    </LinearGradient> */}
+
+                  <LinearGradient
+                    colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.denyButton}>
+                    <TouchableOpacity  onPress={handleDeny}>
+                      <Text style={globalStyles.buttonText}>Cancelar</Text>
+                    </TouchableOpacity>
+                  </LinearGradient>
+
+                </View>
+              </View>
             </View>
+          </Modal>
+        )}
+
+        {isConsulting ? (
+          <View
+            style={{
+              flex: 0.5,
+              marginTop: top - hp('-10%'),
+              marginBottom: hp('6%'),
+            }}
+          >
+            <FullScreenLoader />
           </View>
-        </View>
-      </Modal>
-    )}
+        ) : isError ? (
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>
+              ¡Ups! Parece que algo salió mal.
+            </Text>
+            <Text style={styles.noDataText}>
+              Por favor, intenta nuevamente más tarde.
+            </Text>
+            <Text style={styles.noDataText2}>
+              Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
+            </Text>
+          </View>
+        ) : (
+          // Usa el nuevo componente aquí
+          <BuscadorFarmacia2
+            cartillas={cartillas}
+          /* onPress={() => setModalVisible(true)} */
 
-    {isConsulting ? (
-      <View
-        style={{
-          flex: 0.5,
-          marginTop: top - hp('-10%'),
-          marginBottom: hp('6%'),
-        }}
-      >
-        <FullScreenLoader />
-      </View>
-    ) : isError ? (
-      <View style={styles.noDataContainer}>
-        <Text style={styles.noDataText}>
-          ¡Ups! Parece que algo salió mal.
-        </Text>
-        <Text style={styles.noDataText}>
-          Por favor, intenta nuevamente más tarde.
-        </Text>
-        <Text style={styles.noDataText2}>
-          Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
-        </Text>
-      </View>
-    ) : (
-      // Usa el nuevo componente aquí
-      <BuscadorFarmacia2
-        cartillas={cartillas}
-        /* onPress={() => setModalVisible(true)} */
-
-         /*   onPress={() => handlePhonePress3(cleanedPhone)}  */
-      />
-    )}
+          /*   onPress={() => handlePhonePress3(cleanedPhone)}  */
+          />
+        )}
 
       </View>
 
@@ -519,7 +538,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#28a745',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 15,
     marginRight: 5,
     alignItems: 'center',
   },
@@ -527,7 +546,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#dc3545',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 15,
     marginLeft: 5,
     alignItems: 'center',
   },
