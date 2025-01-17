@@ -17,6 +17,8 @@ import { PrimaryButton } from '../../../components/shared/PrimaryButton';
 import { RootStackParams } from '../../../routes/StackNavigator';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
+import BuscadorFarmacia from './buscadorFarmacia';
+import BuscadorFarmacia2 from './buscadorFarmacia2';
 
 export const CartillaFarmaciaDepartamentoSeleccionado = () => {
 
@@ -208,7 +210,7 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
 
       <Text style={{
         marginBottom: 0,
-        marginTop: wp('-1%'),
+        marginTop: wp('-2%'),
         fontSize: hp('4%'),
         textAlign: 'center',
         color: globalColors.gray2,
@@ -216,7 +218,7 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
       }}>{capitalizeWords(departamento)}:</Text>
 
       <View style={{ flex: 1, marginBottom: hp('2%'), marginTop: hp('1%') }}>
-        <ScrollView >
+    {/*     <ScrollView >
 
           {isModalVisible && (
             <Modal
@@ -245,10 +247,8 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
           )}
 
           {
-
             isConsulting ?
               (
-
                 <View
                   style={{
                     flex: 0.5,
@@ -261,7 +261,6 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
 
               )
               : isError ? (
-
                 <View style={styles.noDataContainer}>
                   <Text style={styles.noDataText}>
                     ¡Ups! Parece que algo salió mal.
@@ -275,22 +274,17 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
                 </View>
               )
                 :
-                
-
                 (
-
-
-                  cartillas.map(
+              cartillas.map(
                     (cartilla, index) => (
 
                       <View
                         key={index}
                         style={{ marginBottom: 5 }}
                       >
-                        {/* mejora del estilo:  */}
+                       
                         <Pressable
-                        /*   onPress={() => {
-                             */
+                       
                         >
                           <View key={index} style={styles.TertiaryButton}>
                             <View style={styles.contentWrapper2}>
@@ -299,57 +293,9 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
                                  Farmacia {capitalizeWords(cartilla.nombre)}
                                 </Text>
 
-                                {/*  {cartilla.nombre !== "No se encontraron Farmacias disponibles" && (
-                                  <Text style={{ fontSize: 17, marginBottom: 2, color: "black", marginTop: 5 }}>
-                                    Teléfonos: {cartilla.telefono !== "" ? cartilla.telefono : "No Disponible"}
-                                  </Text>
-                                )} */}
-
                                 {cartilla.nombre !== 'No se encontraron Farmacias disponibles' && (
                                   <View>
 
-                                    {/*       {cartilla.telefono && (
-                                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 5 }}>
-                                        <Text style={{ fontSize: 17, color: 'black' }}>Teléfonos: </Text>
-                                        {cartilla.telefono
-                                          .split(/[,;\s]+/) 
-                                          .map((phone, idx) => (
-                                            <Text
-                                              key={idx}
-                                              style={[styles.phoneText, { marginRight: 10, 
-                                              color:'#4285F4',    
-                                            }]}
-                                              onPress={() => handlePhonePress3(phone)}
-                                            >
-                                              {phone}
-                                            </Text>
-                                          ))}
-                                      </View>
-                                    )} */}
-
-                                    {/*   {cartilla.telefono && (
-                                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 5 }}>
-                                        <Text style={{ fontSize: 17, color: 'black' }}>Teléfonos: </Text>
-                                        {cartilla.telefono
-                                          .split(/[,;\s]+/) 
-                                          .map((phone, idx) => (
-                                            <Text
-                                              key={idx}
-                                              style={[
-                                                styles.phoneText,
-                                                {
-                                                  marginRight: 10,
-                                                  color: phone === "No disponible" ? 'gray' : '#4285F4',
-                                                },
-                                              ]}
-                                              onPress={phone === "No disponible" ? undefined : () => handlePhonePress3(phone)} 
-                                            >
-                                              {phone}
-                                            </Text>
-                                          ))}
-
-                                      </View>
-                                    )} */}
                                     {cartilla.telefono && (
                                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 5 }}>
                                         <Text style={{ fontSize: 17, color: 'black' }}>Teléfonos: </Text>
@@ -361,19 +307,19 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
                                               styles.phoneText,
                                               {
                                                 marginRight: 10,
-                                                color: 'gray', // Color gris para no disponible
-                                                textDecorationLine: 'none', // Sin subrayado
+                                                color: 'gray',
+                                                textDecorationLine: 'none', 
                                               },
                                             ]}
                                           >
                                             No disponible
                                           </Text>
                                         ) : (
-                                          // Caso de teléfonos válidos
+                                         
                                           cartilla.telefono
-                                            .split(/[,;\s]+/) // Divide los números en un array
+                                            .split(/[,;\s]+/) 
                                             .map((phone, idx) => {
-                                              const cleanedPhone = phone.trim(); // Limpia los espacios extra
+                                              const cleanedPhone = phone.trim();
                                               return (
                                                 <Text
                                                   key={idx}
@@ -381,11 +327,11 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
                                                     styles.phoneText,
                                                     {
                                                       marginRight: 10,
-                                                      color: '#4285F4', // Azul para números clickeables
+                                                      color: '#4285F4', 
                                                     
                                                     },
                                                   ]}
-                                                  onPress={() => handlePhonePress3(cleanedPhone)} // Ejecuta la acción al presionar
+                                                  onPress={() => handlePhonePress3(cleanedPhone)} 
                                                 >
                                                   {cleanedPhone}
                                                 </Text>
@@ -415,7 +361,65 @@ const [searchText, setSearchText] = useState(''); // Estado para el texto de bú
           }
 
 
-        </ScrollView>
+        </ScrollView> */}
+      
+    {isModalVisible && (
+      <Modal
+        transparent={true}
+        animationType="fade"
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>
+              ¿Deseas llamar al número {selectedPhoneNumber}?
+            </Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
+                <Text style={styles.buttonText}>Llamar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.denyButton} onPress={handleDeny}>
+                <Text style={styles.buttonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    )}
+
+    {isConsulting ? (
+      <View
+        style={{
+          flex: 0.5,
+          marginTop: top - hp('-10%'),
+          marginBottom: hp('6%'),
+        }}
+      >
+        <FullScreenLoader />
+      </View>
+    ) : isError ? (
+      <View style={styles.noDataContainer}>
+        <Text style={styles.noDataText}>
+          ¡Ups! Parece que algo salió mal.
+        </Text>
+        <Text style={styles.noDataText}>
+          Por favor, intenta nuevamente más tarde.
+        </Text>
+        <Text style={styles.noDataText2}>
+          Si el problema persiste, no dudes en comunicarte con nuestro servicio de atención al cliente
+        </Text>
+      </View>
+    ) : (
+      // Usa el nuevo componente aquí
+      <BuscadorFarmacia2
+        cartillas={cartillas}
+        /* onPress={() => setModalVisible(true)} */
+
+         /*   onPress={() => handlePhonePress3(cleanedPhone)}  */
+      />
+    )}
+
       </View>
 
     </View>
