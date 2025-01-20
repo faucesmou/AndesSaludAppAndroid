@@ -234,14 +234,17 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
     marginBottom: 5,
-    marginHorizontal: 10,
+    marginHorizontal: hp('1%'),
+    /* fontSize: hp('2.3%'), */
     alignItems: 'center',
     justifyContent: 'center',
   },
   descriptionText: {
-    color: 'black',
-    fontSize: 18,
-    textAlign: 'center'
+    color: '#3b3937', 
+    /* fontSize: 18, */
+    fontSize: hp('2.3%'),
+    textAlign: 'center',
+    fontWeight:"bold",
   },
   contentWrapper2: {
     flexDirection: 'row',

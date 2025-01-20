@@ -304,6 +304,7 @@ const styles = StyleSheet.create({
     fontSize: wp('4%'),
     alignSelf: 'center',
     paddingHorizontal:wp('5%'),
+    color:'black'
    /*  minWidth: wp('80%'), */
   },
   card: {
@@ -316,9 +317,12 @@ const styles = StyleSheet.create({
     marginHorizontal: wp('1%'),
   },
   title: {
-    fontSize: 18,
+    fontSize: hp('2.2%'),
     fontWeight: 'bold',
     alignSelf: 'center',
+    color: '#3b3937', 
+   /*  color: globalColors.black, */
+  /*   color: 'black' */
   },
   modalOverlay: {
     flex: 1,
@@ -335,21 +339,27 @@ const styles = StyleSheet.create({
     minWidth:wp('75%')
   },
   modalTitle: {
-    fontSize: 18,
+    /* fontSize: 18, */
+    fontSize: hp('2.2%'),
     fontWeight: 'bold',
     alignSelf:'center',
      marginBottom:10,
-    textAlign:'center'
+    textAlign:'center',
+    color: '#3b3937',
+    /*  */
+    /* color:'gray' */
   },
   selectedAddress: {
-    fontSize: 16,
+   /*  fontSize: 16, */
+   fontSize: hp('2%'),
     marginBottom: wp('3%'),
     alignSelf:'center',
     marginTop:0,
-    textAlign:'center'
+    textAlign:'center',
+    color:'gray'
   },
   selectedNumber: {
-    fontSize: 18,
+    fontSize: hp('2.3%'),
     marginBottom: wp('3%'),
     alignSelf:'center',
     marginTop:0,
@@ -393,13 +403,17 @@ const styles = StyleSheet.create({
     gap: 10, // Espaciado entre los teléfonos
   },
   phoneText: {
-    color: '#4285F4',
-    fontSize: 15,
+   /*  color: '#4285F4', */
+   /*  fontSize: 15, */
     marginRight: 10,
     marginBottom: 2, // Espaciado entre filas si hay demasiados teléfonos
+    color: globalColors.yellow,
+    fontWeight: 'bold',
+    fontSize: hp('2%'),
   },
   addressText: {
-    fontSize: 15,
+    /* fontSize: 15, */
+    fontSize: hp('2%'),
     color: '#4e4747',
     marginTop: 0, // Espaciado superior para separar de los teléfonos
   },

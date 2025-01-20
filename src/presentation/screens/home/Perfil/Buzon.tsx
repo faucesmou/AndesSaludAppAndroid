@@ -542,7 +542,7 @@ export const Buzon = () => {
                 error ? (
                   <>
                     <View style={styles.errorContainerBuzon} >
-                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
+                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones de Estudios Médicos</Text>
 
                       <View style={styles.imageContainer}>
 
@@ -618,7 +618,7 @@ export const Buzon = () => {
                     (
                       <>
                         <View style={styles.errorContainerBuzon} >
-                          <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
+                          <Text style={styles.titleErrorBuzon} >No tienes notificaciones de Estudios Médicos</Text>
 
                           <View style={styles.imageContainer}>
 

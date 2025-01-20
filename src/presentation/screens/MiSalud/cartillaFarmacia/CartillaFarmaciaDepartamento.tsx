@@ -212,13 +212,14 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
     marginBottom: 5,
-    marginHorizontal: 10,
+    marginHorizontal: hp('1%'),
     alignItems: 'center',
     justifyContent: 'center',
   },
   descriptionText: {
-    color:  globalColors.gray, /* 'black' */
-    fontSize: 20,
+    color: '#3b3937', /* globalColors.gray, */ /* 'black' */
+   /*  fontSize: 20, */
+   fontSize: hp('2.3%'),
     textAlign: 'center',
     fontWeight:"bold",
     

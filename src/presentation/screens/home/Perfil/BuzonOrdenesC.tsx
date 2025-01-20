@@ -370,7 +370,7 @@ export const BuzonOrdenesC = () => {
                 error ? (
                   <>
                     <View style={styles.errorContainerBuzon} >
-                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
+                      <Text style={styles.titleErrorBuzon} >No tienes notificaciones de órdenes de consulta</Text>
 
                       <View style={styles.imageContainer}>
 
@@ -457,7 +457,7 @@ export const BuzonOrdenesC = () => {
                     (
                       <>
                         <View style={styles.errorContainerBuzon} >
-                          <Text style={styles.titleErrorBuzon} >No tienes notificaciones</Text>
+                          <Text style={styles.titleErrorBuzon} >No tienes notificaciones de órdenes de consulta</Text>
 
                           <View style={styles.imageContainer}>
 

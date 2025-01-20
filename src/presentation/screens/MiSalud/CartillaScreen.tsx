@@ -12,6 +12,7 @@ import NotiMensajes from '../../components/shared/Noti-mensajes';
 import NotiComponent3 from '../../components/shared/NotiComponent3';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { BackButton } from '../../components/shared/BackButton';
+import LinearGradient from 'react-native-linear-gradient';
 
 export const CartillaScreen = () => {
   console.log('Entrando a Cartilla Screen--------->');
@@ -171,7 +172,7 @@ export const CartillaScreen = () => {
         </View>
       </View>
 
-      {isModalVisible && (
+    {/*   {isModalVisible && (
         <Modal
           transparent={true}
           animationType="fade"
@@ -195,7 +196,56 @@ export const CartillaScreen = () => {
             </View>
           </View>
         </Modal>
-      )}
+      )} */}
+        {/* Modal para la llamar por teléfono */}
+            {isModalVisible && (
+              <Modal
+                transparent={true}
+                animationType="fade"
+                visible={isModalVisible}
+                onRequestClose={() => setModalVisible(false)}
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContainer}>
+                    <Text style={styles.modalTitle}>
+                      ¿Deseas llamar al siguiente número?
+                    </Text>
+                    <Text style={styles.selectedNumber}>{selectedPhoneNumber}</Text>
+      
+                    <View style={styles.buttonContainer}>
+                      {/* <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
+                        <Text style={styles.buttonText}>Llamar</Text>
+                      </TouchableOpacity> */}
+      
+                      {/* nuevo con gradiente */}
+                      <LinearGradient
+                        colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
+                          <Text style={styles.buttonText}>
+                            Llamar
+                          </Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+      
+                      <LinearGradient
+                        colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.denyButton}>
+                        <TouchableOpacity onPress={handleDeny}>
+                          <Text style={styles.buttonText}>Cancelar</Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+                     
+                    </View>
+                  </View>
+                </View>
+              </Modal>
+            )}
+
 
       <View style={styles.bigContentContainer} >
         <View style={styles.emergencyContainer} >
@@ -376,7 +426,7 @@ callButtonText: {
   color: '#fff',
   fontSize: 16,
 },
-modalOverlay: {
+/* modalOverlay: {
   flex: 1,
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
   justifyContent: 'center',
@@ -420,8 +470,73 @@ buttonText: {
   color: '#fff',
   fontSize: 16,
 },
+ */
 
 
+modalOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+modalContainer: {
+  backgroundColor: '#fff',
+  padding: 20,
+  borderRadius: 15,
+  marginHorizontal:wp('5%'),
+  maxWidth:wp('80%'),
+  minWidth:wp('75%')
+},
+modalTitle: {
+  /* fontSize: 18, */
+  fontSize: hp('2.2%'),
+  fontWeight: 'bold',
+  alignSelf:'center',
+   marginBottom:10,
+  textAlign:'center',
+  color: '#3b3937',
+  /*  */
+  /* color:'gray' */
+},
+selectedAddress: {
+ /*  fontSize: 16, */
+ fontSize: hp('2%'),
+  marginBottom: wp('3%'),
+  alignSelf:'center',
+  marginTop:0,
+  textAlign:'center',
+  color:'gray'
+},
+selectedNumber: {
+  fontSize: hp('2.3%'),
+  marginBottom: wp('3%'),
+  alignSelf:'center',
+  marginTop:0,
+  fontWeight:'bold',
+  color: globalColors.profile
+},
+buttonContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  borderRadius: 15,
+},
+allowButton: {
+  /*    backgroundColor: '#4CAF50', */
+  padding: 10,
+  borderRadius: 15,
+  minWidth: 70,
+  maxWidth: 70,
+},
+denyButton: {
+  backgroundColor: '#f44336',
+  padding: 10,
+  borderRadius: 15,
+},
+buttonText: {
+  color: '#fff',
+  fontSize: 16,
+  alignSelf: 'center',
+},
 
 });
 

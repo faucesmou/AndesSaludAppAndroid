@@ -26,6 +26,7 @@ export const globalColors = {
   yellow3: '#ecdb5f',
   gray:'#505050',
   gray2:'#878383',
+  gray5:'#878383',
   black:'#1c1919',
 /*   gray3:'#c1b9bb',  */
 /*   gray3:'#c1c1c1', */
