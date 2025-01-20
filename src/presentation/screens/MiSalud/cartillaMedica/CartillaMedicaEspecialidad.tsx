@@ -16,7 +16,7 @@ import { PrimaryButton } from '../../../components/shared/PrimaryButton';
 import { RootStackParams } from '../../../routes/StackNavigator';
 import { FullScreenLoader } from '../../../components/ui/FullScreenLoader';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import LinearGradient from 'react-native-linear-gradient';
 interface Props {
   idCartilla?: string;
   nombreEspecialidad44?: string;
@@ -68,6 +68,71 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
   const { top } = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
   
+/* logica para modal que se abre al tocar en el teléfono:  */
+
+  const [isModalLlamarVisible, setModalLlamarVisible] = useState(false);
+  const [selectedPhoneNumber, setSelectedPhoneNumber] = useState('');
+
+   const handlePhonePress3 = (phoneNumber: string) => {
+      setSelectedPhoneNumber(phoneNumber);
+      setModalLlamarVisible(true);
+    };
+  
+    const handleAllow = () => {
+      setModalLlamarVisible(false);
+      Linking.openURL(`tel:${selectedPhoneNumber}`)
+        .then(() => {
+          console.log('Llamada iniciada correctamente');
+        })
+        .catch((err) => {
+          Alert.alert(
+            'Ups!',
+            'No se pudo llamar al número indicado, por favor verifica que sea válido'
+          );
+          console.log('El error al intentar hacer la llamada es el siguiente:', err);
+        });
+    };
+  
+    const handleDeny = () => {
+      setModalLlamarVisible(false);
+    };
+  
+/* Modal para buscar en Maps: */
+const [addressModalVisible, setAddressModalVisible] = useState(false);
+  const [errorAbrirDireccion, setErrorAbrirDireccion] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const [selectedLatitud, setSelectedLatitud] = useState('');
+  const [selectedLongitude, setSelectedLongitude] = useState('');
+
+  // Manejar el modal para direcciones
+  const handleAddressPress = (address: string, latitude: string, longitude: string) => {
+    setAddressModalVisible(true);
+    setSelectedLatitud(latitude)
+    setSelectedLongitude(longitude)
+    setSelectedAddress(address);
+  };
+
+   const handleOpenMaps = async () => {
+      setAddressModalVisible(false);
+  
+      try {
+        const url = `https://www.google.com/maps/search/?api=1&query=${selectedLatitud},${selectedLongitude}`; 
+          /* const url = `maps:0?q=${latitude},${longitude}`;  */
+          
+             console.log('la url es: ----->', url);
+             
+             Linking.openURL(url)
+       
+        await Linking.openURL(url);
+      } catch (error) {
+        console.error("Error al intentar abrir la dirección:", error);
+        setErrorAbrirDireccion(true); // Activar el modal de error
+      }
+    };
+  
+    const handleDenyMaps = () => {
+      setAddressModalVisible(false);
+    };
 
 
   function capitalizeWords(input: string | undefined): string {
@@ -190,7 +255,7 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
             });
           });
           setPrestadores(arrayPrestadores)
-        console.log('prestadores son: --->', prestadores);
+      /*   console.log('prestadores son: --->', prestadores); */
         
           
           setPrestadoresCordoba(arrayPrestadores);
@@ -286,6 +351,8 @@ export const CartillaMedicaEspecialidad = ({ idCartilla, nombreEspecialidad44 }:
   };
   
   const handleShowLocation = (latitude: string, longitude: string) => {
+    setAddressModalVisible(false);
+
     Alert.alert(
       'Ver en Google Maps',
       '¿Deseas ver esta ubicación en Google Maps?',
@@ -641,7 +708,9 @@ const filtrarPorTodos = () => {
                             </Text>
                             <TouchableOpacity
                               style={styles.telefonoTouchable}
-                              onPress={() => handleShowLocation(prestador.lat, prestador.long)}
+                              onPress={() => handleAddressPress(prestador.domicilio, prestador.lat, prestador.long)/* handleShowLocation(prestador.lat, prestador.long) */
+
+                              }
                             >
                               <Text style={styles.descriptionTextMapa}>Ver Mapa</Text>
                             </TouchableOpacity>
@@ -654,7 +723,7 @@ const filtrarPorTodos = () => {
                         <Text style={styles.descriptionText}>Teléfonos:</Text>
                         {prestador.telefonos.length > 0 && prestador.telefonos[0] !== "No disponible" ? (
                           prestador.telefonos.map((telefono) => (
-                            <TouchableOpacity style={styles.telefonoTouchable} key={telefono} onPress={() => handlePhonePress2(telefono)}>
+                            <TouchableOpacity style={styles.telefonoTouchable} key={telefono} onPress={() => handlePhonePress3(telefono)}>
                               <Text style={styles.descriptionTexttelefono}>{telefono}</Text>
                             </TouchableOpacity>
                           ))
@@ -673,6 +742,124 @@ const filtrarPorTodos = () => {
         </ScrollView>
       )
       }
+      {/* Modal previo a llamar por teléfono:  */}
+          {isModalLlamarVisible && (
+                    <Modal
+                      transparent={true}
+                      animationType="fade"
+                      visible={isModalLlamarVisible}
+                      onRequestClose={() => setModalVisible(false)}
+                    >
+                      <View style={styles.modalOverlay}>
+                        <View style={styles.modalContainer2}>
+                          <Text style={styles.modalTitle}>
+                            ¿Deseas llamar al siguiente número?
+                          </Text>
+                          <Text style={styles.selectedNumber}>{selectedPhoneNumber}</Text>
+            
+                          <View style={styles.buttonContainer}>
+                           
+                            <LinearGradient
+                              colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 0 }}
+                              style={styles.buttonContainer}>
+                              <TouchableOpacity style={styles.allowButton} onPress={handleAllow}>
+                                <Text style={styles.buttonText}>
+                                  Llamar
+                                </Text>
+                              </TouchableOpacity>
+                            </LinearGradient>
+            
+                            <LinearGradient
+                              colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 0 }}
+                              style={styles.denyButton}>
+                              <TouchableOpacity onPress={handleDeny}>
+                                <Text style={styles.buttonText}>Cancelar</Text>
+                              </TouchableOpacity>
+                            </LinearGradient>
+                           
+                          </View>
+                        </View>
+                      </View>
+                    </Modal>
+                  )}
+
+                  {/* Modal previo a buscar en Maps */}
+
+       {/* Modal para la dirección */}
+            {addressModalVisible && (
+              <Modal
+                transparent={true}
+                animationType="fade"
+                visible={addressModalVisible}
+                onRequestClose={() => setAddressModalVisible(false)}
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContainer2}>
+                    <Text style={styles.modalTitle}>
+                      ¿Deseas abrir esta dirección en Google Maps?
+              
+                    </Text>
+                    <Text style={styles.selectedAddress}>
+                     
+                      {selectedAddress}
+                    </Text>
+                    <View style={styles.buttonContainer}>
+      
+                      <LinearGradient
+                        colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.allowButton} onPress={handleOpenMaps}>
+                          <Text style={styles.buttonText}>
+                          Abrir
+                          </Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+      
+      
+                      <LinearGradient
+                        colors={['#c86443', '#d6783c', '#e08050', '#e88848']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.denyButton}>
+                        <TouchableOpacity onPress={handleDenyMaps}>
+                          <Text style={styles.buttonText}>Cancelar</Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
+            )}
+
+      {/* Modal para manejo de errores */}
+            {errorAbrirDireccion && (
+              <Modal
+                transparent={true}
+                animationType="fade"
+                visible={errorAbrirDireccion}
+                onRequestClose={() => setErrorAbrirDireccion(false)}
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContainer2}>
+                    <Text style={styles.modalTitle}>
+                      Tuvimos inconvenientes para abrir la dirección, por favor intenta nuevamente más tarde.
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.denyButton}
+                      onPress={() => setErrorAbrirDireccion(false)}
+                    >
+                      <Text style={styles.buttonText}>Cerrar</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+            )}      
       </View>
 
     </View>
@@ -727,8 +914,11 @@ const styles = StyleSheet.create({
  marginLeft:5,
   },
   descriptionTexttelefono: {
-    color:'#4285F4',
-    fontSize: 15,
+    /* color:'#4285F4',
+    fontSize: 15, */
+    fontSize: hp('2%'),
+     color: globalColors.yellow,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   descriptionTextMapa: {
@@ -753,7 +943,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     margin:0,
     padding:0,
-    backgroundColor: '#4285F4',
+    textAlign:'center',
+  /*   backgroundColor: '#4285F4', */
   },
   consignaText: {
     color: 'black',
@@ -791,6 +982,7 @@ container: {
   closeButtonText: {
     color: 'white',
     fontSize: 16,
+
   },
   modalOption: {
     paddingVertical: 10,
@@ -833,6 +1025,70 @@ container: {
     textAlign: 'center',
     color: '#595960',
   },
+  /* estilos para el modal que pregunta si deseas llamar:  */
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer2: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 15,
+    marginHorizontal:wp('5%'),
+    maxWidth:wp('80%'),
+    minWidth:wp('75%')
+  },
+  modalTitle: {
+    /* fontSize: 18, */
+    fontSize: hp('2.2%'),
+    fontWeight: 'bold',
+    alignSelf:'center',
+     marginBottom:10,
+    textAlign:'center',
+    color: '#3b3937',
+    /*  */
+    /* color:'gray' */
+  },
+  selectedAddress: {
+   /*  fontSize: 16, */
+   fontSize: hp('2%'),
+    marginBottom: wp('3%'),
+    alignSelf:'center',
+    marginTop:0,
+    textAlign:'center',
+    color:'gray'
+  },
+  selectedNumber: {
+    fontSize: hp('2.3%'),
+    marginBottom: wp('3%'),
+    alignSelf:'center',
+    marginTop:0,
+    fontWeight:'bold',
+    color: globalColors.profile
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderRadius: 15,
+  },
+  allowButton: {
+    /*    backgroundColor: '#4CAF50', */
+    padding: 10,
+    borderRadius: 15,
+    minWidth: 70,
+    maxWidth: 70,
+  },
+  denyButton: {
+    backgroundColor: '#f44336',
+    padding: 10,
+    borderRadius: 15,
+  },
+/* Estilos para el modal que pregunta si desea abrir la dirección: */
+
+
 })
 
 

@@ -27,7 +27,8 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
 
   const { idAfiliadoTitular, idAfiliado, GuardarIdCartillaSeleccionada, idZona, idDepartamento, nombreDepartamento, GuardarIdDepartamentoSeleccionado } = useAuthStore();
 
-
+ console.log('idDepartamento -----==========>>>>EAAA', idDepartamento);
+ console.log('nombreDepartamento -----==========>>>>EAAA', nombreDepartamento);
 
 
   const { top } = useSafeAreaInsets();
@@ -68,6 +69,7 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
     Linking.openURL(`tel:${selectedPhoneNumber}`)
       .then(() => {
         console.log('Llamada iniciada correctamente');
+       
       })
       .catch((err) => {
         Alert.alert(
@@ -81,8 +83,6 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
   const handleDeny = () => {
     setModalVisible(false);
   };
-
-
 
   function capitalizeWords(input: string | undefined): string {
     if (!input) {
@@ -104,16 +104,13 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
         const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPBuscarFarmaciasCartilla?IMEI=&idAfiliado=${idAfiliado}&idZona=${idDepartamento}`)
 
         const xmlData = response.data;
-        console.log('ESTE es el id del departamento seleccionado:--> ', idDepartamento);
+       /*  console.log('ESTE es el id del departamento seleccionado:--> ', idDepartamento); */
 
         // Convertir XML a JSON
         const result = xml2js(xmlData, { compact: true });
 
         const cartillasData = result.Resultado.fila.tablaFarmacias;
         const cartillasTelefonos = result.Resultado.fila.tablaTelefonos;
-
-        console.log('cartillasData-----------<<<<<', cartillasData);
-        console.log('cartillasTelefonos-----------<<<<<', cartillasTelefonos);
 
         // Verificar si cartillasData es un array o un objeto y procesar en consecuencia
         const mappedCartillas = Array.isArray(cartillasData.idFarmacia)
@@ -131,7 +128,16 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
             ]
             : [{ domicilio: "", idFarmacia: "", nombre: "No se encontraron Farmacias disponibles" }];
 
-        console.log('mappedCartillas-----------<<<<<', mappedCartillas);
+
+            /* prueba para mejorar el rendimiento--------------> */
+            const mappedCartillasProcesadas = mappedCartillas.map(mappedCartillas => ({
+              ...mappedCartillas,
+              nombre: mappedCartillas.nombre ? capitalizeWords(mappedCartillas.nombre) : "No disponible pedro", /* capitalizeWords(mappedCartillas.nombre) */
+              domicilio: mappedCartillas.domicilio ? capitalizeWords(mappedCartillas.domicilio) : "No disponible", /* capitalizeWords(mappedCartillas.domicilio) */
+              telefono: mappedCartillas.telefono,
+            }));
+
+   /*      console.log('mappedCartillas-----------<<<<<', mappedCartillas); */
 
         if (cartillasTelefonos) {
 
@@ -148,12 +154,18 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
               ]
               : [];
 
-          console.log('mappedTelefonos-----------<<<<<', mappedTelefonos);
+                  /* prueba para mejorar el rendimiento--------------> */
+            const mappedTelefonosProcesados = mappedTelefonos.map(mappedTelefonos => ({
+              ...mappedTelefonos,
+              nombre: mappedTelefonos.nombre? capitalizeWords(mappedTelefonos.nombre) :"",
+              domicilio: mappedTelefonos.domicilio ? capitalizeWords(mappedTelefonos.domicilio) : "",
+              telefono: mappedTelefonos.telefono,
+            }));
 
           // Integra farmacias y teléfonos.
-          const mappedIntegrado = mappedCartillas.map((farmacia: any) => {
+          const mappedIntegrado = mappedCartillasProcesadas.map((farmacia: any) => {
             // Encuentra los teléfonos asociados a la farmacia actual.
-            const telefonos = mappedTelefonos
+            const telefonos = mappedTelefonosProcesados
               .filter((telefono: any) => telefono.idFarmacia === farmacia.idFarmacia)
               .map((tel: any) => tel.telefono)
               .join(", "); // Concatena los teléfonos con comas.
@@ -165,7 +177,7 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
               telefono: telefonos || "No disponible",
             };
           });
-          console.log('este es el mappedIntegrado MI MAN:---------->>>>>>>>', mappedIntegrado);
+         /*  console.log('este es el mappedIntegrado MI MAN:---------->>>>>>>>', mappedIntegrado); */
 
           // Actualiza el estado con los datos integrados.
           if (Array.isArray(mappedIntegrado)) {
@@ -175,7 +187,8 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
         } else {
           // Si no existe tablaTelefonos, usa mappedCartillas directamente
           console.log("No se encontró tablaTelefonos, usando solo datos de farmacias.");
-          setCartillas(mappedCartillas);
+          setCartillas(mappedCartillasProcesadas);
+          /* setCartillas(mappedCartillas); */
         }
 
         /*   setCartillas(mappedCartillas);
@@ -433,9 +446,6 @@ export const CartillaFarmaciaDepartamentoSeleccionado = () => {
           // Usa el nuevo componente aquí
           <BuscadorFarmacia2
             cartillas={cartillas}
-          /* onPress={() => setModalVisible(true)} */
-
-          /*   onPress={() => handlePhonePress3(cleanedPhone)}  */
           />
         )}
 

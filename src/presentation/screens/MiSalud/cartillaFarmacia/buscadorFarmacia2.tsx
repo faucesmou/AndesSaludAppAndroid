@@ -15,6 +15,10 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { globalColors } from '../../../theme/theme';
+import { useAuthStore } from '../../../store/auth/useAuthStore';
+
+
+
 
 interface Cartilla {
   nombre: string;
@@ -24,9 +28,36 @@ interface Cartilla {
 
 interface Props {
   cartillas: Cartilla[];
+ /*  departamentoSeleccionado: string; */
 }
 
 const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
+
+
+  const { nombreDepartamento,  } = useAuthStore();
+
+  function capitalizeWords(input: string | undefined): string {
+    if (!input) {
+      return "";
+    }
+    // Convierte cada palabra del texto a formato "Primera Mayúscula, resto Minúsculas"
+    return input.replace(/\b\p{L}+/gu, function (word) {
+      // Convertir toda la palabra a minúsculas primero
+      const lowerCasedWord = word.toLocaleLowerCase("es-ES");
+      // Convertir la primera letra en mayúscula y concatenar el resto
+      return lowerCasedWord.charAt(0).toLocaleUpperCase("es-ES") + lowerCasedWord.slice(1);
+    });
+  }
+    // Procesa los datos al cargarlos o antes de renderizarlos
+/* const processedCartillas = cartillas.map(cartilla => ({
+  ...cartilla,
+  nombre: capitalizeWords(cartilla.nombre),
+  domicilio: capitalizeWords(cartilla.domicilio),
+  telefono: cartilla.telefono,
+}));
+
+console.log('Processed cartillas------------------------>>>>:', processedCartillas);  */
+
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCartillas, setFilteredCartillas] = useState(cartillas);
   const [selectedPhoneNumber, setSelectedPhoneNumber] = useState<string | null>(null);
@@ -35,6 +66,7 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
   const [addressModalVisible, setAddressModalVisible] = useState(false);
   const [errorAbrirDireccion, setErrorAbrirDireccion] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState('');
+  const [selectedSimpleAddress, setSelectedSimpleAddress] = useState('');
 
   const handlePhonePress3 = (phoneNumber: string) => {
     setSelectedPhoneNumber(phoneNumber);
@@ -62,6 +94,8 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
     setModalVisible(false);
   };
 
+
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
 
@@ -70,13 +104,29 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
         .some((field) => field.toLowerCase().includes(query.toLowerCase()))
     );
 
-    setFilteredCartillas(filtered);
-  };
+    // Procesa los datos al cargarlos o antes de renderizarlos
+/* const processedCartillas = filtered.map(cartilla => ({
+  ...cartilla,
+  nombre: capitalizeWords(cartilla.nombre),
+  domicilio: capitalizeWords(cartilla.domicilio),
+  telefono: cartilla.telefono,
+})); */
 
+/* console.log('Processed cartillas------------------------>>>>:', processedCartillas);  */
+
+    setFilteredCartillas(filtered);
+   
+   /*  setFilteredCartillas(filtered); */
+  };
 
   // Manejar el modal para direcciones
   const handleAddressPress = (address) => {
-    setSelectedAddress(address);
+      
+   const addressComplete = `${address}, ${nombreDepartamento}`;
+   console.log('addressComplete--CHAVALAL------------------>>', addressComplete);
+   
+   setSelectedSimpleAddress(address)
+    setSelectedAddress(addressComplete);
     setAddressModalVisible(true);
   };
 
@@ -105,7 +155,19 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
   const handleDenyMaps = () => {
     setAddressModalVisible(false);
   };
+/*   function capitalizeWords(input: string | undefined): string {
+    if (!input) {
+      return "";
+    }
+    return input.replace(/\b\p{L}+/gu, function (word) {
+      return word.charAt(0).toLocaleUpperCase("es-ES") + word.slice(1).toLocaleLowerCase("es-ES");
+    });
+  } */
 
+
+   /*  console.log('filtered cartillas men----------->', filteredCartillas); */
+
+  
   return (
     <View style={{ flex: 1 }}>
       {/* TextInput para la búsqueda */}
@@ -122,9 +184,17 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
             <Pressable>
               <View style={styles.card}>
                 <Text style={styles.title}>Farmacia {cartilla.nombre}</Text>
+
+                {/* Dirección */}
+                <Text style={styles.addressText} onPress={() => handleAddressPress(cartilla.domicilio)} >{cartilla.domicilio}</Text>
+
+                <TouchableOpacity>
+                  <Text style={styles.descriptionTextMapa} onPress={() => handleAddressPress(cartilla.domicilio)} >Ver Mapa</Text>
+                </TouchableOpacity>
+
                 {/* Teléfonos */}
                 {
-                  cartilla.telefono.toLowerCase() === 'no disponible' ? (
+                  cartilla.telefono === 'No disponible' ? (
                     <Text style={[styles.phoneText, { color: 'gray', textDecorationLine: 'none' }]}>
                       Teléfonos: No disponible
                     </Text>
@@ -150,8 +220,6 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
                   )
                 }
 
-                {/* Dirección */}
-                <Text style={styles.addressText} onPress={() => handleAddressPress(cartilla.domicilio)} >{cartilla.domicilio}</Text>
 
               </View>
             </Pressable>
@@ -201,7 +269,7 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
                     <Text style={styles.buttonText}>Cancelar</Text>
                   </TouchableOpacity>
                 </LinearGradient>
-               
+
               </View>
             </View>
           </View>
@@ -220,12 +288,12 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
             <View style={styles.modalContainer}>
               <Text style={styles.modalTitle}>
                 ¿Deseas abrir esta dirección en Google Maps?
-              {/*   {"\n"} */}
-            {/*     {selectedAddress} */}
+                {/*   {"\n"} */}
+                {/*     {selectedAddress} */}
               </Text>
               <Text style={styles.selectedAddress}>
-               
-                {selectedAddress}
+
+                {selectedSimpleAddress}
               </Text>
               <View style={styles.buttonContainer}>
 
@@ -240,7 +308,7 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
                   style={styles.buttonContainer}>
                   <TouchableOpacity style={styles.allowButton} onPress={handleOpenMaps}>
                     <Text style={styles.buttonText}>
-                    Abrir
+                      Abrir
                     </Text>
                   </TouchableOpacity>
                 </LinearGradient>
@@ -256,7 +324,7 @@ const BuscadorFarmacia2: React.FC<Props> = ({ cartillas }) => {
                   </TouchableOpacity>
                 </LinearGradient>
 
-              {/*   <TouchableOpacity style={styles.denyButton} onPress={handleDenyMaps}>
+                {/*   <TouchableOpacity style={styles.denyButton} onPress={handleDenyMaps}>
                   <Text style={styles.buttonText}>Cancelar</Text>
                 </TouchableOpacity> */}
               </View>
@@ -303,9 +371,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     fontSize: wp('4%'),
     alignSelf: 'center',
-    paddingHorizontal:wp('5%'),
-    color:'black'
-   /*  minWidth: wp('80%'), */
+    paddingHorizontal: wp('5%'),
+    color: 'black'
+    /*  minWidth: wp('80%'), */
   },
   card: {
     padding: 10,
@@ -320,9 +388,9 @@ const styles = StyleSheet.create({
     fontSize: hp('2.2%'),
     fontWeight: 'bold',
     alignSelf: 'center',
-    color: '#3b3937', 
-   /*  color: globalColors.black, */
-  /*   color: 'black' */
+    color: '#3b3937',
+    /*  color: globalColors.black, */
+    /*   color: 'black' */
   },
   modalOverlay: {
     flex: 1,
@@ -334,36 +402,36 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 15,
-    marginHorizontal:wp('5%'),
-    maxWidth:wp('80%'),
-    minWidth:wp('75%')
+    marginHorizontal: wp('5%'),
+    maxWidth: wp('80%'),
+    minWidth: wp('75%')
   },
   modalTitle: {
     /* fontSize: 18, */
     fontSize: hp('2.2%'),
     fontWeight: 'bold',
-    alignSelf:'center',
-     marginBottom:10,
-    textAlign:'center',
+    alignSelf: 'center',
+    marginBottom: 10,
+    textAlign: 'center',
     color: '#3b3937',
     /*  */
     /* color:'gray' */
   },
   selectedAddress: {
-   /*  fontSize: 16, */
-   fontSize: hp('2%'),
+    /*  fontSize: 16, */
+    fontSize: hp('2%'),
     marginBottom: wp('3%'),
-    alignSelf:'center',
-    marginTop:0,
-    textAlign:'center',
-    color:'gray'
+    alignSelf: 'center',
+    marginTop: 0,
+    textAlign: 'center',
+    color: 'gray'
   },
   selectedNumber: {
     fontSize: hp('2.3%'),
     marginBottom: wp('3%'),
-    alignSelf:'center',
-    marginTop:0,
-    fontWeight:'bold',
+    alignSelf: 'center',
+    marginTop: 0,
+    fontWeight: 'bold',
     color: globalColors.profile
   },
   buttonContainer: {
@@ -391,9 +459,11 @@ const styles = StyleSheet.create({
   phoneContainer: {
     flexDirection: 'column',
     marginTop: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   label: {
-    fontSize: 17,
+    fontSize: hp('2%'),
     color: 'black',
     marginBottom: 2,
   },
@@ -403,20 +473,30 @@ const styles = StyleSheet.create({
     gap: 10, // Espaciado entre los teléfonos
   },
   phoneText: {
-   /*  color: '#4285F4', */
-   /*  fontSize: 15, */
+    /*  color: '#4285F4', */
+    /*  fontSize: 15, */
     marginRight: 10,
     marginBottom: 2, // Espaciado entre filas si hay demasiados teléfonos
     color: globalColors.yellow,
     fontWeight: 'bold',
     fontSize: hp('2%'),
+    alignSelf:'center'
+
   },
   addressText: {
     /* fontSize: 15, */
     fontSize: hp('2%'),
     color: '#4e4747',
     marginTop: 0, // Espaciado superior para separar de los teléfonos
+    textAlign: 'center'
   },
+  descriptionTextMapa: {
+    color: 'black',
+    fontSize: 15,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  
 });
 
 export default BuscadorFarmacia2;
