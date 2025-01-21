@@ -158,8 +158,11 @@ const [addressModalVisible, setAddressModalVisible] = useState(false);
       }
       try {
         setIsConsulting(true);
-        const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPBuscarPrestadoresCartilla?IMEI=&idAfiliado=4E7EF475-B01B-4FED-BE87-3B896766D4DA&idCartilla=${idCartillaSeleccionada}`)
+        const response = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPBuscarPrestadoresCartilla?IMEI=&idAfiliado=${idAfiliado}&idCartilla=${idCartillaSeleccionada}`)
         const xmlData = response.data;
+        console.log('haciendo la consulta con el idAfiliado=======>>>==>>>', idAfiliado);
+        console.log('haciendo la consulta con la idCartillaSeleccionada=======>>>==>>>', idCartillaSeleccionada);
+        
 
         // Convertir XML a JSON
         const result = xml2js(xmlData, { compact: true });
