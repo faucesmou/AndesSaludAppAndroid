@@ -167,13 +167,14 @@ console.log('Processed cartillas------------------------>>>>:', processedCartill
 
    /*  console.log('filtered cartillas men----------->', filteredCartillas); */
 
-  
+
   return (
     <View style={{ flex: 1 }}>
       {/* TextInput para la búsqueda */}
       <TextInput
         style={styles.searchInput}
-        placeholder="Buscar por nombre, teléfono o domicilio"
+        placeholder="Buscar por nombre, domicilio o teléfono"
+        placeholderTextColor = 'gray'
         value={searchQuery}
         onChangeText={handleSearch}
       />

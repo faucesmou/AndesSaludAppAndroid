@@ -19,21 +19,84 @@ import { Icon } from "react-native-vector-icons/Icon";
 import { initializeAuth } from '../../store/auth/authService';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import QRscanner2 from "../../components/shared/QRscanner2";
+import QRscanner4 from "../../components/shared/QRscanner4";
+import QRscanner5gpt from "../../components/shared/QRscanner5gpt";
+import QRscanner6gpt from "../../components/shared/QRscanner6gpt";
+
+
+
+
 
 interface Props extends StackScreenProps<RootStackParams, 'LoginScreen'> { }
+
+type DNIData = {
+  numTram: string;
+  apellido: string;
+  nombre: string;
+  dni: string;
+  fechNacimiento: string;
+  fecEmision: string;
+};
 
 
 export const LoginScreenNew = ({ navigation }: Props) => {
 
+  /* QR: */
+
+
+
+  const [scannedData, setScannedData] = useState('');
+
+  const [isScanSuccessful, setIsScanSuccessful] = useState(false);
+  const [showScanError, setShowScanError] = useState(false);
+  const [showScanModal, setShowScanModal] = useState(false);
+
+  /* const [form, setForm] = useState({ usuario: '', password: '' }); */
+
+  /*   const handleScanComplete = (data: DNIData) => {
+      setScannedData(data);
+      console.log('scannedData=====>>>===>>', scannedData);
+  
+    }; */
+
+  const handleScanComplete = (data: DNIData) => {
+    if (data && data.dni) {
+      console.log('documento escaneado con éxito perrrisonnnn');
+      setScannedData(data);
+      setIsScanSuccessful(true);
+      setShowScanError(false);
+    } else {
+      console.log('error al escanear el documento');
+
+      /*   setScannedData(null); */
+      setIsScanSuccessful(false);
+      setShowScanError(true);
+    }
+  };
 
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
 
   const [isModalVisible, setModalVisible] = useState(false);
 
- 
-  const { loginGonzaMejorado, guardarDatosLoginEnContext,guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName, loginGonzaMejorado3 } = useAuthStore();
- /*  const { loadAuthDataFromStorage } = AuthStore(); */
+
+  const { loginGonzaMejorado, guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName, loginGonzaMejorado3 } = useAuthStore();
+  /*  const { loadAuthDataFromStorage } = AuthStore(); */
+
+
+
+  /* lógica para habilitar el LOGIN SÓLO CON EL ESCANEO + EL USUARIO Y CONTRASEÑA: */
+
+  const handleLoginPress = () => {
+    if (!isScanSuccessful) {
+      setShowScanModal(true);
+      return;
+    }
+    onLoginGonza2(); // Procede con el login si el escaneo fue exitoso
+  };
+
+
 
 
   const [isPosting, setIsPosting] = useState(false)
@@ -87,7 +150,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
 
         if (idAfiliado) {
           // Llama a guardarDatosLoginEnContext con el idAfiliado actualizado
-          
+
           const datosGuardados = await guardarDatosLoginEnContext(idAfiliado);
           if (!datosGuardados) {
             console.log('No se pudieron guardar los datos de usuario desde el LoginScreen');
@@ -97,9 +160,9 @@ export const LoginScreenNew = ({ navigation }: Props) => {
         }
         if (loginExitoso) {
           const { idAfiliado, cuilTitular, nombreCompleto, idAfiliadoTitular, UserName, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail } = useAuthStore.getState();
-         
+
           if (idAfiliado) {
-         
+
             await useAuthStore.getState().setAuthenticated(idAfiliado);
             await useAuthStore.getState().setDataStore(cuilTitular, nombreCompleto, idAfiliadoTitular, UserName, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail);
 
@@ -127,19 +190,19 @@ export const LoginScreenNew = ({ navigation }: Props) => {
       Alert.alert('Usuario y contraseña son obligatorios');
       return;
     }
-  
+
     setIsPosting(true);
-  
+
     try {
       const loginExitoso = await loginGonzaMejorado2(form.usuario, form.password);
-  
+
       if (loginExitoso) {
         const { idAfiliado } = useAuthStore.getState();
-  
+
         if (idAfiliado) {
           // Guardamos los datos en AsyncStorage y en el contexto
           const datosGuardados = await guardarDatosLoginEnContextMejorada(idAfiliado);
-         
+
           if (!datosGuardados) {
             console.log('No se pudieron guardar los datos de usuario desde el LoginScreen');
           } else {
@@ -149,7 +212,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
         } else {
           console.log('idAfiliado no está disponible');
         }
-  
+
         // Establece el estado de autenticación
         if (loginExitoso) {
           const { idAfiliado } = useAuthStore.getState();
@@ -159,7 +222,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
             console.log('idAfiliado no está disponible');
           }
         }
-  
+
       } else {
         setModalVisible(true);
       }
@@ -173,7 +236,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
   let paddingTopNumber = hp('1%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
     paddingTopNumber = hp('1%');
- 
+
   }
 
   return (
@@ -217,9 +280,12 @@ export const LoginScreenNew = ({ navigation }: Props) => {
 
             <View style={styles.bottomSection}>
               <View>
+
+
+
                 <Text style={styles.text}>
-                 {/*  Por favor, ingresá tu Número de Credencial y Contraseña para continuar: */}
-                 Por favor, ingresá tu Usuario y Contraseña para continuar:
+                  {/*  Por favor, ingresá tu Número de Credencial y Contraseña para continuar: */}
+                  Por favor, ingresá tu Usuario, Contraseña y escaneá tu DNI para continuar:
                 </Text>
                 <Input
                   placeholder="Usuario"
@@ -237,14 +303,61 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                   onChangeText={(password) => setForm({ ...form, password })}
 
                 />
+
+
+               {/*  <Text style={styles.textQR}>
+                  Escaneá el QR de tu DNI para continuar:
+                </Text> */}
+
+                <QRscanner6gpt onScanComplete={handleScanComplete} />
+
+                {scannedData && (
+                  <View style={styles.result}>
+                    <Text style={styles.resultText}>Datos del QR escaneado:</Text>
+                    {/* <Text style={styles.resultData}>{JSON.stringify(scannedData, null, 2)}</Text> */}
+
+                    {/*     <Text>Apellido: {scannedData.apellido}</Text>
+                    <Text>Nombre: {scannedData.nombre}</Text> */}
+                    <Text style={styles.resultData} >DNI: {scannedData.dni}</Text>
+
+                  </View>
+                )}
+
               </View>
+
+
               <Button style={styles.customButton}
                 disabled={isPosting}
-                onPress={onLoginGonza2}
-           /*      onPress={() => navigation.navigate('home')} */
+                onPress={handleLoginPress}
+              /*  onPress={onLoginGonza2} */
+              /*      onPress={() => navigation.navigate('home')} */
               >
                 INGRESAR
               </Button>
+
+
+              {showScanError && (
+                <Text style={styles.errorText}>Error en el escaneo de QR</Text>
+              )}
+
+              {showScanModal && (
+                <Modal
+                  transparent={true}
+                  animationType="fade"
+                  visible={showScanModal}
+                  onRequestClose={() => setShowScanModal(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                      <Text style={styles.modalTitle}>Aviso</Text>
+                      <Text style={styles.modalMessage}>Debe escanear su DNI para continuar.</Text>
+                      <TouchableOpacity style={styles.button} onPress={() => setShowScanModal(false)}>
+                        <Text style={styles.buttonText}>Aceptar</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
+              )}
 
               {
                 isPosting ? (
@@ -292,7 +405,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 marginBottom: hp('2%'),
-                marginTop: hp('1%'),
+                marginTop: hp('0%'),
 
               }}>
                 <Text style={{ fontWeight: 'bold' }}>
@@ -379,11 +492,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: hp('2%'),
   },
+  textQR: {
+    fontSize: wp('4%'),
+    color: 'black',
+    fontWeight: 'bold',
+    marginTop: hp('1%'),
+    marginBottom: hp('1%'),
+    alignSelf: 'center',
+
+  },
   customButton: {
     backgroundColor: '#ECB30C',
     borderColor: '#ECB30C',
     borderRadius: 10,
-    marginTop: hp('2%'),
+    marginTop: hp('1%'),
     maxWidth: hp('20%'),
     minWidth: hp('15%'),
   },
@@ -434,5 +556,24 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  /* QR: */
+  result: {
+    marginTop: wp('0.5%'),
+    marginBottom: wp('1%'),
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    elevation: 2,
+  },
+  resultText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+  },
+  resultData: {
+    fontSize: 16,
+    color: '#333',
+    alignSelf: 'center',
   },
 });

@@ -85,7 +85,8 @@ android {
     namespace "com.ar.andessalud.andessalud"
     defaultConfig {
         applicationId "com.ar.andessalud.andessalud"
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 24
+        /* minSdkVersion rootProject.ext.minSdkVersion */
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 10 
         versionName "3.7" 
@@ -127,6 +128,7 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
     implementation("com.facebook.react:flipper-integration")
+   /*  implementation 'com.budiyev.android:react-native-camera:4.2.1' */
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
