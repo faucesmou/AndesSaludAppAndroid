@@ -40,18 +40,18 @@ type DNIData = {
 };
 
 
-export const LoginScreenNew = ({ navigation }: Props) => {
+export const RegisterDni = ({ navigation }: Props) => {
 
   /* QR: */
-
-
 
   const [scannedData, setScannedData] = useState('');
 
   const [isScanSuccessful, setIsScanSuccessful] = useState(false);
   const [showScanError, setShowScanError] = useState(false);
   const [showScanModal, setShowScanModal] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDniScanned, setIsDniScanned] = useState(false);
+  const [isDniUpdated, setIsDniUpdated] = useState(false);
   /* const [form, setForm] = useState({ usuario: '', password: '' }); */
 
   /*   const handleScanComplete = (data: DNIData) => {
@@ -60,17 +60,55 @@ export const LoginScreenNew = ({ navigation }: Props) => {
   
     }; */
 
-  const handleScanComplete = (data: DNIData) => {
+/*   const handleScanComplete = async (data: DNIData) => {
+    setIsLoading(true);
     if (data && data.dni) {
       console.log('documento escaneado con éxito perrrisonnnn');
       setScannedData(data);
       setIsScanSuccessful(true);
       setShowScanError(false);
+      let dni = scannedData.dni ;  
+        useAuthStore.getState().setDni(dni);
+        console.log('DNI guardado en Zustand:', dni);
+        await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
+        console.log('DNI guardado en Zustand:', dni);
+        setIsLoading(false);
+        setIsDniScanned(true);
     } else {
       console.log('error al escanear el documento');
 
-      /*   setScannedData(null); */
       setIsScanSuccessful(false);
+      setShowScanError(true);
+      setIsLoading(false);
+    }
+  }; */
+
+  const handleScanComplete = async (data: DNIData) => {
+    setIsLoading(true);
+    try {
+      if (data && data.dni) {
+        console.log('documento escaneado con éxito perrrisonnnn');
+        setScannedData(data);
+        setIsScanSuccessful(true);
+        setShowScanError(false);
+        const dni = data.dni;
+  
+        // Actualiza el store de Zustand y espera a que se complete
+        await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
+  
+        console.log('DNI guardado en Zustand:', dni);
+  
+        setIsLoading(false);
+        setIsDniScanned(true);
+  
+      } else {
+        console.log('error al escanear el documento');
+        setIsScanSuccessful(false);
+        setShowScanError(true);
+      }
+    } catch (error) {
+      console.error("Error en handleScanComplete:", error);
+      setIsLoading(false);
       setShowScanError(true);
     }
   };
@@ -81,7 +119,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
 
-  const { loginGonzaMejorado, guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName, loginGonzaMejorado3 } = useAuthStore();
+  const { loginGonzaMejorado, guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName, loginGonzaMejorado3, setDni } = useAuthStore();
   /*  const { loadAuthDataFromStorage } = AuthStore(); */
 
 
@@ -281,58 +319,58 @@ export const LoginScreenNew = ({ navigation }: Props) => {
             <View style={styles.bottomSection}>
               <View>
 
-
-
+                
                 <Text style={styles.text}>
                   {/*  Por favor, ingresá tu Número de Credencial y Contraseña para continuar: */}
-                  Por favor, ingresá tu Usuario y Contraseña y para continuar:
+                  Para comenzar necesitamos que escanees tu DNI:
                 </Text>
-                <Input
-                  placeholder="Usuario"
-                  /* placeholder="Número de Credencial o Correo electrónico" */
-                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
-                  autoCapitalize="none"
-                  value={form.usuario}
-                  onChangeText={(usuario) => setForm({ ...form, usuario })}
-                />
-                <Input
-                  placeholder="Contraseña"
-                  secureTextEntry
-                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
-                  value={form.password}
-                  onChangeText={(password) => setForm({ ...form, password })}
+                <Text style={styles.textConsigna}>
+                  {/*  Por favor, ingresá tu Número de Credencial y Contraseña para continuar: */}
+                  Tienes que escanear el código de barra que aparece en tu DNI tarjeta, dependiendo el año en que lo tramitaste puede estar en frente o el dorso.
+                </Text>
+               
 
-                />
+                <QRscanner6gpt onScanComplete={handleScanComplete} />
 
-
-               {/*  <Text style={styles.textQR}>
-                  Escaneá el QR de tu DNI para continuar:
-                </Text> */}
-{/* 
-                <QRscanner6gpt onScanComplete={handleScanComplete} /> */}
-
-                {scannedData && (
+               {/*  {scannedData && (
                   <View style={styles.result}>
-                    <Text style={styles.resultText}>Datos del QR escaneado:</Text>
-                    {/* <Text style={styles.resultData}>{JSON.stringify(scannedData, null, 2)}</Text> */}
-
-                    {/*     <Text>Apellido: {scannedData.apellido}</Text>
-                    <Text>Nombre: {scannedData.nombre}</Text> */}
+                    <Text style={styles.resultText}>Aguarda un momento</Text>
+                    <Text style={styles.resultData}>{JSON.stringify(scannedData, null, 2)}</Text>
+                        <Text>Apellido: {scannedData.apellido}</Text>
+                    <Text>Nombre: {scannedData.nombre}</Text>
                     <Text style={styles.resultData} >DNI: {scannedData.dni}</Text>
 
                   </View>
+                )} */}
+
+                {isLoading && (
+                  <>
+                  <View style={styles.result}>
+                    <Text style={styles.resultText}>Aguarda un momento</Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 0.1,
+                      marginTop: hp('1%'),
+                      marginBottom: hp('0%'),
+                    }}
+                  >
+                    <FullScreenLoader />
+                  </View>
+                  </>
                 )}
 
               </View>
 
 
               <Button style={styles.customButton}
-                disabled={isPosting}
-                onPress={handleLoginPress}
+               /*  disabled={isPosting} */
+                /* onPress={handleLoginPress} */
               /*  onPress={onLoginGonza2} */
-              /*      onPress={() => navigation.navigate('home')} */
+                   onPress={() => navigation.navigate('Registro telefono')}
+                   disabled={!isDniScanned}
               >
-                INGRESAR
+                CONTINUAR
               </Button>
 
 
@@ -409,43 +447,20 @@ export const LoginScreenNew = ({ navigation }: Props) => {
 
               }}>
                 <Text style={{ fontWeight: 'bold' }}>
-                  ¿Aún no tienes cuenta? Regístrate en
+                  ¿Ya tienes una cuenta? 
                   {' '}
                 </Text>
                 <Text
                   style={styles.customText2}
                   status="primary"
                   category="s1"
-                  onPress={() => navigation.navigate('Registro')}
+                  onPress={() => navigation.navigate('LoginScreenNew')}
                 >
                   {' '}
-                  Andes Salud{' '}
+                 Iniciar sesión{' '}
                 </Text>
 
               </Layout>
-         {/*      <Layout style={{
-                alignItems: 'center',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                marginBottom: hp('2%'),
-                marginTop: hp('0%'),
-
-              }}>
-                <Text style={{ fontWeight: 'bold' }}>
-                  ¿Aún no tienes cuenta? Regístrate en
-                  {' '}
-                </Text>
-                <Text
-                  style={styles.customText2}
-                  status="primary"
-                  category="s1"
-                  onPress={handleOpenURLAndes}
-                >
-                  {' '}
-                  Andes Salud{' '}
-                </Text>
-
-              </Layout> */}
 
 
               <Layout style={{
@@ -509,11 +524,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignSelf: 'center'
   },
+  textConsigna: {
+    fontSize: wp('3.5%'),
+    color: 'black',
+    /* fontWeight: 'bold', */
+    marginBottom: hp('2%'),
+    textAlign: 'justify',
+  },
   text: {
     fontSize: wp('4%'),
     color: 'black',
     fontWeight: 'bold',
     marginBottom: hp('2%'),
+    textAlign: 'center',
   },
   textQR: {
     fontSize: wp('4%'),
@@ -584,7 +607,7 @@ const styles = StyleSheet.create({
   result: {
     marginTop: wp('0.5%'),
     marginBottom: wp('1%'),
-    padding: 10,
+    padding: 12,
     backgroundColor: '#fff',
     borderRadius: 12,
     elevation: 2,

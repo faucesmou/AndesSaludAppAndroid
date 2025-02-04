@@ -55,6 +55,8 @@ import { CartillaMedicaScreenOtrasCartillas } from '../screens/MiSalud/cartillaM
 import { CartillaFarmaciaProvincias } from '../screens/MiSalud/cartillaFarmacia/CartillaFarmaciaProvincias';
 import { CartillaFarmaciaDepartamento } from '../screens/MiSalud/cartillaFarmacia/CartillaFarmaciaDepartamento';
 import { CartillaFarmaciaDepartamentoSeleccionado } from '../screens/MiSalud/cartillaFarmacia/CartillaFarmaciaDepartamentoSeleccionado';
+import { RegisterDni } from '../screens/auth/RegisterDni';
+import { RegisterTel } from '../screens/auth/RegisterTel';
 
 /* import { UserData } from '../screens/auth/userData'; */
 
@@ -84,6 +86,8 @@ export type RootStackParams = {
   "Farmacias": undefined,
   LoginScreen: undefined,
   LoginScreenNew: undefined,
+  "Registro": undefined,
+  "Registro telefono": undefined,
   LoginScreen2: undefined,
   LoginGonzalo: undefined,
   RegisterScreen: undefined,
@@ -171,7 +175,12 @@ export const StackNavigator = () => {
     >
 {/* ------------VISTAS PRINCIPALES: -------------->*/}
 
+{/* ------------REGISTER: -------------->*/}
+
+<Stack.Screen name='Registro' component={RegisterDni} options={{ headerShown: false }} /> 
+<Stack.Screen name='Registro telefono' component={RegisterTel} options={{ headerShown: false }} /> 
 {/* ------------VISTAS INICIO SESIÓN: -------------->*/}
+
     <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false }} /> 
     <Stack.Screen name='LoginScreenNew' component={LoginScreenNew} options={{ headerShown: false }} /> 
       {/* <Stack.Screen name='LoginGonzalo' component={LoginScreen2} options={{ headerShown: false }} /> */}

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Camera, CameraType } from 'react-native-camera-kit';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 type DNIData =  {
   numTram: string;
@@ -134,12 +135,15 @@ const styles = StyleSheet.create({
   scanButton: {
     backgroundColor: '#007AFF',
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
+    maxWidth: hp('20%'),
+    minWidth: hp('15%'),
+    elevation: 2,
   },
   scanButtonText: {
     color: '#FFF',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   modalContainer: {

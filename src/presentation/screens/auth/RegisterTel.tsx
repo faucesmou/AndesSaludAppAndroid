@@ -40,7 +40,7 @@ type DNIData = {
 };
 
 
-export const LoginScreenNew = ({ navigation }: Props) => {
+export const RegisterTel = ({ navigation }: Props) => {
 
   /* QR: */
 
@@ -84,6 +84,15 @@ export const LoginScreenNew = ({ navigation }: Props) => {
   const { loginGonzaMejorado, guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName, loginGonzaMejorado3 } = useAuthStore();
   /*  const { loadAuthDataFromStorage } = AuthStore(); */
 
+  /* const { dni } = useAuthStore(); */
+
+  const [loadedDni, setLoadedDni] = useState<string | null>(null);
+  const { dni } = useAuthStore();
+
+  useEffect(() => {
+    setLoadedDni(dni);
+    console.log('DNI actualizado------------------->:', dni); // Para depuración
+  }, [dni]);
 
 
   /* lógica para habilitar el LOGIN SÓLO CON EL ESCANEO + EL USUARIO Y CONTRASEÑA: */
@@ -281,50 +290,33 @@ export const LoginScreenNew = ({ navigation }: Props) => {
             <View style={styles.bottomSection}>
               <View>
 
-
-
                 <Text style={styles.text}>
-                  {/*  Por favor, ingresá tu Número de Credencial y Contraseña para continuar: */}
-                  Por favor, ingresá tu Usuario y Contraseña y para continuar:
+
+                  Ahora necesitamos que registres tu teléfono:
                 </Text>
-                <Input
-                  placeholder="Usuario"
-                  /* placeholder="Número de Credencial o Correo electrónico" */
-                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
-                  autoCapitalize="none"
-                  value={form.usuario}
-                  onChangeText={(usuario) => setForm({ ...form, usuario })}
-                />
-                <Input
-                  placeholder="Contraseña"
-                  secureTextEntry
-                  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
-                  value={form.password}
-                  onChangeText={(password) => setForm({ ...form, password })}
-
-                />
-
-
-               {/*  <Text style={styles.textQR}>
-                  Escaneá el QR de tu DNI para continuar:
-                </Text> */}
-{/* 
-                <QRscanner6gpt onScanComplete={handleScanComplete} /> */}
-
-                {scannedData && (
-                  <View style={styles.result}>
-                    <Text style={styles.resultText}>Datos del QR escaneado:</Text>
-                    {/* <Text style={styles.resultData}>{JSON.stringify(scannedData, null, 2)}</Text> */}
-
-                    {/*     <Text>Apellido: {scannedData.apellido}</Text>
-                    <Text>Nombre: {scannedData.nombre}</Text> */}
-                    <Text style={styles.resultData} >DNI: {scannedData.dni}</Text>
-
-                  </View>
-                )}
+               
+                <View style={styles.result}>
+                  <Text style={styles.resultData}>Número de Documento: {loadedDni}</Text>
+                 {/*  <Text style={styles.resultData} >DNI: {dni}</Text> */}
+                </View>
 
               </View>
 
+              <Input
+                placeholder="2615199046" /* acá tiene que decir celular decía Usuario */
+                /* placeholder="Número de Credencial o Correo electrónico" */
+                style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
+                autoCapitalize="none"
+                value={form.usuario}
+                onChangeText={(usuario) => setForm({ ...form, usuario })}
+              />
+              {/* <Input
+                placeholder="Contraseña"
+                secureTextEntry
+                style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3' }}
+                value={form.password}
+                onChangeText={(password) => setForm({ ...form, password })}
+              /> */}
 
               <Button style={styles.customButton}
                 disabled={isPosting}
@@ -332,7 +324,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
               /*  onPress={onLoginGonza2} */
               /*      onPress={() => navigation.navigate('home')} */
               >
-                INGRESAR
+                CONTINUAR
               </Button>
 
 
@@ -398,7 +390,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                 </Modal>
               )}
 
-              <Layout style={{ height: hp('4%') }} />
+              <Layout style={{ height: hp('3%') }} />
 
               <Layout style={{
                 alignItems: 'center',
@@ -408,47 +400,24 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                 marginTop: hp('0%'),
 
               }}>
-                <Text style={{ fontWeight: 'bold' }}>
+                {/*  <Text style={{ fontWeight: 'bold' }}>
                   ¿Aún no tienes cuenta? Regístrate en
                   {' '}
-                </Text>
+                </Text> */}
                 <Text
                   style={styles.customText2}
                   status="primary"
                   category="s1"
+                  /*    onPress={handleOpenURLAndes} */
                   onPress={() => navigation.navigate('Registro')}
                 >
                   {' '}
-                  Andes Salud{' '}
+                  Volver{' '}
                 </Text>
 
               </Layout>
-         {/*      <Layout style={{
-                alignItems: 'center',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                marginBottom: hp('2%'),
-                marginTop: hp('0%'),
 
-              }}>
-                <Text style={{ fontWeight: 'bold' }}>
-                  ¿Aún no tienes cuenta? Regístrate en
-                  {' '}
-                </Text>
-                <Text
-                  style={styles.customText2}
-                  status="primary"
-                  category="s1"
-                  onPress={handleOpenURLAndes}
-                >
-                  {' '}
-                  Andes Salud{' '}
-                </Text>
-
-              </Layout> */}
-
-
-              <Layout style={{
+              {/*   <Layout style={{
                 alignItems: 'center',
                 flexDirection: 'column',
                 justifyContent: 'center'
@@ -466,7 +435,8 @@ export const LoginScreenNew = ({ navigation }: Props) => {
                   {' '}
                   Recuperar Datos{' '}
                 </Text>
-              </Layout>
+              </Layout> */}
+
             </View>
 
           </View>
@@ -509,11 +479,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignSelf: 'center'
   },
+  textConsigna: {
+    fontSize: wp('3.5%'),
+    color: 'black',
+    /* fontWeight: 'bold', */
+    marginBottom: hp('2%'),
+    textAlign: 'justify',
+  },
   text: {
     fontSize: wp('4%'),
     color: 'black',
     fontWeight: 'bold',
     marginBottom: hp('2%'),
+    textAlign: 'center',
   },
   textQR: {
     fontSize: wp('4%'),
@@ -542,7 +520,7 @@ const styles = StyleSheet.create({
     color: '#7ba1c3',//color enviado en el pdf de referencia
     /*  color: '#4285F4', */
     fontWeight: 'bold',
-    fontSize: wp('4%')
+    fontSize: wp('5%')
   },
   /* estilos de modal en caso de usuario incorrecto: */
   modalOverlay: {
@@ -583,12 +561,14 @@ const styles = StyleSheet.create({
   /* QR: */
   result: {
     marginTop: wp('0.5%'),
-    marginBottom: wp('1%'),
-    padding: 10,
+    marginBottom: wp('2%'),
+    padding: 8,
     backgroundColor: '#fff',
     borderRadius: 12,
     elevation: 2,
   },
+/*  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3' }} */
+
   resultText: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -598,5 +578,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     alignSelf: 'center',
+    borderRadius: 15,
+    borderColor: '#7ba1c3'
   },
 });
