@@ -110,11 +110,42 @@ export const RegisterTel = ({ navigation }: Props) => {
 
   const [isPosting, setIsPosting] = useState(false)
   const [form, setForm] = useState({
-    usuario: '',
-    email: '',
-    password: '',
-    dni: '',
+    dni: loadedDni,
+    area: '',
+    celular: '',
+    contraseña1: '',
+    contraseña2: '',
   })
+
+  const [isFormComplete, setIsFormComplete] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(true); 
+
+  useEffect(() => {
+    // Verifica si todos los campos están completos
+    const allFieldsComplete = Object.values(form).every(value => value !== '');
+    setIsFormComplete(allFieldsComplete);
+
+  // Verifica si las contraseñas coinciden
+  setPasswordsMatch(form.contraseña1 === form.contraseña2);
+
+}, [form]); // El efecto se ejecuta cuando el formulario cambia
+
+const handleContinue = () => {
+  if (isFormComplete && passwordsMatch) {
+      /* handleSendCode(); */ 
+      navigation.navigate('home');
+  } else {
+      // Puedes mostrar un mensaje de error o realizar alguna acción adicional
+      if (!passwordsMatch) {
+          alert("Las contraseñas no coinciden.");
+      } else {
+          alert("Por favor, complete todos los campos.");
+      }
+  }
+};
+
+
+
   const [linkAndesSalud, setLinkAndesSalud] = useState("");
   let UrlAndes2 = `https://www.andessalud.com.ar/`
   let UrlAndes = `https://www.andessalud.com.ar/register/`
@@ -294,21 +325,150 @@ export const RegisterTel = ({ navigation }: Props) => {
 
                   Ahora necesitamos que registres tu teléfono:
                 </Text>
-               
+
                 <View style={styles.result}>
                   <Text style={styles.resultData}>Número de Documento: {loadedDni}</Text>
-                 {/*  <Text style={styles.resultData} >DNI: {dni}</Text> */}
+                  {/*  <Text style={styles.resultData} >DNI: {dni}</Text> */}
                 </View>
 
               </View>
 
+
+              {/*    <View style={{
+                flexDirection: 'row',
+                alignItems: 'center', 
+                marginBottom: hp('1%'),
+                maxWidth: hp('42%'),
+                minWidth: hp('40%'),
+                alignSelf: 'center',
+              }}>
+                <Input
+                  placeholder="Área (ej: 261)"
+                  style={{
+                    flex: 1,
+                    borderRadius: 15,
+                    borderColor: '#7ba1c3',
+                    marginRight: wp('1%'), 
+                  }}
+                  keyboardType="numeric" 
+                  maxLength={4} 
+                  value={form.area}
+                  onChangeText={(area) => setForm({ ...form, area })}
+                />
+           
+                
+                <Input
+                  placeholder="Número"
+                  style={{
+                    flex: 2, 
+                    borderRadius: 15,
+                    borderColor: '#7ba1c3',
+                  }}
+                  keyboardType="numeric"
+                  maxLength={8} 
+                  value={form.numero}
+                  onChangeText={(numero) => setForm({ ...form, numero })}
+                />
+                
+              </View> */}
+              <View style={styles.cajaSubtitulos}>
+
+                <Text style={styles.subtitulos}>
+                  Celular:
+                </Text>
+              </View>
+
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'flex-start', // Alinea los elementos en la parte superior
+                marginBottom: hp('1%'),
+                maxWidth: hp('42%'),
+                minWidth: hp('40%'),
+                alignSelf: 'center',
+              }}>
+                <View style={{ flex: 1, marginRight: wp('1%') }}>
+                  <Input
+                    placeholder="261"
+                    style={{
+                      borderRadius: 15,
+                      borderColor: '#7ba1c3',
+                    }}
+                    keyboardType="numeric"
+                    maxLength={4}
+                    value={form.area}
+                    onChangeText={(area) => setForm({ ...form, area })}
+                  />
+                  <Text style={{
+                    fontSize: 12,
+                    color: 'gray',
+                    marginTop: hp('0.5%'),
+                    marginLeft: hp('0.7%'),
+                  }}>Sin el 0</Text>
+                </View>
+                <View style={{ flex: 2 }}>
+
+                  <Input
+                    placeholder="199046"
+                    style={{
+                      borderRadius: 15,
+                      borderColor: '#7ba1c3',
+                    }}
+                    keyboardType="numeric"
+                    maxLength={8}
+                    value={form.celular}
+                    onChangeText={(celular) => setForm({ ...form, celular })}
+                  />
+                  <Text style={{
+                    fontSize: 12,
+                    color: 'gray',
+                    marginTop: hp('0.5%'),
+                    marginLeft: hp('0.7%'),
+                  }}>Sin el 15</Text>
+                </View>
+              </View>
+
+
+              <View style={styles.cajaSubtitulos}>
+
+                <Text style={styles.subtitulos}>
+                  Contraseña:
+                </Text>
+              </View>
               <Input
-                placeholder="2615199046" /* acá tiene que decir celular decía Usuario */
-                /* placeholder="Número de Credencial o Correo electrónico" */
-                style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3'/* 'black' */ }}
+                placeholder="Ingresá tu contraseña" 
+                style={{
+                  flex: 1,
+                  marginBottom: hp('1%'),
+                  maxWidth: hp('40%'),
+                  minWidth: hp('40%'),
+                  borderRadius: 15,
+                  alignSelf: 'center',
+                  borderColor: '#7ba1c3',
+                }}
                 autoCapitalize="none"
-                value={form.usuario}
-                onChangeText={(usuario) => setForm({ ...form, usuario })}
+                value={form.contraseña1}
+                onChangeText={(contraseña1) => setForm({ ...form, contraseña1 })}
+              />
+              <View style={styles.cajaSubtitulos}>
+
+                <Text style={styles.subtitulos}>
+                  Confirmar contraseña:
+                </Text>
+              </View>
+              <Input
+                placeholder="Confirmá tu contraseña" 
+                style={{
+                  flex: 1,
+                  marginBottom: hp('1%'),
+                  maxWidth: hp('40%'),
+                  minWidth: hp('40%'),
+                  borderRadius: 15,
+                  alignSelf: 'center',
+                  borderColor: '#7ba1c3',
+                }}
+                autoCapitalize="none"
+                value={form.contraseña2}
+                onChangeText={(contraseña2) => setForm({ ...form, contraseña2 })}
               />
               {/* <Input
                 placeholder="Contraseña"
@@ -319,10 +479,11 @@ export const RegisterTel = ({ navigation }: Props) => {
               /> */}
 
               <Button style={styles.customButton}
-                disabled={isPosting}
-                onPress={handleLoginPress}
-              /*  onPress={onLoginGonza2} */
-              /*      onPress={() => navigation.navigate('home')} */
+               /*  onPress={handleLoginPress} */
+                disabled={!isFormComplete}
+               onPress={handleContinue}
+                   /* onPress={() => navigation.navigate('LoginScreenNew')} */
+             /*  onPress={() => { handleSendCode(); navigation.navigate('home'); }} */
               >
                 CONTINUAR
               </Button>
@@ -342,7 +503,7 @@ export const RegisterTel = ({ navigation }: Props) => {
                   <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
                       <Text style={styles.modalTitle}>Aviso</Text>
-                      <Text style={styles.modalMessage}>Debe escanear su DNI para continuar.</Text>
+                      <Text style={styles.modalMessage}>Debe completar todos los datos para continuar.</Text>
                       <TouchableOpacity style={styles.button} onPress={() => setShowScanModal(false)}>
                         <Text style={styles.buttonText}>Aceptar</Text>
                       </TouchableOpacity>
@@ -488,10 +649,23 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: wp('4%'),
-    color: 'black',
+    color: '#3b3937',
     fontWeight: 'bold',
     marginBottom: hp('2%'),
     textAlign: 'center',
+  },
+  cajaSubtitulos: {
+    /*  backgroundColor: 'green', */
+    maxWidth: hp('40%'),
+    minWidth: hp('40%'),
+    marginLeft: hp('0.7%'),
+    marginBottom: hp('0.5%'),
+  },
+  subtitulos: {
+    fontSize: wp('3.5%'),
+    color: '#3b3937',
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
   textQR: {
     fontSize: wp('4%'),
@@ -561,13 +735,13 @@ const styles = StyleSheet.create({
   /* QR: */
   result: {
     marginTop: wp('0.5%'),
-    marginBottom: wp('2%'),
+    marginBottom: wp('1%'),
     padding: 8,
     backgroundColor: '#fff',
     borderRadius: 12,
     elevation: 2,
   },
-/*  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3' }} */
+  /*  style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3' }} */
 
   resultText: {
     fontSize: 18,
@@ -579,6 +753,7 @@ const styles = StyleSheet.create({
     color: '#333',
     alignSelf: 'center',
     borderRadius: 15,
-    borderColor: '#7ba1c3'
+    borderColor: '#7ba1c3',
+    fontWeight:'bold',
   },
 });
