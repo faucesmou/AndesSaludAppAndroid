@@ -57,6 +57,7 @@ import { CartillaFarmaciaDepartamento } from '../screens/MiSalud/cartillaFarmaci
 import { CartillaFarmaciaDepartamentoSeleccionado } from '../screens/MiSalud/cartillaFarmacia/CartillaFarmaciaDepartamentoSeleccionado';
 import { RegisterDni } from '../screens/auth/RegisterDni';
 import { RegisterTel } from '../screens/auth/RegisterTel';
+import { ValidateTel } from '../screens/auth/ValidateTel';
 
 /* import { UserData } from '../screens/auth/userData'; */
 
@@ -88,6 +89,7 @@ export type RootStackParams = {
   LoginScreenNew: undefined,
   "Registro": undefined,
   "Registro telefono": undefined,
+  "Validar telefono": undefined,
   LoginScreen2: undefined,
   LoginGonzalo: undefined,
   RegisterScreen: undefined,
@@ -179,6 +181,7 @@ export const StackNavigator = () => {
 
 <Stack.Screen name='Registro' component={RegisterDni} options={{ headerShown: false }} /> 
 <Stack.Screen name='Registro telefono' component={RegisterTel} options={{ headerShown: false }} /> 
+<Stack.Screen name='Validar telefono' component={ValidateTel} options={{ headerShown: false }} /> 
 {/* ------------VISTAS INICIO SESIÓN: -------------->*/}
 
     <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false }} /> 

@@ -70,7 +70,6 @@ export interface AuthState {
   UserName: string | null;
   UserLastName: string | null;
   dni: string | null;
-  /*  setDni: (dni: string) => void; */
   setDni: (dni: string, callback?: () => void) => void; // Añade el callback
   setUser: (user: string) => void;
   pass: string | null;
@@ -85,9 +84,8 @@ export interface AuthState {
   actualizarNotificaciones: boolean;
   actualizacionDisponible: boolean;
   setActualizacionDisponible: (estado: boolean) => void;
-  hasCheckedForUpdate: boolean; // Nueva bandera
+  hasCheckedForUpdate: boolean; 
   setHasCheckedForUpdate: (estado: boolean) => void;
-
   loginGonzaMejorado: (
     usuario: string,
     /* email: string,  */ password: string,
@@ -163,6 +161,20 @@ export interface AuthState {
   ) => Promise<void>;
   clearAuthData: () => Promise<void>;
   setAuthData: (data: Partial<AuthState>) => void;
+/* guardado de datos del Form del Register:  */
+area: string | null;
+celular: string | null;
+contraseña1: string | null;
+contraseña2: string | null;
+setArea: (area: string, callback?: () => void) => void;
+setCelular: (celular: string, callback?: () => void) => void;
+setContraseña1: (contraseña1: string, callback?: () => void) => void;
+setContraseña2: (contraseña2: string, callback?: () => void) => void;
+getArea: () => string | null;
+getCelular: () => string | null;
+getContraseña1: () => string | null;
+getContraseña2: () => string | null;
+
 }
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
@@ -191,19 +203,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   UserName: null,
   UserLastName: null,
   dni: null,
-  /*   setDni: (dni) => {
-    set({ dni })
-    console.log('DNI seteado------------------->:', dni);
-  }, */
- /*  setDni: async (dni: string) => {
-    console.log('seteando el dni ------------------->:', dni);
-    return new Promise(resolve => {
-      setTimeout(() => {
-        set({dni});
-        resolve();
-      }, 0);
-    });
-  }, */
   setDni: (dni, callback) => { // Usa el callback
     set({ dni });
     console.log('DNI seteado------------------->:', dni);
@@ -503,14 +502,6 @@ console.log('password---------->' ,password ); */
         const usuarioNombre = respuestaFrancoMejorada.data[0].nombre;
         const usuarioApellido = respuestaFrancoMejorada.data[0].apellido;
 
-        /*       console.log('numeroAfiliadoApi CONSULTA', numeroAfiliadoApi);
-      console.log('idAfiliadoTitular', idAfiliadoTitular);
-      console.log('cuilTitular', cuilTitular);
-      console.log('dniAfiliado', dniAfiliado);
-      console.log('usuarioAfiliado', usuarioAfiliado);
-      console.log('passAfiliado', passAfiliado);
-      console.log('usuarioNombre', usuarioNombre);
-      console.log('usuarioApellido', usuarioApellido); */
 
         /* Logica para establecer usuario y contraseña:  */
 
@@ -1114,6 +1105,31 @@ console.log('password---------->' ,password ); */
     console.log('se ejecutó logout de la sesion y se borro el token');
     return;
   },
+  /* lógica para guardar y recuperar datos de formulario de register */
+  area: null,
+  celular: null,
+  contraseña1: null,
+  contraseña2: null,
+  setArea: (area, callback) => {
+      set({ area });
+      if (callback) callback();
+  },
+  setCelular: (celular, callback) => {
+      set({ celular });
+      if (callback) callback();
+  },
+  setContraseña1: (contraseña1, callback) => {
+      set({ contraseña1 });
+      if (callback) callback();
+  },
+  setContraseña2: (contraseña2, callback) => {
+      set({ contraseña2 });
+      if (callback) callback();
+  },
+  getArea: () => get().area,
+  getCelular: () => get().celular,
+  getContraseña1: () => get().contraseña1,
+  getContraseña2: () => get().contraseña2,
   setAuthData: data =>
     set(state => ({
       ...state,

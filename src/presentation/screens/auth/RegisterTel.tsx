@@ -52,28 +52,7 @@ export const RegisterTel = ({ navigation }: Props) => {
   const [showScanError, setShowScanError] = useState(false);
   const [showScanModal, setShowScanModal] = useState(false);
 
-  /* const [form, setForm] = useState({ usuario: '', password: '' }); */
 
-  /*   const handleScanComplete = (data: DNIData) => {
-      setScannedData(data);
-      console.log('scannedData=====>>>===>>', scannedData);
-  
-    }; */
-
-  const handleScanComplete = (data: DNIData) => {
-    if (data && data.dni) {
-      console.log('documento escaneado con éxito perrrisonnnn');
-      setScannedData(data);
-      setIsScanSuccessful(true);
-      setShowScanError(false);
-    } else {
-      console.log('error al escanear el documento');
-
-      /*   setScannedData(null); */
-      setIsScanSuccessful(false);
-      setShowScanError(true);
-    }
-  };
 
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
@@ -81,10 +60,7 @@ export const RegisterTel = ({ navigation }: Props) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
 
-  const { loginGonzaMejorado, guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName, loginGonzaMejorado3 } = useAuthStore();
-  /*  const { loadAuthDataFromStorage } = AuthStore(); */
-
-  /* const { dni } = useAuthStore(); */
+  const { guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, loginGonzaMejorado3 } = useAuthStore();
 
   const [loadedDni, setLoadedDni] = useState<string | null>(null);
   const { dni } = useAuthStore();
@@ -95,20 +71,9 @@ export const RegisterTel = ({ navigation }: Props) => {
   }, [dni]);
 
 
-  /* lógica para habilitar el LOGIN SÓLO CON EL ESCANEO + EL USUARIO Y CONTRASEÑA: */
-
-  const handleLoginPress = () => {
-    if (!isScanSuccessful) {
-      setShowScanModal(true);
-      return;
-    }
-    onLoginGonza2(); // Procede con el login si el escaneo fue exitoso
-  };
-
-
-
-
   const [isPosting, setIsPosting] = useState(false)
+
+  // Estado del formulario y estados de validación
   const [form, setForm] = useState({
     dni: loadedDni,
     area: '',
@@ -126,7 +91,10 @@ export const RegisterTel = ({ navigation }: Props) => {
   const [contraseña1Missing, setContraseña1Missing] = useState(false);
   const [contraseña2Missing, setContraseña2Missing] = useState(false);
 
-
+// Estado para controlar la carga y el error
+const [isLoading, setIsLoading] = useState(false);
+const [saveError, setSaveError] = useState(null);
+const [saveDataZustand, setSaveDataZustand] = useState(false);
 
   useEffect(() => {
     // Verifica si todos los campos están completos
@@ -138,6 +106,8 @@ export const RegisterTel = ({ navigation }: Props) => {
 
   }, [form]); // El efecto se ejecuta cuando el formulario cambia
 
+
+  // Función para la validación del formulario
   const handleContinue = () => {
 
     // Reiniciamos los estados de campos faltantes antes de verificar
@@ -146,8 +116,9 @@ export const RegisterTel = ({ navigation }: Props) => {
     setContraseña1Missing(false);
     setContraseña2Missing(false);
 
-    if (isFormComplete && passwordsMatch) {
-      console.log('se tocó en continuar y va bien');
+    if (isFormComplete && passwordsMatch && saveDataZustand) {
+      console.log('el formulario está completo, las contraseñas son iguales y la información se guardó en context');
+      () => navigation.navigate('Validar telefono')
 
     } else {
       // Puedes mostrar un mensaje de error o realizar alguna acción adicional
@@ -168,6 +139,56 @@ export const RegisterTel = ({ navigation }: Props) => {
     }
   };
 
+// Función para guardar en Zustand con callback
+const saveDataToZustand = async (callback) => {
+  setIsLoading(true);
+  try {
+    await Promise.all([
+      new Promise(resolve => useAuthStore.getState().setDni(form.dni, resolve)),
+      new Promise(resolve => useAuthStore.getState().setArea(form.area, resolve)),
+      new Promise(resolve => useAuthStore.getState().setCelular(form.celular, resolve)),
+      new Promise(resolve => useAuthStore.getState().setContraseña1(form.contraseña1, resolve)),
+      new Promise(resolve => useAuthStore.getState().setContraseña2(form.contraseña2, resolve)),
+    ]);
+    setIsLoading(false);
+    setSaveDataZustand(true)
+    callback(true);
+  } catch (error) {
+    console.error("Error al guardar datos:", error);
+    setIsLoading(false);
+    setSaveError(error.message);
+    callback(false);
+  }
+};
+
+const handleContinue2 = () => {
+
+  // Validación de campos y contraseñas
+  setAreaMissing(form.area === '');
+  setCelularMissing(form.celular === '');
+  setContraseña1Missing(form.contraseña1 === '');
+  setContraseña2Missing(form.contraseña2 === '');
+ /*  setPasswordsMatchModal(false); */
+
+  if (isFormComplete && passwordsMatch) {
+      saveDataToZustand((success) => {
+          if (success) {
+              console.log('Datos guardados en Zustand correctamente.');
+              navigation.navigate('Validar telefono'); // Navegación condicional
+          } else {
+              console.log('Error al guardar datos en Zustand xxxxx=x=x=x.');
+             /*  alert("Error al guardar los datos. Inténtalo nuevamente."); */ // Muestra el mensaje de error
+          }
+      });
+  } else {
+      if (!passwordsMatch) {
+        setPasswordsMatchModal(true);
+      } else {
+        console.log('nada de lo anterior previsto sucedió....');
+        
+      }
+  }
+};
 
 
   const [linkAndesSalud, setLinkAndesSalud] = useState("");
@@ -176,7 +197,6 @@ export const RegisterTel = ({ navigation }: Props) => {
 
   const handleOpenURLAndes = () => {
     console.log('entrando a Andes Salud');
-
     setLinkAndesSalud(UrlAndes);
   }
 
@@ -196,106 +216,6 @@ export const RegisterTel = ({ navigation }: Props) => {
     openURLAndesSalud()
   }, [linkAndesSalud])
 
-  const onLoginGonza2 = async () => {
-
-    if (form.password.length === 0 || form.usuario.length === 0) {
-      Alert.alert('Usuario y contraseña son obligatorios');
-      return;
-    }
-
-    setIsPosting(true);
-
-    try {
-      const loginExitoso = await loginGonzaMejorado3(form.usuario, form.password);
-
-      if (loginExitoso) {
-        /* const idAfiliadoActual = idAfiliado */
-        const { idAfiliado } = useAuthStore.getState();
-
-        if (idAfiliado) {
-          // Llama a guardarDatosLoginEnContext con el idAfiliado actualizado
-
-          const datosGuardados = await guardarDatosLoginEnContext(idAfiliado);
-          if (!datosGuardados) {
-            console.log('No se pudieron guardar los datos de usuario desde el LoginScreen');
-          }
-        } else {
-          console.log('idAfiliado no está disponible');
-        }
-        if (loginExitoso) {
-          const { idAfiliado, cuilTitular, nombreCompleto, idAfiliadoTitular, UserName, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail } = useAuthStore.getState();
-
-          if (idAfiliado) {
-
-            await useAuthStore.getState().setAuthenticated(idAfiliado);
-            await useAuthStore.getState().setDataStore(cuilTitular, nombreCompleto, idAfiliadoTitular, UserName, numeroCredencial, tipoPlan, estadoAfiliacion, tipoPago, numCelular, mail);
-
-
-          } else {
-            console.log('idAfiliado no está disponible');
-          }
-        }
-
-
-      } else {
-        /* Alert.alert('Ups!', 'Usuario o contraseña incorrectos'); */
-        setModalVisible(true)
-        /*  console.log('Error durante el login:'); */
-      }
-    } catch (error) {
-      console.log('Error durante el login:', error);
-    } finally {
-      setIsPosting(false);
-    }
-  };
-
-  const onLoginGonza3 = async (form: { usuario: string; password: string }, setIsPosting: (status: boolean) => void, setModalVisible: (visible: boolean) => void) => {
-    if (form.password.length === 0 || form.usuario.length === 0) {
-      Alert.alert('Usuario y contraseña son obligatorios');
-      return;
-    }
-
-    setIsPosting(true);
-
-    try {
-      const loginExitoso = await loginGonzaMejorado2(form.usuario, form.password);
-
-      if (loginExitoso) {
-        const { idAfiliado } = useAuthStore.getState();
-
-        if (idAfiliado) {
-          // Guardamos los datos en AsyncStorage y en el contexto
-          const datosGuardados = await guardarDatosLoginEnContextMejorada(idAfiliado);
-
-          if (!datosGuardados) {
-            console.log('No se pudieron guardar los datos de usuario desde el LoginScreen');
-          } else {
-            await AsyncStorage.setItem('authData', JSON.stringify(datosGuardados));
-            await saveAuthDataToStorage(datosGuardados); // Guarda en AsyncStorage
-          }
-        } else {
-          console.log('idAfiliado no está disponible');
-        }
-
-        // Establece el estado de autenticación
-        if (loginExitoso) {
-          const { idAfiliado } = useAuthStore.getState();
-          if (idAfiliado) {
-            await useAuthStore.getState().setAuthenticated(idAfiliado);
-          } else {
-            console.log('idAfiliado no está disponible');
-          }
-        }
-
-      } else {
-        setModalVisible(true);
-      }
-    } catch (error) {
-      console.log('Error durante el login:', error);
-    } finally {
-      setIsPosting(false);
-    }
-  };
 
   let paddingTopNumber = hp('1%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
@@ -406,11 +326,7 @@ export const RegisterTel = ({ navigation }: Props) => {
                   )
                   }
 
-
                 </View>
-
-          
-            
 
                 <View style={{ flex: 2 }}>
 
@@ -425,7 +341,7 @@ export const RegisterTel = ({ navigation }: Props) => {
                     value={form.celular}
                     onChangeText={(celular) => setForm({ ...form, celular })}
                   />
-                  <View style={{ flexDirection: 'row', /* backgroundColor:'green', */ }}>
+                  <View style={{ flexDirection: 'row', }}>
                     <Text style={{
                       fontSize: 12,
                       color: 'gray',
@@ -468,11 +384,10 @@ export const RegisterTel = ({ navigation }: Props) => {
                 value={form.contraseña1}
                 onChangeText={(contraseña1) => setForm({ ...form, contraseña1 })}
               />
-              <View style={{ flexDirection: 'row', /* backgroundColor:'green', */ marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
+              <View style={{ flexDirection: 'row',  marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
 
                 {contraseña1Missing && (
                   <Text style={{
-                    /* flex:wp('0.2%'), */
                     flex: 1,
                     fontSize: 12,
                     color: 'red',
@@ -507,7 +422,7 @@ export const RegisterTel = ({ navigation }: Props) => {
                 value={form.contraseña2}
                 onChangeText={(contraseña2) => setForm({ ...form, contraseña2 })}
               />
-              <View style={{ flexDirection: 'row', /* backgroundColor:'green', */ marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
+              <View style={{ flexDirection: 'row',  marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
 
                 {contraseña2Missing && (
                   <Text style={{
@@ -522,7 +437,7 @@ export const RegisterTel = ({ navigation }: Props) => {
                 )
                 }
               </View>
-              {/* Modal para la llamar por teléfono */}
+              {/* Modal para avisar que las contraseñas no coinciden */}
               {passwordsMatchModal && (
                 <Modal
                   transparent={true}
@@ -559,7 +474,7 @@ export const RegisterTel = ({ navigation }: Props) => {
 
               <Button style={styles.customButton}
                 /* disabled={!isFormComplete} */
-                onPress={handleContinue}
+                onPress={handleContinue2}
               >
                 CONTINUAR
               </Button>
@@ -654,26 +569,6 @@ export const RegisterTel = ({ navigation }: Props) => {
                 </Text>
 
               </Layout>
-
-              {/*   <Layout style={{
-                alignItems: 'center',
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}>
-                <Text style={{ fontWeight: 'bold' }} >
-                  ¿No recuerdas tu Usuario/Contraseña?
-                  {' '}
-                </Text>
-                <Text
-                  style={styles.customText2}
-                  status="primary"
-                  category="s1"
-                  onPress={() => navigation.navigate('RecoverData')}
-                >
-                  {' '}
-                  Recuperar Datos{' '}
-                </Text>
-              </Layout> */}
 
             </View>
 
