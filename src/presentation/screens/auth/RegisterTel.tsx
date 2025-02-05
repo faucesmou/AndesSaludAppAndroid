@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Svg, { Path } from 'react-native-svg';
 import { Icon } from "react-native-vector-icons/Icon";
-
+import LinearGradient from 'react-native-linear-gradient';
 /* prueba de persistencia de datos: */
 import { initializeAuth } from '../../store/auth/authService';
 import { useNavigation } from '@react-navigation/native';
@@ -118,31 +118,55 @@ export const RegisterTel = ({ navigation }: Props) => {
   })
 
   const [isFormComplete, setIsFormComplete] = useState(false);
-  const [passwordsMatch, setPasswordsMatch] = useState(true); 
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [passwordsMatchModal, setPasswordsMatchModal] = useState(false);
+
+  const [areaMissing, setAreaMissing] = useState(false);
+  const [celularMissing, setCelularMissing] = useState(false);
+  const [contraseña1Missing, setContraseña1Missing] = useState(false);
+  const [contraseña2Missing, setContraseña2Missing] = useState(false);
+
+
 
   useEffect(() => {
     // Verifica si todos los campos están completos
     const allFieldsComplete = Object.values(form).every(value => value !== '');
     setIsFormComplete(allFieldsComplete);
 
-  // Verifica si las contraseñas coinciden
-  setPasswordsMatch(form.contraseña1 === form.contraseña2);
+    // Verifica si las contraseñas coinciden
+    setPasswordsMatch(form.contraseña1 === form.contraseña2);
 
-}, [form]); // El efecto se ejecuta cuando el formulario cambia
+  }, [form]); // El efecto se ejecuta cuando el formulario cambia
 
-const handleContinue = () => {
-  if (isFormComplete && passwordsMatch) {
-      /* handleSendCode(); */ 
-      navigation.navigate('home');
-  } else {
+  const handleContinue = () => {
+
+    // Reiniciamos los estados de campos faltantes antes de verificar
+    setAreaMissing(false);
+    setCelularMissing(false);
+    setContraseña1Missing(false);
+    setContraseña2Missing(false);
+
+    if (isFormComplete && passwordsMatch) {
+      console.log('se tocó en continuar y va bien');
+
+    } else {
       // Puedes mostrar un mensaje de error o realizar alguna acción adicional
       if (!passwordsMatch) {
-          alert("Las contraseñas no coinciden.");
+        console.log('se activa el modal de contraseñas no coinciden');
+        setPasswordsMatchModal(true)
       } else {
-          alert("Por favor, complete todos los campos.");
+
+        // Verifica qué campos faltan y activa los estados correspondientes
+        if (form.area === '') setAreaMissing(true);
+        if (form.celular === '') setCelularMissing(true);
+        if (form.contraseña1 === '') setContraseña1Missing(true);
+        if (form.contraseña2 === '') setContraseña2Missing(true);
+
+        /*  alert("Por favor, complete todos los campos."); */
+        console.log('se activa mensaje de complete todos los campos');
       }
-  }
-};
+    }
+  };
 
 
 
@@ -334,43 +358,7 @@ const handleContinue = () => {
               </View>
 
 
-              {/*    <View style={{
-                flexDirection: 'row',
-                alignItems: 'center', 
-                marginBottom: hp('1%'),
-                maxWidth: hp('42%'),
-                minWidth: hp('40%'),
-                alignSelf: 'center',
-              }}>
-                <Input
-                  placeholder="Área (ej: 261)"
-                  style={{
-                    flex: 1,
-                    borderRadius: 15,
-                    borderColor: '#7ba1c3',
-                    marginRight: wp('1%'), 
-                  }}
-                  keyboardType="numeric" 
-                  maxLength={4} 
-                  value={form.area}
-                  onChangeText={(area) => setForm({ ...form, area })}
-                />
-           
-                
-                <Input
-                  placeholder="Número"
-                  style={{
-                    flex: 2, 
-                    borderRadius: 15,
-                    borderColor: '#7ba1c3',
-                  }}
-                  keyboardType="numeric"
-                  maxLength={8} 
-                  value={form.numero}
-                  onChangeText={(numero) => setForm({ ...form, numero })}
-                />
-                
-              </View> */}
+
               <View style={styles.cajaSubtitulos}>
 
                 <Text style={styles.subtitulos}>
@@ -404,7 +392,26 @@ const handleContinue = () => {
                     marginTop: hp('0.5%'),
                     marginLeft: hp('0.7%'),
                   }}>Sin el 0</Text>
+
+                  {areaMissing && (
+                    <Text style={{
+                      /* flex:wp('0.2%'), */
+                      flex: 1,
+                      fontSize: 12,
+                      color: 'red',
+                      marginTop: hp('0%'),
+                      marginLeft: hp('0.7%'),
+                      textAlign: 'justify',
+                    }}>Campo obligatorio</Text>
+                  )
+                  }
+
+
                 </View>
+
+          
+            
+
                 <View style={{ flex: 2 }}>
 
                   <Input
@@ -418,12 +425,24 @@ const handleContinue = () => {
                     value={form.celular}
                     onChangeText={(celular) => setForm({ ...form, celular })}
                   />
-                  <Text style={{
-                    fontSize: 12,
-                    color: 'gray',
-                    marginTop: hp('0.5%'),
-                    marginLeft: hp('0.7%'),
-                  }}>Sin el 15</Text>
+                  <View style={{ flexDirection: 'row', /* backgroundColor:'green', */ }}>
+                    <Text style={{
+                      fontSize: 12,
+                      color: 'gray',
+                      marginTop: hp('0.5%'),
+                      marginLeft: hp('0.7%'),
+                    }}>Sin el 15   </Text>
+
+                    {celularMissing && (
+                      <Text style={{
+                        fontSize: 12,
+                        color: 'red',
+                        marginTop: hp('0.5%'),
+                        marginLeft: hp('0.7%'),
+                      }}>Campo obligatorio</Text>
+                    )
+                    }
+                  </View>
                 </View>
               </View>
 
@@ -435,10 +454,10 @@ const handleContinue = () => {
                 </Text>
               </View>
               <Input
-                placeholder="Ingresá tu contraseña" 
+                placeholder="Ingresá tu contraseña"
                 style={{
                   flex: 1,
-                  marginBottom: hp('1%'),
+                  marginBottom: hp('0.5%'),
                   maxWidth: hp('40%'),
                   minWidth: hp('40%'),
                   borderRadius: 15,
@@ -449,6 +468,24 @@ const handleContinue = () => {
                 value={form.contraseña1}
                 onChangeText={(contraseña1) => setForm({ ...form, contraseña1 })}
               />
+              <View style={{ flexDirection: 'row', /* backgroundColor:'green', */ marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
+
+                {contraseña1Missing && (
+                  <Text style={{
+                    /* flex:wp('0.2%'), */
+                    flex: 1,
+                    fontSize: 12,
+                    color: 'red',
+                    marginTop: hp('0%'),
+                    marginLeft: hp('0.7%'),
+                    textAlign: 'justify',
+                  }}>Campo obligatorio</Text>
+                )
+                }
+              </View>
+
+
+
               <View style={styles.cajaSubtitulos}>
 
                 <Text style={styles.subtitulos}>
@@ -456,10 +493,10 @@ const handleContinue = () => {
                 </Text>
               </View>
               <Input
-                placeholder="Confirmá tu contraseña" 
+                placeholder="Confirmá tu contraseña"
                 style={{
                   flex: 1,
-                  marginBottom: hp('1%'),
+                  marginBottom: hp('0%'),
                   maxWidth: hp('40%'),
                   minWidth: hp('40%'),
                   borderRadius: 15,
@@ -470,24 +507,64 @@ const handleContinue = () => {
                 value={form.contraseña2}
                 onChangeText={(contraseña2) => setForm({ ...form, contraseña2 })}
               />
-              {/* <Input
-                placeholder="Contraseña"
-                secureTextEntry
-                style={{ marginBottom: hp('1%'), maxWidth: hp('42%'), minWidth: hp('40%'), borderRadius: 15, alignSelf: 'center', borderColor: '#7ba1c3' }}
-                value={form.password}
-                onChangeText={(password) => setForm({ ...form, password })}
-              /> */}
+              <View style={{ flexDirection: 'row', /* backgroundColor:'green', */ marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
+
+                {contraseña2Missing && (
+                  <Text style={{
+                    /* flex:wp('0.2%'), */
+                    flex: 1,
+                    fontSize: 12,
+                    color: 'red',
+                    marginTop: hp('0%'),
+                    marginLeft: hp('0.7%'),
+                    textAlign: 'justify',
+                  }}>Campo obligatorio</Text>
+                )
+                }
+              </View>
+              {/* Modal para la llamar por teléfono */}
+              {passwordsMatchModal && (
+                <Modal
+                  transparent={true}
+                  animationType="fade"
+                  visible={passwordsMatchModal}
+                  onRequestClose={() => setPasswordsMatchModal(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                      <Text style={styles.modalTitle}>
+                        Las contraseñas ingresadas no coinciden
+                      </Text>
+                      {/* nuevo con gradiente */}
+                      <LinearGradient
+                        colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.allowButton} onPress={() => setPasswordsMatchModal(false)} >
+                          <Text style={styles.buttonText}>
+                            Aceptar
+                          </Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+
+                    </View>
+                  </View>
+
+                </Modal>
+              )
+              }
+
+
 
               <Button style={styles.customButton}
-               /*  onPress={handleLoginPress} */
-                disabled={!isFormComplete}
-               onPress={handleContinue}
-                   /* onPress={() => navigation.navigate('LoginScreenNew')} */
-             /*  onPress={() => { handleSendCode(); navigation.navigate('home'); }} */
+                /* disabled={!isFormComplete} */
+                onPress={handleContinue}
               >
                 CONTINUAR
               </Button>
-
+              {/* /* onPress={() => navigation.navigate('LoginScreenNew')} */
+          /*  onPress={() => { handleSendCode(); navigation.navigate('home'); }} */}
 
               {showScanError && (
                 <Text style={styles.errorText}>Error en el escaneo de QR</Text>
@@ -715,6 +792,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
     color: '#ff5c5c',
+    textAlign: 'center',
   },
   modalMessage: {
     fontSize: 16,
@@ -731,6 +809,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   /* QR: */
   result: {
@@ -750,10 +829,46 @@ const styles = StyleSheet.create({
   },
   resultData: {
     fontSize: 16,
-    color: '#333',
+    color: '#322',
     alignSelf: 'center',
     borderRadius: 15,
     borderColor: '#7ba1c3',
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
+  /* modal de aviso contraseñas no coinciden */
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderRadius: 15,
+  },
+  allowButton: {
+    /*    backgroundColor: '#4CAF50', */
+    padding: 10,
+    borderRadius: 15,
+    minWidth: 70,
+    maxWidth: 100,
+  },
+  /*   modalOverlay2: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContainer2: {
+      backgroundColor: '#fff',
+      padding: 20,
+      borderRadius: 15,
+      marginHorizontal:wp('5%'),
+      maxWidth:wp('80%'),
+      minWidth:wp('75%')
+    },
+    modalTitle2: {
+      fontSize: hp('2.2%'),
+      fontWeight: 'bold',
+      alignSelf:'center',
+       marginBottom:10,
+      textAlign:'center',
+      color: '#3b3937',
+    }, */
 });
