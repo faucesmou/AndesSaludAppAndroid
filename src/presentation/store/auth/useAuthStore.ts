@@ -174,6 +174,10 @@ getArea: () => string | null;
 getCelular: () => string | null;
 getContraseña1: () => string | null;
 getContraseña2: () => string | null;
+   // verificación del teléfono
+   verificationCode: string | null;
+   setVerificationCode: (code: string) => void;
+
 
 }
 
@@ -203,6 +207,9 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   UserName: null,
   UserLastName: null,
   dni: null,
+  verificationCode: null,
+  setVerificationCode: (code) => set({ verificationCode: code }),
+  getVerificationCode: () => get().verificationCode,
   setDni: (dni, callback) => { // Usa el callback
     set({ dni });
     console.log('DNI seteado------------------->:', dni);

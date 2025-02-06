@@ -24,7 +24,7 @@ import QRscanner4 from "../../components/shared/QRscanner4";
 import QRscanner5gpt from "../../components/shared/QRscanner5gpt";
 import QRscanner6gpt from "../../components/shared/QRscanner6gpt";
 
-
+import axios from 'axios';
 
 
 
@@ -142,11 +142,14 @@ const [saveDataZustand, setSaveDataZustand] = useState(false);
 // Función para guardar en Zustand con callback
 const saveDataToZustand = async (callback) => {
   setIsLoading(true);
+  // Concatenar area y celular
+  const phoneNumber2 = form.area + form.celular;
+  //preguntar si vamos a guardar el área
   try {
     await Promise.all([
       new Promise(resolve => useAuthStore.getState().setDni(form.dni, resolve)),
       new Promise(resolve => useAuthStore.getState().setArea(form.area, resolve)),
-      new Promise(resolve => useAuthStore.getState().setCelular(form.celular, resolve)),
+      new Promise(resolve => useAuthStore.getState().setCelular(phoneNumber2, resolve)),
       new Promise(resolve => useAuthStore.getState().setContraseña1(form.contraseña1, resolve)),
       new Promise(resolve => useAuthStore.getState().setContraseña2(form.contraseña2, resolve)),
     ]);
@@ -161,6 +164,14 @@ const saveDataToZustand = async (callback) => {
   }
 };
 
+// Función para generar código aleatorio de 6 dígitos
+const generateRandomCode = () => {
+  const min = 100000;
+  const max = 999999;
+  return Math.floor(Math.random() * (max - min + 1)).toString();
+};
+
+
 const handleContinue2 = () => {
 
   // Validación de campos y contraseñas
@@ -168,7 +179,6 @@ const handleContinue2 = () => {
   setCelularMissing(form.celular === '');
   setContraseña1Missing(form.contraseña1 === '');
   setContraseña2Missing(form.contraseña2 === '');
- /*  setPasswordsMatchModal(false); */
 
   if (isFormComplete && passwordsMatch) {
       saveDataToZustand((success) => {
@@ -188,6 +198,156 @@ const handleContinue2 = () => {
         
       }
   }
+};
+
+const handleContinue3 = () => {
+  // Validación de campos y contraseñas
+  setAreaMissing(form.area === '');
+  setCelularMissing(form.celular === '');
+  setContraseña1Missing(form.contraseña1 === '');
+  setContraseña2Missing(form.contraseña2 === '');
+
+  if (isFormComplete && passwordsMatch) {
+    saveDataToZustand((success) => {
+      if (success) {
+        console.log('Datos guardados en Zustand correctamente.');
+
+        // Generar y guardar el código, y luego navegar
+        const code = generateRandomCode();
+        useAuthStore.getState().setVerificationCode(code); // Guarda en Zustand
+        console.log("código generado--->", code);
+        sendVerificationCode(code, form.celular, (sendSuccess) => {
+            if (sendSuccess) {
+                navigation.navigate('Validar telefono');
+            } else {
+                alert("No se pudo enviar el código de verificación. Inténtalo de nuevo.");
+            }
+        })
+
+      } else {
+        console.log('Error al guardar datos en Zustand.');
+      }
+    });
+  } else {
+    if (!passwordsMatch) {
+      setPasswordsMatchModal(true);
+    } else {
+      console.log('Nada de lo anterior previsto sucedió....');
+    }
+  }
+};
+
+const handleContinue4 = () => {
+  // Validación de campos y contraseñas
+  setAreaMissing(form.area === '');
+  setCelularMissing(form.celular === '');
+  setContraseña1Missing(form.contraseña1 === '');
+  setContraseña2Missing(form.contraseña2 === '');
+
+  if (isFormComplete && passwordsMatch) {
+    saveDataToZustand((success) => {
+      if (success) {
+        console.log('Datos guardados en Zustand correctamente.');
+
+        // Generar y guardar el código
+        const code = generateRandomCode();
+        useAuthStore.getState().setVerificationCode(code);
+        console.log("código generado--->", code);
+   // Concatenar area y celular
+   const phoneNumber2 = form.area + form.celular;
+   console.log("phoneNumber2 generado concatenado perrinsonses--->", phoneNumber2);
+        // Enviar el código y navegar (o mostrar error)
+        sendVerificationCode(code, phoneNumber2, (sendSuccess, errorMessage) => {
+          if (sendSuccess) {
+            navigation.navigate('Validar telefono');
+          } else {
+            console.log(`No se pudo enviar el código de verificación. ${errorMessage || "Inténtalo de nuevo."}`);
+          }
+        });
+      } else {
+        console.log('Error al guardar datos en Zustand.');
+      }
+    });
+  } else {
+    if (!passwordsMatch) {
+      setPasswordsMatchModal(true);
+    } else {
+      console.log('Nada de lo anterior previsto sucedió....');
+    }
+  }
+};
+
+/* const sendVerificationCode = async (code, phoneNumber, callback) => {
+
+  try {
+      const response = await fetch('https://notificador.createch.com.ar/api/mensajes/enviar-mensaje', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code, phoneNumber }),
+      });
+
+      if (response.ok) {
+          callback(true);
+      } else {
+          console.error("Error al enviar el código de verificación:", response.status);
+          callback(false); 
+      }
+  } catch (error) {
+      console.error("Error en la solicitud de envío:", error);
+      callback(false); 
+  }
+}; */
+
+
+
+const sendVerificationCode = async (code, phoneNumber, callback) => {
+    try {
+      console.log(' el codigo de verificacion recibido en sendverificaton es_--__-->', code);
+      console.log(' el phoneNumber  recibido en sendverificaton es_--__-->', phoneNumber);
+      console.log(' el phoneNumber  recibido en sendverificaton es_de tipo--__-->', typeof(phoneNumber));
+      
+        // Primera petición para obtener el token
+        const tokenResponse = await axios.get('https://notificador.createch.com.ar/api/token/generar-token', {
+            headers: {
+                key: '34kch0mk211glv2ggro',
+            },
+        });
+
+        if (tokenResponse.status !== 200) { // Verifica el código de estado 200
+            console.error("Error al obtener el token:", tokenResponse.status);
+            callback(false, "Error al obtener el token");
+            return;
+        }
+
+        const token = tokenResponse.data.token;
+        console.log('el token obtenido esssss--->', token);
+        
+
+        // Segunda petición para enviar el mensaje
+        const messageResponse = await axios.post('https://notificador.createch.com.ar/api/mensajes/enviar-mensaje', {
+            numero: `549${phoneNumber}` ,
+            mensaje: `Tu código es ${code}`,
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (messageResponse.status === 200) {
+            console.log("Respuesta de envío de mensaje:", messageResponse.data);
+            callback(true);
+        } else {
+            console.error("Error al enviar el mensaje:", messageResponse.status);
+            console.error("Detalles del error:", messageResponse.data); // Mostrar detalles del error
+            callback(false, "Error al enviar el mensaje");
+        }
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+        callback(false, "Error en la solicitud");
+    }
 };
 
 
@@ -337,7 +497,7 @@ const handleContinue2 = () => {
                       borderColor: '#7ba1c3',
                     }}
                     keyboardType="numeric"
-                    maxLength={8}
+                    maxLength={13}
                     value={form.celular}
                     onChangeText={(celular) => setForm({ ...form, celular })}
                   />
@@ -474,7 +634,7 @@ const handleContinue2 = () => {
 
               <Button style={styles.customButton}
                 /* disabled={!isFormComplete} */
-                onPress={handleContinue2}
+                onPress={handleContinue4}
               >
                 CONTINUAR
               </Button>
@@ -699,7 +859,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff5c5c',
     borderRadius: 5,
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 20, 
   },
   buttonText: {
     color: 'white',

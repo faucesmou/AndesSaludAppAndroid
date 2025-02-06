@@ -45,26 +45,30 @@ export const ValidateTel = ({ navigation }: Props) => {
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
 
-  const { guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, loginGonzaMejorado3 } = useAuthStore();
+  const { guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, loginGonzaMejorado3,  } = useAuthStore();
 
   const [loadedDni, setLoadedDni] = useState<string | null>(null);
  
   const [loadedArea, setLoadedArea] = useState<string | null>(null);
   const [loadedContraseña1, setLoadedContraseña1] = useState<string | null>(null);
   const [loadedTeléfono, setLoadedTeléfono] = useState<string | null>(null);
+  const [loadedVerificationCode, setLoadedVerificationCode] = useState<string | null>(null);
 
-  const { dni, celular, contraseña1, area } = useAuthStore();
+  const { dni, celular, contraseña1, area, verificationCode} = useAuthStore();
 
   useEffect(() => {
     setLoadedDni(dni);
     setLoadedTeléfono(celular);
     setLoadedContraseña1(contraseña1);
     setLoadedArea(area);
+    setLoadedVerificationCode(verificationCode)
     console.log('DNI actualizado------------------->:', dni); 
     console.log('celular actualizado------------------->:', celular); 
     console.log('contraseña actualizado------------------->:', contraseña1); 
     console.log('area actualizado------------------->:', area); 
-  }, [dni, celular, contraseña1, area, celular]);
+    console.log('verificationCode actualizado------------------->:', verificationCode); 
+
+  }, [dni, celular, contraseña1, area, celular, verificationCode]);
 
   const [isPosting, setIsPosting] = useState(false)
 
@@ -132,11 +136,11 @@ export const ValidateTel = ({ navigation }: Props) => {
 
                 <Text style={styles.text}>
 
-                  Ingresa el código de validación que enviamos a tu teléfono:
+                  Ingresa el código de validación que enviamos a tu teléfono: {loadedVerificationCode}
                 </Text>
 
                 <View style={styles.result}>
-                  <Text style={styles.resultData}>Tus datos: {loadedDni} {loadedContraseña1} {loadedTeléfono} {loadedArea}</Text>
+                  <Text style={styles.resultData}>Tus datos: {loadedDni} {loadedContraseña1} {loadedTeléfono} </Text>
                   {/*  <Text style={styles.resultData} >DNI: {dni}</Text> */}
                 </View>
 
@@ -271,6 +275,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: hp('2%'),
     textAlign: 'center',
+  },
+  result: {
+    marginTop: wp('0.5%'),
+    marginBottom: wp('1%'),
+    padding: 8,
+    backgroundColor: 'green'/* '#fff' */,
+    borderRadius: 12,
+    elevation: 2,
+  },
+  resultData: {
+    fontSize: 16,
+   /*  color: '#322', */
+   color:'black',
+    alignSelf: 'center',
+    borderRadius: 15,
+    borderColor: '#7ba1c3',
+    fontWeight: 'bold',
   },
   /* cajaSubtitulos: {
     maxWidth: hp('40%'),
