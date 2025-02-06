@@ -45,47 +45,93 @@ export const ValidateTel = ({ navigation }: Props) => {
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
 
-  const { guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, loginGonzaMejorado3,  } = useAuthStore();
+  const { guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, loginGonzaMejorado3, } = useAuthStore();
 
   const [loadedDni, setLoadedDni] = useState<string | null>(null);
- 
+
   const [loadedArea, setLoadedArea] = useState<string | null>(null);
   const [loadedContraseña1, setLoadedContraseña1] = useState<string | null>(null);
   const [loadedTeléfono, setLoadedTeléfono] = useState<string | null>(null);
   const [loadedVerificationCode, setLoadedVerificationCode] = useState<string | null>(null);
 
-  const { dni, celular, contraseña1, area, verificationCode} = useAuthStore();
+  const { dni, celular, contraseña1, area, verificationCode, setVerificationCode } = useAuthStore();
+
+  /* prueba */
+  const [codeExpiration, setCodeExpiration] = useState<number | null>(null); // Nuevo estado
+
+  //useEffect para agregar un timer al código de verificación y que expire
+
+  useEffect(() => {
+    setLoadedVerificationCode(verificationCode);
+    if (verificationCode) {
+      // Establecer tiempo de expiración (5 minutos = 300000 ms)
+      const expirationTime = Date.now() + 15000;
+      setCodeExpiration(expirationTime);
+
+      const timer = setTimeout(() => {
+        // Si el código no se ha verificado, invalidarlo
+        if (loadedVerificationCode) {
+          setVerificationCode(null);
+          setCodigoExpirado(true)
+          console.log('El código de verificación ha expirado. Solicita uno nuevo.');
+          setCodeExpiration(null);
+        }
+
+      }, 15000); // 6 segundos
+
+      return () => clearTimeout(timer); // Limpiar el timer si el componente se desmonta o el código se verifica antes de que expire
+    }
+
+  }, [verificationCode, setVerificationCode, loadedVerificationCode]); // Dependencia de verificationCode
 
   useEffect(() => {
     setLoadedDni(dni);
     setLoadedTeléfono(celular);
     setLoadedContraseña1(contraseña1);
     setLoadedArea(area);
-    setLoadedVerificationCode(verificationCode)
-    console.log('DNI actualizado------------------->:', dni); 
-    console.log('celular actualizado------------------->:', celular); 
-    console.log('contraseña actualizado------------------->:', contraseña1); 
-    console.log('area actualizado------------------->:', area); 
-    console.log('verificationCode actualizado------------------->:', verificationCode); 
+    /*   setLoadedVerificationCode(verificationCode) */
+    console.log('DNI actualizado------------------->:', dni);
+    console.log('celular actualizado------------------->:', celular);
+    console.log('contraseña actualizado------------------->:', contraseña1);
+    console.log('area actualizado------------------->:', area);
+    console.log('verificationCode actualizado------------------->:', verificationCode);
 
-  }, [dni, celular, contraseña1, area, celular, verificationCode]);
+  }, [dni, celular, contraseña1, area, celular, /* verificationCode */]);
 
   const [isPosting, setIsPosting] = useState(false)
-
   const [code, setCode] = useState(['', '', '', '', '', '']); // Array para guardar los dígitos
-    const inputs = useRef([]); // Referencia a los inputs
+  const [codigoCorrecto, setCodigoCorrecto] = useState(false);
+  const [codigoIncorrecto, setCodigoIncorrecto] = useState(false);
+  const [codigoExpirado, setCodigoExpirado] = useState(false);
+  const inputs = useRef([]); // Referencia a los inputs
 
-    const handleCodeChange = (text, index) => {
-        const newCode = [...code];
-        newCode[index] = text;
-        setCode(newCode);
+  const handleCodeChange = (text, index) => {
+    const newCode = [...code];
+    newCode[index] = text;
+    setCode(newCode);
 
-        // Pasar al siguiente input si se ingresa un dígito
-        if (text && index < 5) {
-            inputs.current[index + 1].focus();
-        }
-    };
+    // Pasar al siguiente input si se ingresa un dígito
+    if (text && index < 5) {
+      inputs.current[index + 1].focus();
+    }
+  };
 
+  const [enteredCode, setEnteredCode] = useState(''); // Estado para guardar el código ingresado
+
+  const handleVerifyCode = () => {
+    const enteredCode = code.join(''); // Unir los dígitos ingresados en un string
+    if (enteredCode === loadedVerificationCode) {
+      // Código correcto, realizar acciones necesarias (ej. navegar)
+      console.log('Código correcto!');
+      setCodigoCorrecto(true)
+      /*   navigation.navigate('Home') */
+
+    } else {
+      // Código incorrecto, mostrar mensaje de error
+      setCodigoIncorrecto(true)
+      console.log('Código incorrecto. Inténtalo de nuevo.');
+    }
+  };
 
   let paddingTopNumber = hp('1%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
@@ -136,13 +182,12 @@ export const ValidateTel = ({ navigation }: Props) => {
 
                 <Text style={styles.text}>
 
-                  Ingresa el código de validación que enviamos a tu teléfono: {loadedVerificationCode}
+                  Ingresa el código de validación que enviamos al siguiente teléfono: {loadedTeléfono} 
                 </Text>
 
-                <View style={styles.result}>
+                {/* <View style={styles.result}>
                   <Text style={styles.resultData}>Tus datos: {loadedDni} {loadedContraseña1} {loadedTeléfono} </Text>
-                  {/*  <Text style={styles.resultData} >DNI: {dni}</Text> */}
-                </View>
+                </View> */}
 
               </View>
 
@@ -154,30 +199,133 @@ export const ValidateTel = ({ navigation }: Props) => {
                   Código de verificación:
                 </Text>
               </View>
-
-              <View style={styles.codeContainer}>
-                {code.map((digit, index) => (
+              {codeExpiration && Date.now() < codeExpiration ? (
+                <View style={styles.codeContainer}>
+                  {code.map((digit, index) => (
                     <TextInput
-                        key={index}
-                        style={styles.codeInput}
-                        keyboardType="numeric"
-                        
-                        maxLength={1}
-                        value={digit}
-                        onChangeText={(text) => handleCodeChange(text, index)}
-                        ref={(el) => (inputs.current[index] = el)} // Guarda la referencia al input
+                      key={index}
+                      style={styles.codeInput}
+                      keyboardType="numeric"
+
+                      maxLength={1}
+                      value={digit}
+                      onChangeText={(text) => handleCodeChange(text, index)}
+                      ref={(el) => (inputs.current[index] = el)} // Guarda la referencia al input
                     />
-                ))}
-            </View>
+                  ))}
+                </View>
+
+              ) : (
+                <View style={styles.cajaSubtitulosCodigoExpirado} >
+                  <Text style={styles.modalTextCodigoExpirado}>El código de verificación ha expirado. Por favor vuelve al paso anterior para solicitar uno nuevo.</Text>
+                </View>
+              )}
+
+              {/* Modal para avisar que las contraseñas no coinciden */}
+              {codigoCorrecto && (
+                <Modal
+                  transparent={true}
+                  animationType="fade"
+                  visible={codigoCorrecto}
+                  onRequestClose={() => setCodigoCorrecto(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                      <Text style={styles.modalTitle}>
+                        Código correcto!
+                      </Text>
+                      {/* nuevo con gradiente */}
+                      <LinearGradient
+                        colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.allowButton} onPress={() => setCodigoCorrecto(false)} >
+                          <Text style={styles.buttonText}>
+                            Aceptar
+                          </Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+
+                    </View>
+                  </View>
+
+                </Modal>
+              )
+              }
+              {codigoIncorrecto && (
+                <Modal
+                  transparent={true}
+                  animationType="fade"
+                  visible={codigoIncorrecto}
+                  onRequestClose={() => setCodigoIncorrecto(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                      <Text style={styles.modalTitle}>
+                        Código incorrecto, por favor intenta nuevamente.
+                      </Text>
+                      {/* nuevo con gradiente */}
+                      <LinearGradient
+                        colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.allowButton} onPress={() => setCodigoIncorrecto(false)} >
+                          <Text style={styles.buttonText}>
+                            Aceptar
+                          </Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+
+                    </View>
+                  </View>
+
+                </Modal>
+              )
+              }
+              {codigoExpirado && (
+                <Modal
+                  transparent={true}
+                  animationType="fade"
+                  visible={codigoExpirado}
+                  onRequestClose={() => setCodigoExpirado(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                      <Text style={styles.modalTitle}>
+                        El código ha expirado, por favor repite el proceso e intenta nuevamente.
+                      </Text>
+                      {/* nuevo con gradiente */}
+                      <LinearGradient
+                        colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.allowButton} onPress={() => setCodigoExpirado(false)} >
+                          <Text style={styles.buttonText}>
+                            Aceptar
+                          </Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
+
+                    </View>
+                  </View>
+
+                </Modal>
+              )
+              }
+
 
               <Button style={styles.customButton}
                 /* disabled={!isFormComplete} */
-               
+                onPress={handleVerifyCode}
+
               >
                 CONTINUAR
               </Button>
 
-             {
+              {
                 isPosting ? (
 
                   <View
@@ -206,7 +354,7 @@ export const ValidateTel = ({ navigation }: Props) => {
                 marginTop: hp('0%'),
 
               }}>
-           
+
                 <Text
                   style={styles.customText2}
                   status="primary"
@@ -286,25 +434,13 @@ const styles = StyleSheet.create({
   },
   resultData: {
     fontSize: 16,
-   /*  color: '#322', */
-   color:'black',
+    /*  color: '#322', */
+    color: 'black',
     alignSelf: 'center',
     borderRadius: 15,
     borderColor: '#7ba1c3',
     fontWeight: 'bold',
   },
-  /* cajaSubtitulos: {
-    maxWidth: hp('40%'),
-    minWidth: hp('40%'),
-    marginLeft: hp('0.7%'),
-    marginBottom: hp('0.5%'),
-  },
-  subtitulos: {
-    fontSize: wp('3.5%'),
-    color: '#3b3937',
-    fontWeight: 'bold',
-    textAlign: 'left',
-  }, */
   textQR: {
     fontSize: wp('4%'),
     color: 'black',
@@ -348,6 +484,14 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
   },
+  modalTextCodigoExpirado: {
+    fontSize: hp('2%'),
+   /*  fontWeight: 'bold', */
+    marginVertical: 10,
+    color: '#ff5c5c',
+    textAlign: 'justify',
+    marginTop: hp('0%'),
+  },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -379,7 +523,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Centra verticalmente
     alignItems: 'center', // Centra elementos
   },
-  
+  cajaSubtitulosCodigoExpirado: {
+    marginTop: hp('0%'),
+    alignSelf: 'center', // Centra horizontalmente
+    justifyContent: 'center', // Centra verticalmente
+    alignItems: 'center', // Centra elementos
+  },
+
   subtitulos: {
     fontSize: hp('2.2%'),
     fontWeight: 'bold',
@@ -387,8 +537,8 @@ const styles = StyleSheet.create({
     marginBottom: hp('1%'),
     textAlign: 'center' // Centra el texto horizontalmente
   },
-  
-codeContainer: {
+
+  codeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around', // Distribuye los inputs uniformemente
     alignItems: 'center',
@@ -397,8 +547,8 @@ codeContainer: {
     minWidth: hp('40%'),
     alignSelf: 'center',
 
-},
-codeInput: {
+  },
+  codeInput: {
     width: wp('10%'),
     height: hp('7%'),
     borderRadius: 15,
@@ -407,5 +557,19 @@ codeInput: {
     fontSize: hp('3%'), // Tamaño de la fuente
     textAlign: 'center', // Texto centrado
     color: 'black'
-},
+  },
+  /* modal de aviso que el codigo es correcto: */
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderRadius: 15,
+  },
+  allowButton: {
+    /*    backgroundColor: '#4CAF50', */
+    padding: 10,
+    borderRadius: 15,
+    minWidth: 70,
+    maxWidth: 100,
+  },
 });

@@ -176,7 +176,7 @@ getContraseña1: () => string | null;
 getContraseña2: () => string | null;
    // verificación del teléfono
    verificationCode: string | null;
-   setVerificationCode: (code: string) => void;
+   setVerificationCode: (code: string | null) => void;
 
 
 }
