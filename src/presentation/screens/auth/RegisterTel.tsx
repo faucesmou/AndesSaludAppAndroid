@@ -85,6 +85,8 @@ export const RegisterTel = ({ navigation }: Props) => {
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [passwordsMatchModal, setPasswordsMatchModal] = useState(false);
+  const [errorSendingCodeModal , setErrorSendingCodeModal] = useState(false);
+  const [errorSendingCode , setErrorSendingCode] = useState(false);
 
   const [areaMissing, setAreaMissing] = useState(false);
   const [celularMissing, setCelularMissing] = useState(false);
@@ -107,37 +109,6 @@ const [saveDataZustand, setSaveDataZustand] = useState(false);
   }, [form]); // El efecto se ejecuta cuando el formulario cambia
 
 
-  // Función para la validación del formulario
-  const handleContinue = () => {
-
-    // Reiniciamos los estados de campos faltantes antes de verificar
-    setAreaMissing(false);
-    setCelularMissing(false);
-    setContraseña1Missing(false);
-    setContraseña2Missing(false);
-
-    if (isFormComplete && passwordsMatch && saveDataZustand) {
-      console.log('el formulario está completo, las contraseñas son iguales y la información se guardó en context');
-      () => navigation.navigate('Validar telefono')
-
-    } else {
-      // Puedes mostrar un mensaje de error o realizar alguna acción adicional
-      if (!passwordsMatch) {
-        console.log('se activa el modal de contraseñas no coinciden');
-        setPasswordsMatchModal(true)
-      } else {
-
-        // Verifica qué campos faltan y activa los estados correspondientes
-        if (form.area === '') setAreaMissing(true);
-        if (form.celular === '') setCelularMissing(true);
-        if (form.contraseña1 === '') setContraseña1Missing(true);
-        if (form.contraseña2 === '') setContraseña2Missing(true);
-
-        /*  alert("Por favor, complete todos los campos."); */
-        console.log('se activa mensaje de complete todos los campos');
-      }
-    }
-  };
 
 // Función para guardar en Zustand con callback
 const saveDataToZustand = async (callback) => {
@@ -168,76 +139,14 @@ const saveDataToZustand = async (callback) => {
 const generateRandomCode = () => {
   const min = 100000;
   const max = 999999;
-  return Math.floor(Math.random() * (max - min + 1)).toString();
+  const code = Math.floor(Math.random() * (max - min + 1) + min).toString();
+  return code.padStart(6, '0'); // Rellenar con ceros a la izquierda si es necesario
+  /* return Math.floor(Math.random() * (max - min + 1)).toString(); */
 };
 
-
-const handleContinue2 = () => {
-
-  // Validación de campos y contraseñas
-  setAreaMissing(form.area === '');
-  setCelularMissing(form.celular === '');
-  setContraseña1Missing(form.contraseña1 === '');
-  setContraseña2Missing(form.contraseña2 === '');
-
-  if (isFormComplete && passwordsMatch) {
-      saveDataToZustand((success) => {
-          if (success) {
-              console.log('Datos guardados en Zustand correctamente.');
-              navigation.navigate('Validar telefono'); // Navegación condicional
-          } else {
-              console.log('Error al guardar datos en Zustand xxxxx=x=x=x.');
-             /*  alert("Error al guardar los datos. Inténtalo nuevamente."); */ // Muestra el mensaje de error
-          }
-      });
-  } else {
-      if (!passwordsMatch) {
-        setPasswordsMatchModal(true);
-      } else {
-        console.log('nada de lo anterior previsto sucedió....');
-        
-      }
-  }
-};
-
-const handleContinue3 = () => {
-  // Validación de campos y contraseñas
-  setAreaMissing(form.area === '');
-  setCelularMissing(form.celular === '');
-  setContraseña1Missing(form.contraseña1 === '');
-  setContraseña2Missing(form.contraseña2 === '');
-
-  if (isFormComplete && passwordsMatch) {
-    saveDataToZustand((success) => {
-      if (success) {
-        console.log('Datos guardados en Zustand correctamente.');
-
-        // Generar y guardar el código, y luego navegar
-        const code = generateRandomCode();
-        useAuthStore.getState().setVerificationCode(code); // Guarda en Zustand
-        console.log("código generado--->", code);
-        sendVerificationCode(code, form.celular, (sendSuccess) => {
-            if (sendSuccess) {
-                navigation.navigate('Validar telefono');
-            } else {
-                alert("No se pudo enviar el código de verificación. Inténtalo de nuevo.");
-            }
-        })
-
-      } else {
-        console.log('Error al guardar datos en Zustand.');
-      }
-    });
-  } else {
-    if (!passwordsMatch) {
-      setPasswordsMatchModal(true);
-    } else {
-      console.log('Nada de lo anterior previsto sucedió....');
-    }
-  }
-};
 
 const handleContinue4 = () => {
+  setIsPosting(true)
   // Validación de campos y contraseñas
   setAreaMissing(form.area === '');
   setCelularMissing(form.celular === '');
@@ -259,20 +168,32 @@ const handleContinue4 = () => {
         // Enviar el código y navegar (o mostrar error)
         sendVerificationCode(code, phoneNumber2, (sendSuccess, errorMessage) => {
           if (sendSuccess) {
+            setIsPosting(false)
             navigation.navigate('Validar telefono');
           } else {
             console.log(`No se pudo enviar el código de verificación. ${errorMessage || "Inténtalo de nuevo."}`);
+            setIsPosting(false)
+            setErrorSendingCodeModal(true)
           }
         });
       } else {
         console.log('Error al guardar datos en Zustand.');
+        setIsPosting(false)
+        setErrorSendingCodeModal(true)
+        setErrorSendingCode(true)
       }
     });
   } else {
     if (!passwordsMatch) {
       setPasswordsMatchModal(true);
+      setIsPosting(false)
+      setErrorSendingCode(true)
+      setErrorSendingCodeModal(true)
     } else {
       console.log('Nada de lo anterior previsto sucedió....');
+      setIsPosting(false)
+      setErrorSendingCode(true)
+      setErrorSendingCodeModal(true)
     }
   }
 };
@@ -346,6 +267,8 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
         }
     } catch (error) {
         console.error("Error en la solicitud:", error);
+        setErrorSendingCode(true)
+        setErrorSendingCodeModal(true)
         callback(false, "Error en la solicitud");
     }
 };
@@ -629,8 +552,44 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
                 </Modal>
               )
               }
+              {/* Modal para avisar que no se pudo enviar el codigo y que revise el celular ingresado */}
+              {errorSendingCodeModal && (
+                <Modal
+                  transparent={true}
+                  animationType="fade"
+                  visible={passwordsMatchModal}
+                  onRequestClose={() => setErrorSendingCodeModal(false)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                      <Text style={styles.modalTitle}>
+                        Las contraseñas ingresadas no coinciden
+                      </Text>
+                      {/* nuevo con gradiente */}
+                      <LinearGradient
+                        colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.allowButton} onPress={() => setErrorSendingCodeModal(false)} >
+                          <Text style={styles.buttonText}>
+                            Aceptar
+                          </Text>
+                        </TouchableOpacity>
+                      </LinearGradient>
 
+                    </View>
+                  </View>
 
+                </Modal>
+              )
+              }
+
+ {errorSendingCode && (
+                <View style={styles.cajaSubtitulosError} >
+                  <Text style={styles.modalTextError}>No se pudo enviar el código, por favor revisa si el teléfono ingresado es válido.</Text>
+                </View>
+              )}
 
               <Button style={styles.customButton}
                 /* disabled={!isFormComplete} */
@@ -638,8 +597,27 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
               >
                 CONTINUAR
               </Button>
-              {/* /* onPress={() => navigation.navigate('LoginScreenNew')} */
-          /*  onPress={() => { handleSendCode(); navigation.navigate('home'); }} */}
+
+
+              {
+                isPosting ? (
+
+                  <View
+                    style={{
+                      flex: 0.3,
+                      marginTop: hp('3%'),
+                      marginBottom: hp('0%'),
+                    }}
+                  >
+                    <FullScreenLoader />
+                  </View>
+
+                )
+                  :
+                  <>
+                  </>
+              }
+
 
               {showScanError && (
                 <Text style={styles.errorText}>Error en el escaneo de QR</Text>
@@ -664,24 +642,7 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
                 </Modal>
               )}
 
-              {
-                isPosting ? (
-
-                  <View
-                    style={{
-                      flex: 0.3,
-                      marginTop: hp('3%'),
-                      marginBottom: hp('0%'),
-                    }}
-                  >
-                    <FullScreenLoader />
-                  </View>
-
-                )
-                  :
-                  <>
-                  </>
-              }
+       
 
               {isModalVisible && (
                 <Modal
@@ -904,26 +865,20 @@ const styles = StyleSheet.create({
     minWidth: 70,
     maxWidth: 100,
   },
-  /*   modalOverlay2: {
-      flex: 1,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    modalContainer2: {
-      backgroundColor: '#fff',
-      padding: 20,
-      borderRadius: 15,
-      marginHorizontal:wp('5%'),
-      maxWidth:wp('80%'),
-      minWidth:wp('75%')
-    },
-    modalTitle2: {
-      fontSize: hp('2.2%'),
-      fontWeight: 'bold',
-      alignSelf:'center',
-       marginBottom:10,
-      textAlign:'center',
-      color: '#3b3937',
-    }, */
+  cajaSubtitulosError: {
+    marginTop: hp('0%'),
+    alignSelf: 'center', // Centra horizontalmente
+    justifyContent: 'center', // Centra verticalmente
+    alignItems: 'center', // Centra elementos
+    marginHorizontal:wp('3%'),
+   /*  backgroundColor:'green' */
+  },
+  modalTextError: {
+    fontSize: hp('1.7%'),
+    /*  fontWeight: 'bold', */
+    marginVertical: 10,
+    color: '#ff5c5c',
+    textAlign: 'justify',
+    marginTop: hp('0%'),
+  },
 });

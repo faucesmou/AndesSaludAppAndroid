@@ -58,33 +58,35 @@ export const ValidateTel = ({ navigation }: Props) => {
 
   /* prueba */
   const [codeExpiration, setCodeExpiration] = useState<number | null>(null); // Nuevo estado
-
+  const [codigoIngresado, setCodigoIngresado] = useState(false); // Nuevo estado
   //useEffect para agregar un timer al código de verificación y que expire
 
   useEffect(() => {
     setLoadedVerificationCode(verificationCode);
     if (verificationCode) {
       // Establecer tiempo de expiración (5 minutos = 300000 ms)
-      const expirationTime = Date.now() + 15000;
+      const expirationTime = Date.now() + 55000;
       setCodeExpiration(expirationTime);
 
       const timer = setTimeout(() => {
         // Si el código no se ha verificado, invalidarlo
-        if (loadedVerificationCode) {
+        if (loadedVerificationCode && !codigoIngresado) {
           setVerificationCode(null);
           setCodigoExpirado(true)
+          setCodigoExpiradoModal(true)
           console.log('El código de verificación ha expirado. Solicita uno nuevo.');
           setCodeExpiration(null);
         }
 
-      }, 15000); // 6 segundos
+      }, 55000); // 6 segundos
 
       return () => clearTimeout(timer); // Limpiar el timer si el componente se desmonta o el código se verifica antes de que expire
     }
 
-  }, [verificationCode, setVerificationCode, loadedVerificationCode]); // Dependencia de verificationCode
+  }, [verificationCode, setVerificationCode, loadedVerificationCode, codigoIngresado]); // Dependencia de verificationCode
 
   useEffect(() => {
+    
     setLoadedDni(dni);
     setLoadedTeléfono(celular);
     setLoadedContraseña1(contraseña1);
@@ -101,8 +103,11 @@ export const ValidateTel = ({ navigation }: Props) => {
   const [isPosting, setIsPosting] = useState(false)
   const [code, setCode] = useState(['', '', '', '', '', '']); // Array para guardar los dígitos
   const [codigoCorrecto, setCodigoCorrecto] = useState(false);
+
   const [codigoIncorrecto, setCodigoIncorrecto] = useState(false);
+  const [codigoIncorrectoModal, setCodigoIncorrectoModal] = useState(false);
   const [codigoExpirado, setCodigoExpirado] = useState(false);
+  const [codigoExpiradoModal, setCodigoExpiradoModal] = useState(false);
   const inputs = useRef([]); // Referencia a los inputs
 
   const handleCodeChange = (text, index) => {
@@ -116,22 +121,43 @@ export const ValidateTel = ({ navigation }: Props) => {
     }
   };
 
-  const [enteredCode, setEnteredCode] = useState(''); // Estado para guardar el código ingresado
+  const [areaMissing, setAreaMissing] = useState(false);
 
   const handleVerifyCode = () => {
+    setIsPosting(true)
+
+    // Validar que todos los campos estén completos
+    if (code.some(digit => !digit)) { // Verificar si algún dígito está vacío
+      setAreaMissing(true);
+      setIsPosting(false);
+      return; // Detener la ejecución si falta algún dígito
+    }
+
     const enteredCode = code.join(''); // Unir los dígitos ingresados en un string
     if (enteredCode === loadedVerificationCode) {
       // Código correcto, realizar acciones necesarias (ej. navegar)
       console.log('Código correcto!');
       setCodigoCorrecto(true)
-      /*   navigation.navigate('Home') */
+      setCodigoIngresado(true);
+      setIsPosting(false)
+      /*  navigation.navigate('LoginScreenNew'); */
+
 
     } else {
       // Código incorrecto, mostrar mensaje de error
+      setCodigoCorrecto(false)
       setCodigoIncorrecto(true)
+      setCodigoIncorrectoModal(true)
+      setCodigoIngresado(true);
+      setIsPosting(false)
       console.log('Código incorrecto. Inténtalo de nuevo.');
     }
   };
+
+  const verificacionFinalizada = () => {
+    setCodigoCorrecto(false)
+    navigation.navigate('LoginScreenNew');
+  }
 
   let paddingTopNumber = hp('1%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
@@ -182,7 +208,7 @@ export const ValidateTel = ({ navigation }: Props) => {
 
                 <Text style={styles.text}>
 
-                  Ingresa el código de validación que enviamos al siguiente teléfono: {loadedTeléfono} 
+                  Ingresa el código de validación que enviamos al siguiente teléfono: {loadedTeléfono}
                 </Text>
 
                 {/* <View style={styles.result}>
@@ -192,32 +218,69 @@ export const ValidateTel = ({ navigation }: Props) => {
               </View>
 
 
+              {!codigoCorrecto || codigoExpirado && (
+                <View style={styles.cajaSubtitulos}>
 
-              <View style={styles.cajaSubtitulos}>
-
-                <Text style={styles.subtitulos}>
-                  Código de verificación:
-                </Text>
-              </View>
-              {codeExpiration && Date.now() < codeExpiration ? (
-                <View style={styles.codeContainer}>
-                  {code.map((digit, index) => (
-                    <TextInput
-                      key={index}
-                      style={styles.codeInput}
-                      keyboardType="numeric"
-
-                      maxLength={1}
-                      value={digit}
-                      onChangeText={(text) => handleCodeChange(text, index)}
-                      ref={(el) => (inputs.current[index] = el)} // Guarda la referencia al input
-                    />
-                  ))}
+                  <Text style={styles.subtitulos}>
+                    Código de verificación:
+                  </Text>
                 </View>
+              )}
+
+
+
+              {!codigoCorrecto && !codigoIngresado && codeExpiration && Date.now() < codeExpiration ? (
+                <>
+
+                  <View style={styles.codeContainer}>
+                    {code.map((digit, index) => (
+                      <TextInput
+                        key={index}
+                        style={styles.codeInput}
+                        keyboardType="numeric"
+
+                        maxLength={1}
+                        value={digit}
+                        onChangeText={(text) => handleCodeChange(text, index)}
+                        ref={(el) => (inputs.current[index] = el)} // Guarda la referencia al input
+                      />
+                    ))}
+                  </View>
+
+                  {areaMissing && (
+                    <Text style={{
+                      /* flex:wp('0.2%'), */
+                      flex: 1,
+                      fontSize: 12,
+                      color: 'red',
+                      marginTop: hp('0%'),
+                      marginLeft: hp('0.7%'),
+                      textAlign: 'justify',
+                    }}>Campo obligatorio</Text>
+                  )
+                  }
+                </>
 
               ) : (
+                <>
+                </>
+
+              )}
+
+              {codigoExpirado && (
                 <View style={styles.cajaSubtitulosCodigoExpirado} >
                   <Text style={styles.modalTextCodigoExpirado}>El código de verificación ha expirado. Por favor vuelve al paso anterior para solicitar uno nuevo.</Text>
+                </View>
+              )}
+              {codigoIncorrecto && (
+                <View style={styles.cajaSubtitulosCodigoExpirado} >
+                  <Text style={styles.modalTextCodigoExpirado}>El código de verificación es incorrecto. Por favor vuelve al paso anterior para solicitar uno nuevo.</Text>
+                </View>
+              )}
+
+              {codigoCorrecto && (
+                <View style={styles.cajaSubtitulosCodigoExpirado} >
+                  <Text style={styles.TextVerificacionCorrecta}>¡Verificación correcta!</Text>
                 </View>
               )}
 
@@ -231,16 +294,15 @@ export const ValidateTel = ({ navigation }: Props) => {
                 >
                   <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
-                      <Text style={styles.modalTitle}>
-                        Código correcto!
+                      <Text style={styles.modalTitleExitoso}>
+                        ¡Verificación correcta!
                       </Text>
-                      {/* nuevo con gradiente */}
                       <LinearGradient
                         colors={['#509d4f', '#5ab759', '#5ab759', '#5ab759']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.allowButton} onPress={() => setCodigoCorrecto(false)} >
+                        <TouchableOpacity style={styles.allowButton} onPress={() => navigation.navigate('LoginScreenNew')} >
                           <Text style={styles.buttonText}>
                             Aceptar
                           </Text>
@@ -253,12 +315,14 @@ export const ValidateTel = ({ navigation }: Props) => {
                 </Modal>
               )
               }
-              {codigoIncorrecto && (
+
+
+              {codigoIncorrectoModal && (
                 <Modal
                   transparent={true}
                   animationType="fade"
                   visible={codigoIncorrecto}
-                  onRequestClose={() => setCodigoIncorrecto(false)}
+                  onRequestClose={() => setCodigoIncorrectoModal(false)}
                 >
                   <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
@@ -271,7 +335,7 @@ export const ValidateTel = ({ navigation }: Props) => {
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.allowButton} onPress={() => setCodigoIncorrecto(false)} >
+                        <TouchableOpacity style={styles.allowButton} onPress={() => setCodigoIncorrectoModal(false)} >
                           <Text style={styles.buttonText}>
                             Aceptar
                           </Text>
@@ -284,12 +348,12 @@ export const ValidateTel = ({ navigation }: Props) => {
                 </Modal>
               )
               }
-              {codigoExpirado && (
+              {!codigoCorrecto && codigoExpiradoModal && (
                 <Modal
                   transparent={true}
                   animationType="fade"
                   visible={codigoExpirado}
-                  onRequestClose={() => setCodigoExpirado(false)}
+                  onRequestClose={() => setCodigoExpiradoModal(false)}
                 >
                   <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
@@ -302,7 +366,7 @@ export const ValidateTel = ({ navigation }: Props) => {
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.allowButton} onPress={() => setCodigoExpirado(false)} >
+                        <TouchableOpacity style={styles.allowButton} onPress={() => setCodigoExpiradoModal(false)} >
                           <Text style={styles.buttonText}>
                             Aceptar
                           </Text>
@@ -315,15 +379,16 @@ export const ValidateTel = ({ navigation }: Props) => {
                 </Modal>
               )
               }
+              {!codigoExpirado /* || !codigoIncorrecto */ && (
+                <Button style={styles.customButton}
+                  /*     disabled={!codigoCorrecto} */
+                  onPress={handleVerifyCode}
+                >
+                  CONTINUAR
+                </Button>
+              )}
 
 
-              <Button style={styles.customButton}
-                /* disabled={!isFormComplete} */
-                onPress={handleVerifyCode}
-
-              >
-                CONTINUAR
-              </Button>
 
               {
                 isPosting ? (
@@ -346,27 +411,33 @@ export const ValidateTel = ({ navigation }: Props) => {
 
               <Layout style={{ height: hp('3%') }} />
 
-              <Layout style={{
-                alignItems: 'center',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                marginBottom: hp('2%'),
-                marginTop: hp('0%'),
+              {!codigoCorrecto && (
+                <Layout style={{
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  marginBottom: hp('2%'),
+                  marginTop: hp('0%'),
 
-              }}>
+                }}>
 
-                <Text
-                  style={styles.customText2}
-                  status="primary"
-                  category="s1"
-                  /*    onPress={handleOpenURLAndes} */
-                  onPress={() => navigation.navigate('Registro')}
-                >
-                  {' '}
-                  Volver{' '}
-                </Text>
+                  <Text
+                    style={styles.customText2}
+                    status="primary"
+                    category="s1"
+                    /*    onPress={handleOpenURLAndes} */
+                    onPress={() => navigation.navigate('Registro')}
+                  >
+                    {' '}
+                    Volver{' '}
+                  </Text>
 
-              </Layout>
+
+
+                </Layout>
+              )}
+
+
 
             </View>
 
@@ -486,9 +557,17 @@ const styles = StyleSheet.create({
   },
   modalTextCodigoExpirado: {
     fontSize: hp('2%'),
-   /*  fontWeight: 'bold', */
+    /*  fontWeight: 'bold', */
     marginVertical: 10,
     color: '#ff5c5c',
+    textAlign: 'justify',
+    marginTop: hp('0%'),
+  },
+  TextVerificacionCorrecta: {
+    fontSize: hp('2.5%'),
+    fontWeight: 'bold',
+    marginVertical: 10,
+    color: '#4cad18',
     textAlign: 'justify',
     marginTop: hp('0%'),
   },
@@ -497,6 +576,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
     color: '#ff5c5c',
+    textAlign: 'center',
+  },
+  modalTitleExitoso: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    color: '#4cad18',
     textAlign: 'center',
   },
   modalMessage: {
