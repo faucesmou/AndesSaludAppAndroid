@@ -63,6 +63,7 @@ export const ValidateTel = ({ navigation }: Props) => {
 
   useEffect(() => {
     setLoadedVerificationCode(verificationCode);
+
     if (verificationCode) {
       // Establecer tiempo de expiración (5 minutos = 300000 ms)
       const expirationTime = Date.now() + 55000;
@@ -104,16 +105,24 @@ export const ValidateTel = ({ navigation }: Props) => {
   const [code, setCode] = useState(['', '', '', '', '', '']); // Array para guardar los dígitos
   const [codigoCorrecto, setCodigoCorrecto] = useState(false);
 
+  const [quitarBoton, setQquitarBoton] = useState(false);
   const [codigoIncorrecto, setCodigoIncorrecto] = useState(false);
   const [codigoIncorrectoModal, setCodigoIncorrectoModal] = useState(false);
   const [codigoExpirado, setCodigoExpirado] = useState(false);
   const [codigoExpiradoModal, setCodigoExpiradoModal] = useState(false);
   const inputs = useRef([]); // Referencia a los inputs
 
+
+  useEffect(() => {
+    // Si el usuario empieza a ingresar un nuevo código, reiniciamos codigoIncorrecto
+    setQquitarBoton(false);
+  }, []); 
+
   const handleCodeChange = (text, index) => {
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
+ 
 
     // Pasar al siguiente input si se ingresa un dígito
     if (text && index < 5) {
@@ -149,6 +158,7 @@ export const ValidateTel = ({ navigation }: Props) => {
       setCodigoIncorrecto(true)
       setCodigoIncorrectoModal(true)
       setCodigoIngresado(true);
+      setQquitarBoton(true)
       setIsPosting(false)
       console.log('Código incorrecto. Inténtalo de nuevo.');
     }
@@ -321,7 +331,7 @@ export const ValidateTel = ({ navigation }: Props) => {
                 <Modal
                   transparent={true}
                   animationType="fade"
-                  visible={codigoIncorrecto}
+                  visible={codigoIncorrectoModal}
                   onRequestClose={() => setCodigoIncorrectoModal(false)}
                 >
                   <View style={styles.modalOverlay}>
@@ -379,7 +389,7 @@ export const ValidateTel = ({ navigation }: Props) => {
                 </Modal>
               )
               }
-              {!codigoExpirado /* || !codigoIncorrecto */ && (
+              {!codigoExpirado && !quitarBoton && (
                 <Button style={styles.customButton}
                   /*     disabled={!codigoCorrecto} */
                   onPress={handleVerifyCode}

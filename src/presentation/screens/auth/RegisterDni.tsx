@@ -60,28 +60,28 @@ export const RegisterDni = ({ navigation }: Props) => {
   
     }; */
 
-/*   const handleScanComplete = async (data: DNIData) => {
-    setIsLoading(true);
-    if (data && data.dni) {
-      console.log('documento escaneado con éxito perrrisonnnn');
-      setScannedData(data);
-      setIsScanSuccessful(true);
-      setShowScanError(false);
-      let dni = scannedData.dni ;  
-        useAuthStore.getState().setDni(dni);
-        console.log('DNI guardado en Zustand:', dni);
-        await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
-        console.log('DNI guardado en Zustand:', dni);
+  /*   const handleScanComplete = async (data: DNIData) => {
+      setIsLoading(true);
+      if (data && data.dni) {
+        console.log('documento escaneado con éxito perrrisonnnn');
+        setScannedData(data);
+        setIsScanSuccessful(true);
+        setShowScanError(false);
+        let dni = scannedData.dni ;  
+          useAuthStore.getState().setDni(dni);
+          console.log('DNI guardado en Zustand:', dni);
+          await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
+          console.log('DNI guardado en Zustand:', dni);
+          setIsLoading(false);
+          setIsDniScanned(true);
+      } else {
+        console.log('error al escanear el documento');
+  
+        setIsScanSuccessful(false);
+        setShowScanError(true);
         setIsLoading(false);
-        setIsDniScanned(true);
-    } else {
-      console.log('error al escanear el documento');
-
-      setIsScanSuccessful(false);
-      setShowScanError(true);
-      setIsLoading(false);
-    }
-  }; */
+      }
+    }; */
 
   const handleScanComplete = async (data: DNIData) => {
     setIsLoading(true);
@@ -92,15 +92,15 @@ export const RegisterDni = ({ navigation }: Props) => {
         setIsScanSuccessful(true);
         setShowScanError(false);
         const dni = data.dni;
-  
+
         // Actualiza el store de Zustand y espera a que se complete
         await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
-  
+
         console.log('DNI guardado en Zustand:', dni);
-  
+
         setIsLoading(false);
         setIsDniScanned(true);
-  
+
       } else {
         console.log('error al escanear el documento');
         setIsScanSuccessful(false);
@@ -319,7 +319,7 @@ export const RegisterDni = ({ navigation }: Props) => {
             <View style={styles.bottomSection}>
               <View>
 
-                
+
                 <Text style={styles.text}>
                   {/*  Por favor, ingresá tu Número de Credencial y Contraseña para continuar: */}
                   Para comenzar necesitamos que escanees tu DNI:
@@ -328,11 +328,11 @@ export const RegisterDni = ({ navigation }: Props) => {
                   {/*  Por favor, ingresá tu Número de Credencial y Contraseña para continuar: */}
                   Tienes que escanear el código de barra que aparece en tu DNI tarjeta, dependiendo el año en que lo tramitaste puede estar en frente o el dorso.
                 </Text>
-               
+
 
                 <QRscanner6gpt onScanComplete={handleScanComplete} />
 
-               {/*  {scannedData && (
+                {/*  {scannedData && (
                   <View style={styles.result}>
                     <Text style={styles.resultText}>Aguarda un momento</Text>
                     <Text style={styles.resultData}>{JSON.stringify(scannedData, null, 2)}</Text>
@@ -345,30 +345,37 @@ export const RegisterDni = ({ navigation }: Props) => {
 
                 {isLoading && (
                   <>
-                  <View style={styles.result}>
-                    <Text style={styles.resultText}>Aguarda un momento</Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 0.1,
-                      marginTop: hp('1%'),
-                      marginBottom: hp('0%'),
-                    }}
-                  >
-                    <FullScreenLoader />
-                  </View>
+                    <View style={styles.result}>
+                      <Text style={styles.resultText}>Aguarda un momento</Text>
+                    </View>
+                    <View
+                      style={{
+                        flex: 0.1,
+                        marginTop: hp('1%'),
+                        marginBottom: hp('0%'),
+                      }}
+                    >
+                      <FullScreenLoader />
+                    </View>
                   </>
                 )}
 
               </View>
 
+               {isDniScanned && (
+                <View style={styles.cajaDatosGuardados} >
+                  <Text style={styles.TextDatosGuardados}>¡Datos guardados!</Text>
+                </View>
+              )}
+
+
 
               <Button style={styles.customButton}
-               /*  disabled={isPosting} */
+                /*  disabled={isPosting} */
                 /* onPress={handleLoginPress} */
-              /*  onPress={onLoginGonza2} */
-                   onPress={() => navigation.navigate('Registro telefono')}
-                   disabled={!isDniScanned}
+                /*  onPress={onLoginGonza2} */
+                onPress={() => navigation.navigate('Registro telefono')}
+                disabled={!isDniScanned}
               >
                 CONTINUAR
               </Button>
@@ -447,7 +454,7 @@ export const RegisterDni = ({ navigation }: Props) => {
 
               }}>
                 <Text style={{ fontWeight: 'bold' }}>
-                  ¿Ya tienes una cuenta? 
+                  ¿Ya tienes una cuenta?
                   {' '}
                 </Text>
                 <Text
@@ -457,7 +464,7 @@ export const RegisterDni = ({ navigation }: Props) => {
                   onPress={() => navigation.navigate('LoginScreenNew')}
                 >
                   {' '}
-                 Iniciar sesión{' '}
+                  Iniciar sesión{' '}
                 </Text>
 
               </Layout>
@@ -621,5 +628,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     alignSelf: 'center',
+  },
+  /* datos guardados: */
+  cajaDatosGuardados: {
+    marginTop: hp('0.5%'),
+    alignSelf: 'center', // Centra horizontalmente
+    justifyContent: 'center', // Centra verticalmente
+    alignItems: 'center', // Centra elementos
+  },
+  TextDatosGuardados: {
+    fontSize: hp('1.8%'),
+   /*  fontWeight: 'bold', */
+    marginVertical: 10,
+    color: '#4cad18',
+    textAlign: 'justify',
+    marginTop: hp('0%'),
   },
 });

@@ -84,19 +84,23 @@ export const RegisterTel = ({ navigation }: Props) => {
 
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [passwordInvalid, setPasswordInvalid] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState([]);
+
   const [passwordsMatchModal, setPasswordsMatchModal] = useState(false);
-  const [errorSendingCodeModal , setErrorSendingCodeModal] = useState(false);
-  const [errorSendingCode , setErrorSendingCode] = useState(false);
+  const [passwordsNoMatch, setPasswordsNoMatch] = useState(false);
+  const [errorSendingCodeModal, setErrorSendingCodeModal] = useState(false);
+  const [errorSendingCode, setErrorSendingCode] = useState(false);
 
   const [areaMissing, setAreaMissing] = useState(false);
   const [celularMissing, setCelularMissing] = useState(false);
   const [contraseña1Missing, setContraseña1Missing] = useState(false);
   const [contraseña2Missing, setContraseña2Missing] = useState(false);
 
-// Estado para controlar la carga y el error
-const [isLoading, setIsLoading] = useState(false);
-const [saveError, setSaveError] = useState(null);
-const [saveDataZustand, setSaveDataZustand] = useState(false);
+  // Estado para controlar la carga y el error
+  const [isLoading, setIsLoading] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+  const [saveDataZustand, setSaveDataZustand] = useState(false);
 
   useEffect(() => {
     // Verifica si todos los campos están completos
@@ -110,168 +114,217 @@ const [saveDataZustand, setSaveDataZustand] = useState(false);
 
 
 
-// Función para guardar en Zustand con callback
-const saveDataToZustand = async (callback) => {
-  setIsLoading(true);
-  // Concatenar area y celular
-  const phoneNumber2 = form.area + form.celular;
-  //preguntar si vamos a guardar el área
-  try {
-    await Promise.all([
-      new Promise(resolve => useAuthStore.getState().setDni(form.dni, resolve)),
-      new Promise(resolve => useAuthStore.getState().setArea(form.area, resolve)),
-      new Promise(resolve => useAuthStore.getState().setCelular(phoneNumber2, resolve)),
-      new Promise(resolve => useAuthStore.getState().setContraseña1(form.contraseña1, resolve)),
-      new Promise(resolve => useAuthStore.getState().setContraseña2(form.contraseña2, resolve)),
-    ]);
-    setIsLoading(false);
-    setSaveDataZustand(true)
-    callback(true);
-  } catch (error) {
-    console.error("Error al guardar datos:", error);
-    setIsLoading(false);
-    setSaveError(error.message);
-    callback(false);
-  }
-};
-
-// Función para generar código aleatorio de 6 dígitos
-const generateRandomCode = () => {
-  const min = 100000;
-  const max = 999999;
-  const code = Math.floor(Math.random() * (max - min + 1) + min).toString();
-  return code.padStart(6, '0'); // Rellenar con ceros a la izquierda si es necesario
-  /* return Math.floor(Math.random() * (max - min + 1)).toString(); */
-};
-
-
-const handleContinue4 = () => {
-  setIsPosting(true)
-  // Validación de campos y contraseñas
-  setAreaMissing(form.area === '');
-  setCelularMissing(form.celular === '');
-  setContraseña1Missing(form.contraseña1 === '');
-  setContraseña2Missing(form.contraseña2 === '');
-
-  if (isFormComplete && passwordsMatch) {
-    saveDataToZustand((success) => {
-      if (success) {
-        console.log('Datos guardados en Zustand correctamente.');
-
-        // Generar y guardar el código
-        const code = generateRandomCode();
-        useAuthStore.getState().setVerificationCode(code);
-        console.log("código generado--->", code);
-   // Concatenar area y celular
-   const phoneNumber2 = form.area + form.celular;
-   console.log("phoneNumber2 generado concatenado perrinsonses--->", phoneNumber2);
-        // Enviar el código y navegar (o mostrar error)
-        sendVerificationCode(code, phoneNumber2, (sendSuccess, errorMessage) => {
-          if (sendSuccess) {
-            setIsPosting(false)
-            navigation.navigate('Validar telefono');
-          } else {
-            console.log(`No se pudo enviar el código de verificación. ${errorMessage || "Inténtalo de nuevo."}`);
-            setIsPosting(false)
-            setErrorSendingCodeModal(true)
-          }
-        });
-      } else {
-        console.log('Error al guardar datos en Zustand.');
-        setIsPosting(false)
-        setErrorSendingCodeModal(true)
-        setErrorSendingCode(true)
-      }
-    });
-  } else {
-    if (!passwordsMatch) {
-      setPasswordsMatchModal(true);
-      setIsPosting(false)
-      setErrorSendingCode(true)
-      setErrorSendingCodeModal(true)
-    } else {
-      console.log('Nada de lo anterior previsto sucedió....');
-      setIsPosting(false)
-      setErrorSendingCode(true)
-      setErrorSendingCodeModal(true)
+  // Función para guardar en Zustand con callback
+  const saveDataToZustand = async (callback) => {
+    setIsLoading(true);
+    // Concatenar area y celular
+    const phoneNumber2 = form.area + form.celular;
+    //preguntar si vamos a guardar el área
+    try {
+      await Promise.all([
+        new Promise(resolve => useAuthStore.getState().setDni(form.dni, resolve)),
+        new Promise(resolve => useAuthStore.getState().setArea(form.area, resolve)),
+        new Promise(resolve => useAuthStore.getState().setCelular(phoneNumber2, resolve)),
+        new Promise(resolve => useAuthStore.getState().setContraseña1(form.contraseña1, resolve)),
+        new Promise(resolve => useAuthStore.getState().setContraseña2(form.contraseña2, resolve)),
+      ]);
+      setIsLoading(false);
+      setSaveDataZustand(true)
+      callback(true);
+    } catch (error) {
+      console.error("Error al guardar datos:", error);
+      setIsLoading(false);
+      setSaveError(error.message);
+      callback(false);
     }
-  }
-};
+  };
 
-/* const sendVerificationCode = async (code, phoneNumber, callback) => {
+  // Función para generar código aleatorio de 6 dígitos
+  const generateRandomCode = () => {
+    const min = 100000;
+    const max = 999999;
+    const code = Math.floor(Math.random() * (max - min + 1) + min).toString();
+    return code.padStart(6, '0'); // Rellenar con ceros a la izquierda si es necesario
+    /* return Math.floor(Math.random() * (max - min + 1)).toString(); */
+  };
 
-  try {
-      const response = await fetch('https://notificador.createch.com.ar/api/mensajes/enviar-mensaje', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code, phoneNumber }),
+  // Función para validar la contraseña
+  const validatePassword = (password) => {
+    const minLength = 6;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    return password.length >= minLength && hasUpperCase && hasNumber;
+  };
+
+  const validatePassword2 = (password) => {
+    const minLength = 6;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+
+    // Crear un objeto con información sobre la validación
+    const validationResult = {
+      isValid: password.length >= minLength && hasUpperCase && hasNumber,
+      errors: [],
+    };
+
+    if (password.length < minLength) {
+      validationResult.errors.push("Debe tener al menos 6 caracteres");
+    }
+    if (!hasUpperCase) {
+      validationResult.errors.push("Debe contener al menos una mayúscula");
+    }
+    if (!hasNumber) {
+      validationResult.errors.push("Debe contener al menos un número");
+    }
+
+    return validationResult;
+  };
+
+  const handleContinue4 = () => {
+    setIsPosting(true)
+    setPasswordsNoMatch(false)
+    setErrorSendingCode(false)
+
+    // Validar la contraseña
+    /*  if (!validatePassword(form.contraseña1)) {
+       setPasswordInvalid(true)
+       console.log('contraseña invalida maestrio de maestrios');
+       setIsPosting(false);
+       return; 
+     } */
+    setAreaMissing(form.area === '');
+    setCelularMissing(form.celular === '');
+    setContraseña1Missing(form.contraseña1 === '');
+    setContraseña2Missing(form.contraseña2 === '');
+
+    const passwordValidation = validatePassword2(form.contraseña1);
+    if (!passwordValidation.isValid) {
+      setPasswordInvalid(true);
+      setPasswordErrors(passwordValidation.errors); // Guardar los errores en el estado
+      setIsPosting(false);
+      return;
+    }
+
+    if (isFormComplete && passwordsMatch) {
+      saveDataToZustand((success) => {
+        if (success) {
+          console.log('Datos guardados en Zustand correctamente.');
+
+          // Generar y guardar el código
+          const code = generateRandomCode();
+          useAuthStore.getState().setVerificationCode(code);
+          console.log("código generado--->", code);
+          // Concatenar area y celular
+          const phoneNumber2 = form.area + form.celular;
+          console.log("phoneNumber2 generado concatenado perrinsonses--->", phoneNumber2);
+          // Enviar el código y navegar (o mostrar error)
+          sendVerificationCode(code, phoneNumber2, (sendSuccess, errorMessage) => {
+            if (sendSuccess) {
+              setIsPosting(false)
+              navigation.navigate('Validar telefono');
+            } else {
+              console.log(`No se pudo enviar el código de verificación. ${errorMessage || "Inténtalo de nuevo."}`);
+              setIsPosting(false)
+              setErrorSendingCodeModal(true)
+            }
+          });
+        } else {
+          console.log('Error al guardar datos en Zustand.');
+          setIsPosting(false)
+          setErrorSendingCodeModal(true)
+          setErrorSendingCode(true)
+        }
       });
-
-      if (response.ok) {
-          callback(true);
+    } else {
+      if (!passwordsMatch) {
+       /*  setPasswordsMatchModal(true); */
+        setPasswordsNoMatch(true)
+        setIsPosting(false)
+       /*  setErrorSendingCode(true) */
+       /*  setErrorSendingCodeModal(true) */
       } else {
-          console.error("Error al enviar el código de verificación:", response.status);
-          callback(false); 
+        console.log('Nada de lo anterior previsto sucedió....');
+        setIsPosting(false)
+        setErrorSendingCode(true)
+        setErrorSendingCodeModal(true)
       }
-  } catch (error) {
-      console.error("Error en la solicitud de envío:", error);
-      callback(false); 
-  }
-}; */
+    }
+  };
+
+  /* const sendVerificationCode = async (code, phoneNumber, callback) => {
+  
+    try {
+        const response = await fetch('https://notificador.createch.com.ar/api/mensajes/enviar-mensaje', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code, phoneNumber }),
+        });
+  
+        if (response.ok) {
+            callback(true);
+        } else {
+            console.error("Error al enviar el código de verificación:", response.status);
+            callback(false); 
+        }
+    } catch (error) {
+        console.error("Error en la solicitud de envío:", error);
+        callback(false); 
+    }
+  }; */
 
 
 
-const sendVerificationCode = async (code, phoneNumber, callback) => {
+  const sendVerificationCode = async (code, phoneNumber, callback) => {
     try {
       console.log(' el codigo de verificacion recibido en sendverificaton es_--__-->', code);
       console.log(' el phoneNumber  recibido en sendverificaton es_--__-->', phoneNumber);
-      console.log(' el phoneNumber  recibido en sendverificaton es_de tipo--__-->', typeof(phoneNumber));
-      
-        // Primera petición para obtener el token
-        const tokenResponse = await axios.get('https://notificador.createch.com.ar/api/token/generar-token', {
-            headers: {
-                key: '34kch0mk211glv2ggro',
-            },
-        });
+      console.log(' el phoneNumber  recibido en sendverificaton es_de tipo--__-->', typeof (phoneNumber));
 
-        if (tokenResponse.status !== 200) { // Verifica el código de estado 200
-            console.error("Error al obtener el token:", tokenResponse.status);
-            callback(false, "Error al obtener el token");
-            return;
-        }
+      // Primera petición para obtener el token
+      const tokenResponse = await axios.get('https://notificador.createch.com.ar/api/token/generar-token', {
+        headers: {
+          key: '34kch0mk211glv2ggro',
+        },
+      });
 
-        const token = tokenResponse.data.token;
-        console.log('el token obtenido esssss--->', token);
-        
+      if (tokenResponse.status !== 200) { // Verifica el código de estado 200
+        console.error("Error al obtener el token:", tokenResponse.status);
+        callback(false, "Error al obtener el token");
+        return;
+      }
 
-        // Segunda petición para enviar el mensaje
-        const messageResponse = await axios.post('https://notificador.createch.com.ar/api/mensajes/enviar-mensaje', {
-            numero: `549${phoneNumber}` ,
-            mensaje: `Tu código es ${code}`,
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
+      const token = tokenResponse.data.token;
+      console.log('el token obtenido esssss--->', token);
 
-        if (messageResponse.status === 200) {
-            console.log("Respuesta de envío de mensaje:", messageResponse.data);
-            callback(true);
-        } else {
-            console.error("Error al enviar el mensaje:", messageResponse.status);
-            console.error("Detalles del error:", messageResponse.data); // Mostrar detalles del error
-            callback(false, "Error al enviar el mensaje");
-        }
+
+      // Segunda petición para enviar el mensaje
+      const messageResponse = await axios.post('https://notificador.createch.com.ar/api/mensajes/enviar-mensaje', {
+        numero: `549${phoneNumber}`,
+        mensaje: `Tu código es ${code}`,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (messageResponse.status === 200) {
+        console.log("Respuesta de envío de mensaje:", messageResponse.data);
+        callback(true);
+      } else {
+        console.error("Error al enviar el mensaje:", messageResponse.status);
+        console.error("Detalles del error:", messageResponse.data); // Mostrar detalles del error
+        callback(false, "Error al enviar el mensaje");
+      }
     } catch (error) {
-        console.error("Error en la solicitud:", error);
-        setErrorSendingCode(true)
-        setErrorSendingCodeModal(true)
-        callback(false, "Error en la solicitud");
+      console.error("Error en la solicitud:", error);
+      setErrorSendingCode(true)
+      setErrorSendingCodeModal(true)
+      callback(false, "Error en la solicitud");
     }
-};
+  };
 
 
   const [linkAndesSalud, setLinkAndesSalud] = useState("");
@@ -353,10 +406,15 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
                   Ahora necesitamos que registres tu teléfono:
                 </Text>
 
-                <View style={styles.result}>
-                  <Text style={styles.resultData}>Número de Documento: {loadedDni}</Text>
-                  {/*  <Text style={styles.resultData} >DNI: {dni}</Text> */}
-                </View>
+                {!isPosting && (
+                  <View style={styles.result}>
+                    <Text style={styles.resultData}>Número de Documento: {loadedDni}</Text>
+                    {/*  <Text style={styles.resultData} >DNI: {dni}</Text> */}
+                  </View>
+                )
+
+
+                }
 
               </View>
 
@@ -364,7 +422,10 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
 
               <View style={styles.cajaSubtitulos}>
 
-                <Text style={styles.subtitulos}>
+                <Text style={styles.subtitulosCodigoArea}>
+                  Cód de área:
+                </Text>
+                <Text style={styles.subtitulosCelular}>
                   Celular:
                 </Text>
               </View>
@@ -379,7 +440,7 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
               }}>
                 <View style={{ flex: 1, marginRight: wp('1%') }}>
                   <Input
-                    placeholder="261"
+                    placeholder="2615"
                     style={{
                       borderRadius: 15,
                       borderColor: '#7ba1c3',
@@ -420,7 +481,7 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
                       borderColor: '#7ba1c3',
                     }}
                     keyboardType="numeric"
-                    maxLength={13}
+                    maxLength={8}
                     value={form.celular}
                     onChangeText={(celular) => setForm({ ...form, celular })}
                   />
@@ -465,9 +526,22 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
                 }}
                 autoCapitalize="none"
                 value={form.contraseña1}
-                onChangeText={(contraseña1) => setForm({ ...form, contraseña1 })}
+
+                /* onChangeText={(contraseña1) => {
+                  setForm({ ...form, contraseña1 });
+                  setPasswordErrors([]); 
+                  setPasswordsNoMatch(false)
+                }} */
+                  onChangeText={(contraseña1) => {
+                    setForm({ ...form, contraseña1 });
+                
+                    // Validar la contraseña en tiempo real
+                    const passwordValidation = validatePassword2(contraseña1);
+                    setPasswordInvalid(!passwordValidation.isValid);
+                    setPasswordErrors(passwordValidation.errors);
+                  }}
               />
-              <View style={{ flexDirection: 'row',  marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
+              <View style={{ flexDirection: 'row', marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
 
                 {contraseña1Missing && (
                   <Text style={{
@@ -505,7 +579,7 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
                 value={form.contraseña2}
                 onChangeText={(contraseña2) => setForm({ ...form, contraseña2 })}
               />
-              <View style={{ flexDirection: 'row',  marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
+              <View style={{ flexDirection: 'row', marginHorizontal: wp('5%'), marginTop: hp('0%'), }}>
 
                 {contraseña2Missing && (
                   <Text style={{
@@ -513,7 +587,7 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
                     flex: 1,
                     fontSize: 12,
                     color: 'red',
-                    marginTop: hp('0%'),
+                    marginTop: hp('0.5%'),
                     marginLeft: hp('0.7%'),
                     textAlign: 'justify',
                   }}>Campo obligatorio</Text>
@@ -585,9 +659,31 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
               )
               }
 
- {errorSendingCode && (
+              {passwordsNoMatch && (
+                <View style={styles.cajaSubtitulosError} >
+                  <Text style={styles.modalTextError}>Las contraseñas no coinciden</Text>
+                </View>
+              )}
+
+              <View style={styles.cajaRequisitosContraseña} >
+                <Text style={styles.modalTextRequisitos}>La contraseña debe tener al menos 6 caracteres, una mayúscula y un número.</Text>
+              </View>
+
+              {errorSendingCode && (
                 <View style={styles.cajaSubtitulosError} >
                   <Text style={styles.modalTextError}>No se pudo enviar el código, por favor revisa si el teléfono ingresado es válido.</Text>
+                </View>
+              )}
+              {/*  {passwordInvalid && (
+                <View style={styles.cajaSubtitulosError} >
+                  <Text style={styles.modalTextError}>La contraseña no cumple con los requisitos</Text>
+                </View>
+              )} */}
+              {passwordInvalid && (
+                <View style={styles.cajaSubtitulosError} >
+                  {passwordErrors.map((error, index) => ( // Mostrar la lista de errores
+                    <Text key={index} style={styles.modalTextError}>{error}</Text>
+                  ))}
                 </View>
               )}
 
@@ -642,7 +738,7 @@ const sendVerificationCode = async (code, phoneNumber, callback) => {
                 </Modal>
               )}
 
-       
+
 
               {isModalVisible && (
                 <Modal
@@ -749,10 +845,25 @@ const styles = StyleSheet.create({
   },
   cajaSubtitulos: {
     /*  backgroundColor: 'green', */
+    display: 'flex',
+    flexDirection: 'row',
     maxWidth: hp('40%'),
     minWidth: hp('40%'),
     marginLeft: hp('0.7%'),
     marginBottom: hp('0.5%'),
+  },
+  subtitulosCodigoArea: {
+    fontSize: wp('3.5%'),
+    color: '#3b3937',
+    fontWeight: 'bold',
+    textAlign: 'left',
+  },
+  subtitulosCelular: {
+    fontSize: wp('3.5%'),
+    color: '#3b3937',
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginLeft: hp('4.5%'),
   },
   subtitulos: {
     fontSize: wp('3.5%'),
@@ -820,7 +931,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff5c5c',
     borderRadius: 5,
     paddingVertical: 10,
-    paddingHorizontal: 20, 
+    paddingHorizontal: 20,
   },
   buttonText: {
     color: 'white',
@@ -865,13 +976,30 @@ const styles = StyleSheet.create({
     minWidth: 70,
     maxWidth: 100,
   },
-  cajaSubtitulosError: {
-    marginTop: hp('0%'),
+  cajaRequisitosContraseña: {
+    marginTop: hp('0.5%'),
     alignSelf: 'center', // Centra horizontalmente
     justifyContent: 'center', // Centra verticalmente
     alignItems: 'center', // Centra elementos
-    marginHorizontal:wp('3%'),
-   /*  backgroundColor:'green' */
+    marginHorizontal: wp('3.7%'),
+    /*  backgroundColor:'green' */
+  },
+  modalTextRequisitos: {
+    fontSize: hp('1.7%'),
+    /*  fontWeight: 'bold', */
+    marginVertical: 10,
+    color: '#322',
+    textAlign: 'justify',
+    marginTop: hp('0%'),
+  },
+  cajaSubtitulosError: {
+    marginTop: hp('0%'),
+    marginBottom: hp('0%'),
+    alignSelf: 'center', // Centra horizontalmente
+    justifyContent: 'center', // Centra verticalmente
+    alignItems: 'center', // Centra elementos
+    marginHorizontal: wp('3%'),
+    /*  backgroundColor:'green' */
   },
   modalTextError: {
     fontSize: hp('1.7%'),
