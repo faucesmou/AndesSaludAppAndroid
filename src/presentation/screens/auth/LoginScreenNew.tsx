@@ -185,7 +185,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
     }
   };
 
-  const onLoginGonza3 = async (form: { usuario: string; password: string }, setIsPosting: (status: boolean) => void, setModalVisible: (visible: boolean) => void) => {
+/*   const onLoginGonza3 = async (form: { usuario: string; password: string }, setIsPosting: (status: boolean) => void, setModalVisible: (visible: boolean) => void) => {
     if (form.password.length === 0 || form.usuario.length === 0) {
       Alert.alert('Usuario y contraseña son obligatorios');
       return;
@@ -231,7 +231,7 @@ export const LoginScreenNew = ({ navigation }: Props) => {
     } finally {
       setIsPosting(false);
     }
-  };
+  }; */
 
   let paddingTopNumber = hp('1%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
@@ -328,8 +328,8 @@ export const LoginScreenNew = ({ navigation }: Props) => {
 
               <Button style={styles.customButton}
                 disabled={isPosting}
-                onPress={handleLoginPress}
-              /*  onPress={onLoginGonza2} */
+               /*  onPress={handleLoginPress} */
+               onPress={onLoginGonza2}
               /*      onPress={() => navigation.navigate('home')} */
               >
                 INGRESAR

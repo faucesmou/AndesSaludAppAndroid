@@ -72,6 +72,8 @@ export const RegisterDni = ({ navigation }: Props) => {
         const idAfiliadoVerificado = respuesta.idAfiliado
         setLoadedAfiliado(idAfiliadoVerificado)
         console.log('el idAfiliadoVerificado en VALIDATE TEL es: ', idAfiliadoVerificado);
+        //guardar idAfiliado en context:
+        
         return true;
       } else {
         console.log('No pasó lo que queríamos, estamos en el ELSE de validando Afiliado');

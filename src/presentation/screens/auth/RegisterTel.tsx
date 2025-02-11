@@ -118,7 +118,9 @@ export const RegisterTel = ({ navigation }: Props) => {
   const saveDataToZustand = async (callback) => {
     setIsLoading(true);
     // Concatenar area y celular
-    const phoneNumber2 = form.area + form.celular;
+    const phoneNumber2 = form.area + '-' + form.celular;
+    console.log('ACAAAAA ESTA EL NUMERO MODIFICADO PARA GUARDAR phoneNumber2===>', phoneNumber2);
+    
     //preguntar si vamos a guardar el área
     try {
       await Promise.all([
@@ -216,6 +218,7 @@ export const RegisterTel = ({ navigation }: Props) => {
           console.log("código generado--->", code);
           // Concatenar area y celular
           const phoneNumber2 = form.area + form.celular;
+
           console.log("phoneNumber2 generado concatenado perrinsonses--->", phoneNumber2);
           // Enviar el código y navegar (o mostrar error)
           sendVerificationCode(code, phoneNumber2, (sendSuccess, errorMessage) => {

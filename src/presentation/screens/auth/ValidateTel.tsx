@@ -24,7 +24,7 @@ import QRscanner4 from "../../components/shared/QRscanner4";
 import QRscanner5gpt from "../../components/shared/QRscanner5gpt";
 import QRscanner6gpt from "../../components/shared/QRscanner6gpt";
 import axios from "axios";
-
+import { xml2js } from 'xml-js';
 
 
 
@@ -49,14 +49,15 @@ export const ValidateTel = ({ navigation }: Props) => {
   const { guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, loginGonzaMejorado3, verificarAfiliado } = useAuthStore();
 
   const [loadedDni, setLoadedDni] = useState<string | null>(null);
+  const [loadedIdAfiliado, setLoadedIdAfiliado] = useState<string | null | undefined>(null);
 
   const [loadedArea, setLoadedArea] = useState<string | null>(null);
   const [loadedContraseña1, setLoadedContraseña1] = useState<string | null>(null);
-  const [loadedTeléfono, setLoadedTeléfono] = useState<string | null>(null);
+  const [loadedTeléfono, setLoadedTeléfono] = useState<string | null | undefined>(null);
   const [loadedAfiliado, setLoadedAfiliado] = useState<string | null>(null);
   const [loadedVerificationCode, setLoadedVerificationCode] = useState<string | null>(null);
 
-  const { dni, celular, contraseña1, area, verificationCode, setVerificationCode } = useAuthStore();
+  const { idAfiliado, dni, celular, contraseña1, area, verificationCode, setVerificationCode } = useAuthStore();
 
   /* prueba */
   const [codeExpiration, setCodeExpiration] = useState<number | null>(null); // Nuevo estado
@@ -89,7 +90,7 @@ export const ValidateTel = ({ navigation }: Props) => {
   }, [verificationCode, setVerificationCode, loadedVerificationCode, codigoIngresado]); // Dependencia de verificationCode
 
   useEffect(() => {
-
+    setLoadedIdAfiliado(idAfiliado)
     setLoadedDni(dni);
     setLoadedTeléfono(celular);
     setLoadedContraseña1(contraseña1);
@@ -101,6 +102,7 @@ export const ValidateTel = ({ navigation }: Props) => {
     console.log('contraseña actualizado------------------->:', contraseña1);
     console.log('area actualizado------------------->:', area);
     console.log('verificationCode actualizado------------------->:', verificationCode);
+    console.log('idAfiliado actualizado------------------->:', idAfiliado);
 
   }, [dni, celular, contraseña1, area, celular, loadedAfiliado /* verificationCode */]);
 
@@ -138,29 +140,66 @@ export const ValidateTel = ({ navigation }: Props) => {
 
   //VERIFICAR SI EL DNI ES DE UN AFILIADO:
 
-  const validandoAfiliado = async () => {
-    console.log('loadedDni es------------------->:', loadedDni);
-    console.log('DNI en validandoAfiliado------------------->:', dni);
-    try {
-      const respuesta = await verificarAfiliado(loadedDni);
-      console.log('respuesta es------------------->:', respuesta);
-      if (respuesta) {
-        const idAfiliadoVerificado = respuesta.idAfiliado
-        setLoadedAfiliado(idAfiliadoVerificado)
-        console.log('el idAfiliadoVerificado en VALIDATE TEL es: ', idAfiliadoVerificado);
+  /*   const validandoAfiliado = async () => {
+      console.log('loadedDni es------------------->:', loadedDni);
+      console.log('DNI en validandoAfiliado------------------->:', dni);
+      try {
+        const respuesta = await verificarAfiliado(loadedDni);
+        console.log('respuesta es------------------->:', respuesta);
+        if (respuesta) {
+          const idAfiliadoVerificado = respuesta.idAfiliado
+          setLoadedAfiliado(idAfiliadoVerificado)
+          console.log('el idAfiliadoVerificado en VALIDATE TEL es: ', idAfiliadoVerificado);
+  
+        } else {
+          console.log('No pasó lo que queríamos, estamos en el ELSE de validando Afiliado');
+        }
+      } catch (error) {
+        console.log('Error al recuperar los datos:', error);
+      } finally {
+     
+      } console.log('===> estamos en el FINALLY viendo si se guardo el id loadedAfiliado en el usestate:', loadedAfiliado);
+    } */
 
-      } else {
-        console.log('No pasó lo que queríamos, estamos en el ELSE de validando Afiliado');
+  const editarCelular = async (celular: string | undefined | null, idAfiliado: string | null | undefined) => {
+
+    try {
+      const resultado = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPActualizaDatosContacto?idAfiliado=${idAfiliado}&mail=&celular=${celular}&calle=&num=&piso=&depto=&idLocalidad=`);
+
+      if (resultado.status === 200 ) {
+        console.log('El celular fue modificado con éxito padre---->>:');
+        return true
+      }
+      else {
+        console.log('El celular NO fue modificado---->>:');
+        return false
       }
     } catch (error) {
-      console.log('Error al recuperar los datos:', error);
-    } finally {
-      /*   setIsRecovering(false); */
-    } console.log('===> estamos en el FINALLY viendo si se guardo el id loadedAfiliado en el usestate:', loadedAfiliado);
+      console.log('Tuvimos inconvenientes inesperados mostri, el error-->>:', error);
+      return false
+    }
   }
 
+  const editarContraseña = async (contraseña: string | null, idAfiliado: string | null | undefined) =>{
+    try {
+      const respuesta = await axios.get(`https://srvloc.andessalud.com.ar//WebServicePrestacional.asmx/APPRestablecerPass?idAfiliado=${idAfiliado}&pass=${contraseña}&IMEI=`);
 
-  const handleVerifyCode = () => {
+      console.log('la respuesta de editarContraseña es--->', respuesta);
+      if(respuesta.status === 200){
+        console.log('la contraseña se ha cambiado con éxito! so cra--->');
+        return true
+      }
+      else{
+        console.log('la contraseña NO se ha cambiado a revisar-->');
+        return false
+      }
+    } catch (error) {
+      console.log('Algo pasó bastante inesperado el error es-->', error);
+      return false
+    }
+  }
+
+  const handleVerifyCode = async () => {
     setIsPosting(true)
 
     // Validar que todos los campos estén completos
@@ -175,7 +214,14 @@ export const ValidateTel = ({ navigation }: Props) => {
       // Código correcto, realizar acciones necesarias!!! ==>>
       console.log('Código correcto!');
       //Verificamos que el DNI ingresado pertenezca a un afiliado : 
-   /*    validandoAfiliado() */
+      /*    validandoAfiliado() */
+
+      /* establecemos la pass */
+      const respuestaCambioContraseña = await editarContraseña(loadedContraseña1, loadedIdAfiliado)
+      console.log('respuestaCambioContraseña--->', respuestaCambioContraseña)
+      /* editamos el celular: */
+      const respuestaEdicion = await editarCelular(loadedTeléfono, loadedIdAfiliado)
+      console.log('respuestaEdicion--->', respuestaEdicion)
 
       setCodigoCorrecto(true)
       setCodigoIngresado(true);
@@ -256,7 +302,7 @@ export const ValidateTel = ({ navigation }: Props) => {
 
               {/* revisar porque no aparece: */}
 
-             {/*  {!codigoCorrecto || codigoExpirado && (
+              {/*  {!codigoCorrecto || codigoExpirado && (
                 <View style={styles.cajaSubtitulos}>
 
                   <Text style={styles.subtitulos}>

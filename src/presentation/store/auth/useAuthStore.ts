@@ -46,7 +46,7 @@ export interface AuthState {
   token?: string;
   /*   user?: User; */
   queryIdAfiliado?: string;
-  idAfiliado?: string;
+  idAfiliado?: string | null;
   idAfiliadoTitular?: string;
   cuilTitular: string;
   nombreCompleto?: string;
@@ -556,12 +556,16 @@ console.log('password---------->' ,password ); */
         console.log('respuestaFrancoMejorada ES LA SIGUIENTE---->>>>>', respuestaFrancoMejorada);
      
         const dniAfiliado = respuestaFrancoMejorada.data[0].nroDocumento;
-        const idAfiliado = respuestaFrancoMejorada.data[0].nroAfiliado;
+        const idAfiliado = respuestaFrancoMejorada.data[0].idAfiliado;
+      /*   const idAfiliado = respuestaFrancoMejorada.data[0].nroAfiliado; */
         const usuarioAfiliado = respuestaFrancoMejorada.data[0].usuAPP;
         const passAfiliado = respuestaFrancoMejorada.data[0].passAPP;
         const usuarioNombre = respuestaFrancoMejorada.data[0].nombre;
         const usuarioApellido = respuestaFrancoMejorada.data[0].apellido;
         console.log('numeroAfiliadoApi TALANGA es----->>>>>', idAfiliado);
+        
+        set({idAfiliado: idAfiliado});
+
           return {
         /*     usuarioAfiliado,
             passAfiliado,
