@@ -60,32 +60,33 @@ export const RegisterDni = ({ navigation }: Props) => {
 
 
   const { verificarAfiliado } = useAuthStore();
-//VERIFICAR SI EL DNI ES DE UN AFILIADO:
+  //VERIFICAR SI EL DNI ES DE UN AFILIADO:
 
-const validandoAfiliado = async (dni:string) => {
-  console.log('loadedDni es------------------->:', loadedDni);
-  console.log('DNI en validandoAfiliado------------------->:', dni);
-  try {
-    const respuesta = await verificarAfiliado(dni);
-    console.log('respuesta es------------------->:', respuesta);
-    if (respuesta && respuesta.idAfiliado != '' && respuesta.idAfiliado != undefined ) {
-      const idAfiliadoVerificado = respuesta.idAfiliado
-      setLoadedAfiliado(idAfiliadoVerificado)
-      console.log('el idAfiliadoVerificado en VALIDATE TEL es: ', idAfiliadoVerificado);
-      return true;
-    } else {
-      console.log('No pasó lo que queríamos, estamos en el ELSE de validando Afiliado');
-      setNnoEsAfiliado(true)
+  const validandoAfiliado = async (dni: string) => {
+    console.log('loadedDni es------------------->:', loadedDni);
+    console.log('DNI en validandoAfiliado------------------->:', dni);
+    try {
+      const respuesta = await verificarAfiliado(dni);
+      console.log('respuesta es------------------->:', respuesta);
+      if (respuesta && respuesta.idAfiliado != '' && respuesta.idAfiliado != undefined) {
+        const idAfiliadoVerificado = respuesta.idAfiliado
+        setLoadedAfiliado(idAfiliadoVerificado)
+        console.log('el idAfiliadoVerificado en VALIDATE TEL es: ', idAfiliadoVerificado);
+        return true;
+      } else {
+        console.log('No pasó lo que queríamos, estamos en el ELSE de validando Afiliado');
+        setNnoEsAfiliado(true)
+        return false;
+      }
+    } catch (error) {
+      //agregar mensaje de error que intente mas tarde:--->
+      console.log('Error al recuperar los datos:', error);
       return false;
+    } finally {
+      console.log('===> estamos en el FINALLY viendo si se guardo el id loadedAfiliado en el usestate:', loadedAfiliado);
     }
-  } catch (error) {
-    //agregar mensaje de error que intente mas tarde:--->
-    console.log('Error al recuperar los datos:', error);
-    return false;
-  } finally {
-  console.log('===> estamos en el FINALLY viendo si se guardo el id loadedAfiliado en el usestate:', loadedAfiliado);}
     /*   setIsRecovering(false); */
-}
+  }
 
 
   const handleScanComplete = async (data: DNIData) => {
@@ -99,7 +100,7 @@ const validandoAfiliado = async (dni:string) => {
         const dni = data.dni;
         setLoadedDni(dni)
         const resultado = await validandoAfiliado(dni)
-        if(resultado == true){
+        if (resultado == true) {
 
           // Actualiza el store de Zustand y espera a que se complete
           await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
@@ -109,8 +110,13 @@ const validandoAfiliado = async (dni:string) => {
           return
         }
         setNnoEsAfiliado(true)
+        setIsDniScanned(false);
+        // Agrego esto para que el botón de Continuar se vuelva a habilitar en un segundo intento:
+         // Agregar setTimeout
+  setTimeout(() => {
+    setNnoEsAfiliado(false); // Volver a false después de 4 segundos
+  }, 4000); // 4000 milisegundos = 4 segundos
         setIsLoading(false);
-        setIsDniScanned(true);
         return
 
       } else {
@@ -135,19 +141,6 @@ const validandoAfiliado = async (dni:string) => {
 
   const { loginGonzaMejorado, guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, setUserName, loginGonzaMejorado3, setDni } = useAuthStore();
   /*  const { loadAuthDataFromStorage } = AuthStore(); */
-
-
-
-  /* lógica para habilitar el LOGIN SÓLO CON EL ESCANEO + EL USUARIO Y CONTRASEÑA: */
-
-  const handleLoginPress = () => {
-    if (!isScanSuccessful) {
-      setShowScanModal(true);
-      return;
-    }
-    onLoginGonza2(); // Procede con el login si el escaneo fue exitoso
-  };
-
 
 
 
@@ -376,12 +369,12 @@ const validandoAfiliado = async (dni:string) => {
 
               </View>
 
-               {isDniScanned && (
+              {isDniScanned && (
                 <View style={styles.cajaDatosGuardados} >
                   <Text style={styles.TextDatosGuardados}>¡Datos guardados!</Text>
                 </View>
               )}
-               {noEsAfiliado && (
+              {noEsAfiliado && (
                 <View style={styles.cajaDatosGuardados} >
                   <Text style={styles.TextDniNoValido}>El DNI no pertenece a un afiliado</Text>
                 </View>
@@ -657,7 +650,7 @@ const styles = StyleSheet.create({
   },
   TextDatosGuardados: {
     fontSize: hp('1.8%'),
-   /*  fontWeight: 'bold', */
+    /*  fontWeight: 'bold', */
     marginVertical: 10,
     color: '#4cad18',
     textAlign: 'justify',
@@ -666,7 +659,7 @@ const styles = StyleSheet.create({
   TextDniNoValido: {
     fontSize: hp('2%'),
     fontWeight: 'bold',
-   /*  marginVertical: 10, */
+    /*  marginVertical: 10, */
     color: '#c10a0a',
     textAlign: 'justify',
     marginTop: hp('0.5%'),
