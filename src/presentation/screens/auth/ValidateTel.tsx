@@ -25,7 +25,7 @@ import QRscanner5gpt from "../../components/shared/QRscanner5gpt";
 import QRscanner6gpt from "../../components/shared/QRscanner6gpt";
 import axios from "axios";
 import { xml2js } from 'xml-js';
-
+import { parseStringPromise } from "xml2js";
 
 
 
@@ -166,7 +166,16 @@ export const ValidateTel = ({ navigation }: Props) => {
     try {
       const resultado = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPActualizaDatosContacto?idAfiliado=${idAfiliado}&mail=&celular=${celular}&calle=&num=&piso=&depto=&idLocalidad=`);
 
-      if (resultado.status === 200 ) {
+      
+    console.log('el resultado es--->', resultado);
+ // Convertir XML a JSON
+ const jsonData = xml2js(resultado.data, { compact: true, spaces: 2 });
+    // Verificar si la respuesta está completa (puedes ajustar esta condición según la estructura esperada)
+  
+
+      console.log('Datos JSON convertidos PERRO ---------->>:', jsonData);
+
+      if ( jsonData?.Resultado?.fila?.valorDevuelto?._text === '00') {
         console.log('El celular fue modificado con éxito padre---->>:');
         return true
       }
@@ -180,16 +189,16 @@ export const ValidateTel = ({ navigation }: Props) => {
     }
   }
 
-  const editarContraseña = async (contraseña: string | null, idAfiliado: string | null | undefined) =>{
+  const editarContraseña = async (contraseña: string | null, idAfiliado: string | null | undefined) => {
     try {
       const respuesta = await axios.get(`https://srvloc.andessalud.com.ar//WebServicePrestacional.asmx/APPRestablecerPass?idAfiliado=${idAfiliado}&pass=${contraseña}&IMEI=`);
 
-      console.log('la respuesta de editarContraseña es--->', respuesta);
-      if(respuesta.status === 200){
+
+      if (respuesta.status === 200) {
         console.log('la contraseña se ha cambiado con éxito! so cra--->');
         return true
       }
-      else{
+      else {
         console.log('la contraseña NO se ha cambiado a revisar-->');
         return false
       }
