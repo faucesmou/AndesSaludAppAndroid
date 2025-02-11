@@ -23,6 +23,7 @@ import QRscanner2 from "../../components/shared/QRscanner2";
 import QRscanner4 from "../../components/shared/QRscanner4";
 import QRscanner5gpt from "../../components/shared/QRscanner5gpt";
 import QRscanner6gpt from "../../components/shared/QRscanner6gpt";
+import axios from "axios";
 
 
 
@@ -45,13 +46,14 @@ export const ValidateTel = ({ navigation }: Props) => {
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
 
-  const { guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, loginGonzaMejorado3, } = useAuthStore();
+  const { guardarDatosLoginEnContext, guardarDatosLoginEnContextMejorada, loginGonzaMejorado2, loginGonzaMejorado3, verificarAfiliado } = useAuthStore();
 
   const [loadedDni, setLoadedDni] = useState<string | null>(null);
 
   const [loadedArea, setLoadedArea] = useState<string | null>(null);
   const [loadedContraseña1, setLoadedContraseña1] = useState<string | null>(null);
   const [loadedTeléfono, setLoadedTeléfono] = useState<string | null>(null);
+  const [loadedAfiliado, setLoadedAfiliado] = useState<string | null>(null);
   const [loadedVerificationCode, setLoadedVerificationCode] = useState<string | null>(null);
 
   const { dni, celular, contraseña1, area, verificationCode, setVerificationCode } = useAuthStore();
@@ -87,11 +89,12 @@ export const ValidateTel = ({ navigation }: Props) => {
   }, [verificationCode, setVerificationCode, loadedVerificationCode, codigoIngresado]); // Dependencia de verificationCode
 
   useEffect(() => {
-    
+
     setLoadedDni(dni);
     setLoadedTeléfono(celular);
     setLoadedContraseña1(contraseña1);
     setLoadedArea(area);
+    setLoadedAfiliado(null)
     /*   setLoadedVerificationCode(verificationCode) */
     console.log('DNI actualizado------------------->:', dni);
     console.log('celular actualizado------------------->:', celular);
@@ -99,7 +102,7 @@ export const ValidateTel = ({ navigation }: Props) => {
     console.log('area actualizado------------------->:', area);
     console.log('verificationCode actualizado------------------->:', verificationCode);
 
-  }, [dni, celular, contraseña1, area, celular, /* verificationCode */]);
+  }, [dni, celular, contraseña1, area, celular, loadedAfiliado /* verificationCode */]);
 
   const [isPosting, setIsPosting] = useState(false)
   const [code, setCode] = useState(['', '', '', '', '', '']); // Array para guardar los dígitos
@@ -116,13 +119,13 @@ export const ValidateTel = ({ navigation }: Props) => {
   useEffect(() => {
     // Si el usuario empieza a ingresar un nuevo código, reiniciamos codigoIncorrecto
     setQquitarBoton(false);
-  }, []); 
+  }, []);
 
   const handleCodeChange = (text, index) => {
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
- 
+
 
     // Pasar al siguiente input si se ingresa un dígito
     if (text && index < 5) {
@@ -131,6 +134,31 @@ export const ValidateTel = ({ navigation }: Props) => {
   };
 
   const [areaMissing, setAreaMissing] = useState(false);
+
+
+  //VERIFICAR SI EL DNI ES DE UN AFILIADO:
+
+  const validandoAfiliado = async () => {
+    console.log('loadedDni es------------------->:', loadedDni);
+    console.log('DNI en validandoAfiliado------------------->:', dni);
+    try {
+      const respuesta = await verificarAfiliado(loadedDni);
+      console.log('respuesta es------------------->:', respuesta);
+      if (respuesta) {
+        const idAfiliadoVerificado = respuesta.idAfiliado
+        setLoadedAfiliado(idAfiliadoVerificado)
+        console.log('el idAfiliadoVerificado en VALIDATE TEL es: ', idAfiliadoVerificado);
+
+      } else {
+        console.log('No pasó lo que queríamos, estamos en el ELSE de validando Afiliado');
+      }
+    } catch (error) {
+      console.log('Error al recuperar los datos:', error);
+    } finally {
+      /*   setIsRecovering(false); */
+    } console.log('===> estamos en el FINALLY viendo si se guardo el id loadedAfiliado en el usestate:', loadedAfiliado);
+  }
+
 
   const handleVerifyCode = () => {
     setIsPosting(true)
@@ -144,8 +172,11 @@ export const ValidateTel = ({ navigation }: Props) => {
 
     const enteredCode = code.join(''); // Unir los dígitos ingresados en un string
     if (enteredCode === loadedVerificationCode) {
-      // Código correcto, realizar acciones necesarias (ej. navegar)
+      // Código correcto, realizar acciones necesarias!!! ==>>
       console.log('Código correcto!');
+      //Verificamos que el DNI ingresado pertenezca a un afiliado : 
+   /*    validandoAfiliado() */
+
       setCodigoCorrecto(true)
       setCodigoIngresado(true);
       setIsPosting(false)
@@ -164,10 +195,6 @@ export const ValidateTel = ({ navigation }: Props) => {
     }
   };
 
-  const verificacionFinalizada = () => {
-    setCodigoCorrecto(false)
-    navigation.navigate('LoginScreenNew');
-  }
 
   let paddingTopNumber = hp('1%');
   if (height < 680) { // IMPORTANTE Pantallas más pequeñas como iPhone SE o iPhone 8 de 5.4 pulgadas o menos aproximadamente 
@@ -221,26 +248,33 @@ export const ValidateTel = ({ navigation }: Props) => {
                   Ingresa el código de validación que enviamos al siguiente teléfono: {loadedTeléfono}
                 </Text>
 
-                {/* <View style={styles.result}>
-                  <Text style={styles.resultData}>Tus datos: {loadedDni} {loadedContraseña1} {loadedTeléfono} </Text>
+                {/*    <View style={styles.result}>
+                  <Text style={styles.resultData}>Tus datos: loadedDni: {loadedDni} </Text>
                 </View> */}
 
               </View>
 
+              {/* revisar porque no aparece: */}
 
-              {!codigoCorrecto || codigoExpirado && (
+             {/*  {!codigoCorrecto || codigoExpirado && (
                 <View style={styles.cajaSubtitulos}>
 
                   <Text style={styles.subtitulos}>
                     Código de verificación:
                   </Text>
                 </View>
-              )}
+              )} */}
 
 
 
               {!codigoCorrecto && !codigoIngresado && codeExpiration && Date.now() < codeExpiration ? (
                 <>
+                  <View style={styles.cajaSubtitulos}>
+
+                    <Text style={styles.subtitulos}>
+                      Código de verificación:
+                    </Text>
+                  </View>
 
                   <View style={styles.codeContainer}>
                     {code.map((digit, index) => (

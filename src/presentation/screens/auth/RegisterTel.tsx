@@ -122,7 +122,7 @@ export const RegisterTel = ({ navigation }: Props) => {
     //preguntar si vamos a guardar el área
     try {
       await Promise.all([
-        new Promise(resolve => useAuthStore.getState().setDni(form.dni, resolve)),
+      /*   new Promise(resolve => useAuthStore.getState().setDni(form.dni, resolve)), */
         new Promise(resolve => useAuthStore.getState().setArea(form.area, resolve)),
         new Promise(resolve => useAuthStore.getState().setCelular(phoneNumber2, resolve)),
         new Promise(resolve => useAuthStore.getState().setContraseña1(form.contraseña1, resolve)),

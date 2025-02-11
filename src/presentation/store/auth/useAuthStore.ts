@@ -36,6 +36,10 @@ interface RecoverData {
   usuarioAfiliado: string;
   passAfiliado: string;
 }
+interface AfiliadoData {
+  idAfiliado: string;
+//tal vez tenga que agregar más
+}
 
 export interface AuthState {
   status: AuthStatus;
@@ -97,6 +101,9 @@ export interface AuthState {
     numeroAfiliado: string,
     dni: string,
   ) => Promise<RecoverData | undefined>;
+  verificarAfiliado: (
+    dni: string,
+  ) => Promise<AfiliadoData | undefined>;
 
   /*  ObtenerFamiliares: (idAfiliado: string)=> Promise<string[]>; */
   ObtenerFamiliares: (
@@ -534,7 +541,45 @@ console.log('password---------->' ,password ); */
       return;
     }
   },
+  verificarAfiliado: async ( dni: string) => {
+    console.log('dni desde verificarAfiliado es------------------->:', dni);
+    try {
+      const respuestaFrancoMejorada = await axios.get(
+        `https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/consultarAfiliadoJson?usuario=${USUARIO}&password=${PASSWORD}&administradora=${ADMINISTRADORA}&datosAfiliado=${dni}`,
+      );
 
+      if (
+        respuestaFrancoMejorada &&
+        respuestaFrancoMejorada.data &&
+        respuestaFrancoMejorada.data.length > 0
+      ) {
+        console.log('respuestaFrancoMejorada ES LA SIGUIENTE---->>>>>', respuestaFrancoMejorada);
+     
+        const dniAfiliado = respuestaFrancoMejorada.data[0].nroDocumento;
+        const idAfiliado = respuestaFrancoMejorada.data[0].nroAfiliado;
+        const usuarioAfiliado = respuestaFrancoMejorada.data[0].usuAPP;
+        const passAfiliado = respuestaFrancoMejorada.data[0].passAPP;
+        const usuarioNombre = respuestaFrancoMejorada.data[0].nombre;
+        const usuarioApellido = respuestaFrancoMejorada.data[0].apellido;
+        console.log('numeroAfiliadoApi TALANGA es----->>>>>', idAfiliado);
+          return {
+        /*     usuarioAfiliado,
+            passAfiliado,
+            usuarioNombre,
+            usuarioApellido, */
+            idAfiliado
+          }
+       
+      } else {
+        console.log('El servidor respondió con un estado diferente a 200, el usuario no pertenece al sistema AGREGAR MAS ESPECIFICIDAD');
+        return;
+      }
+    } catch (error) {
+      console.error('Error al intentar recuperar el idAfiliado:', error);
+      return;
+    }
+  },
+  
   ObtenerFamiliares: async (idAfiliado: string): Promise<any[]> => {
     //funcion para manejar la respuesta de la API y guardar solo los ids de cada familiar
     const obtenerFamiliaresObjeto = (respuestaApi: string) => {

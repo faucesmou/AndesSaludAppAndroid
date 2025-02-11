@@ -52,36 +52,41 @@ export const RegisterDni = ({ navigation }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDniScanned, setIsDniScanned] = useState(false);
   const [isDniUpdated, setIsDniUpdated] = useState(false);
-  /* const [form, setForm] = useState({ usuario: '', password: '' }); */
+  const [loadedAfiliado, setLoadedAfiliado] = useState<string | null>(null);
+  const [noEsAfiliado, setNnoEsAfiliado] = useState(false);
 
-  /*   const handleScanComplete = (data: DNIData) => {
-      setScannedData(data);
-      console.log('scannedData=====>>>===>>', scannedData);
-  
-    }; */
+  const [loadedDni, setLoadedDni] = useState<string | null>(null);
 
-  /*   const handleScanComplete = async (data: DNIData) => {
-      setIsLoading(true);
-      if (data && data.dni) {
-        console.log('documento escaneado con éxito perrrisonnnn');
-        setScannedData(data);
-        setIsScanSuccessful(true);
-        setShowScanError(false);
-        let dni = scannedData.dni ;  
-          useAuthStore.getState().setDni(dni);
-          console.log('DNI guardado en Zustand:', dni);
-          await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
-          console.log('DNI guardado en Zustand:', dni);
-          setIsLoading(false);
-          setIsDniScanned(true);
-      } else {
-        console.log('error al escanear el documento');
-  
-        setIsScanSuccessful(false);
-        setShowScanError(true);
-        setIsLoading(false);
-      }
-    }; */
+
+
+  const { verificarAfiliado } = useAuthStore();
+//VERIFICAR SI EL DNI ES DE UN AFILIADO:
+
+const validandoAfiliado = async (dni:string) => {
+  console.log('loadedDni es------------------->:', loadedDni);
+  console.log('DNI en validandoAfiliado------------------->:', dni);
+  try {
+    const respuesta = await verificarAfiliado(dni);
+    console.log('respuesta es------------------->:', respuesta);
+    if (respuesta && respuesta.idAfiliado != '' && respuesta.idAfiliado != undefined ) {
+      const idAfiliadoVerificado = respuesta.idAfiliado
+      setLoadedAfiliado(idAfiliadoVerificado)
+      console.log('el idAfiliadoVerificado en VALIDATE TEL es: ', idAfiliadoVerificado);
+      return true;
+    } else {
+      console.log('No pasó lo que queríamos, estamos en el ELSE de validando Afiliado');
+      setNnoEsAfiliado(true)
+      return false;
+    }
+  } catch (error) {
+    //agregar mensaje de error que intente mas tarde:--->
+    console.log('Error al recuperar los datos:', error);
+    return false;
+  } finally {
+  console.log('===> estamos en el FINALLY viendo si se guardo el id loadedAfiliado en el usestate:', loadedAfiliado);}
+    /*   setIsRecovering(false); */
+}
+
 
   const handleScanComplete = async (data: DNIData) => {
     setIsLoading(true);
@@ -92,19 +97,28 @@ export const RegisterDni = ({ navigation }: Props) => {
         setIsScanSuccessful(true);
         setShowScanError(false);
         const dni = data.dni;
+        setLoadedDni(dni)
+        const resultado = await validandoAfiliado(dni)
+        if(resultado == true){
 
-        // Actualiza el store de Zustand y espera a que se complete
-        await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
-
-        console.log('DNI guardado en Zustand:', dni);
-
+          // Actualiza el store de Zustand y espera a que se complete
+          await new Promise(resolve => useAuthStore.getState().setDni(dni, resolve));
+          console.log('DNI válido y guardado en Zustand:', dni);
+          setIsLoading(false);
+          setIsDniScanned(true);
+          return
+        }
+        setNnoEsAfiliado(true)
         setIsLoading(false);
         setIsDniScanned(true);
+        return
 
       } else {
         console.log('error al escanear el documento');
         setIsScanSuccessful(false);
         setShowScanError(true);
+        setIsLoading(false);
+        return
       }
     } catch (error) {
       console.error("Error en handleScanComplete:", error);
@@ -367,6 +381,11 @@ export const RegisterDni = ({ navigation }: Props) => {
                   <Text style={styles.TextDatosGuardados}>¡Datos guardados!</Text>
                 </View>
               )}
+               {noEsAfiliado && (
+                <View style={styles.cajaDatosGuardados} >
+                  <Text style={styles.TextDniNoValido}>El DNI no pertenece a un afiliado</Text>
+                </View>
+              )}
 
 
 
@@ -375,14 +394,14 @@ export const RegisterDni = ({ navigation }: Props) => {
                 /* onPress={handleLoginPress} */
                 /*  onPress={onLoginGonza2} */
                 onPress={() => navigation.navigate('Registro telefono')}
-                disabled={!isDniScanned}
+                disabled={!isDniScanned || noEsAfiliado}
               >
                 CONTINUAR
               </Button>
 
 
               {showScanError && (
-                <Text style={styles.errorText}>Error en el escaneo de QR</Text>
+                <Text style={styles.TextDniNoValido}>Error en el escaneo de QR</Text>
               )}
 
               {showScanModal && (
@@ -643,5 +662,13 @@ const styles = StyleSheet.create({
     color: '#4cad18',
     textAlign: 'justify',
     marginTop: hp('0%'),
+  },
+  TextDniNoValido: {
+    fontSize: hp('2%'),
+    fontWeight: 'bold',
+   /*  marginVertical: 10, */
+    color: '#c10a0a',
+    textAlign: 'justify',
+    marginTop: hp('0.5%'),
   },
 });
