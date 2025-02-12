@@ -25,7 +25,6 @@ import QRscanner5gpt from "../../components/shared/QRscanner5gpt";
 import QRscanner6gpt from "../../components/shared/QRscanner6gpt";
 import axios from "axios";
 import { xml2js } from 'xml-js';
-import { parseStringPromise } from "xml2js";
 
 
 
@@ -38,6 +37,11 @@ type DNIData = {
   dni: string;
   fechNacimiento: string;
   fecEmision: string;
+};
+type datosMongo = {
+  loadedTeléfono: string | null | undefined;
+  loadedDni: string | null | undefined;
+  loadedIdAfiliado: string | null | undefined;
 };
 
 
@@ -138,57 +142,73 @@ export const ValidateTel = ({ navigation }: Props) => {
   const [areaMissing, setAreaMissing] = useState(false);
 
 
-  //VERIFICAR SI EL DNI ES DE UN AFILIADO:
+  const guardarDatosEnMongoDB = async (datos: datosMongo) => {
+    const { loadedTeléfono, loadedDni, loadedIdAfiliado } = datos;
 
-  /*   const validandoAfiliado = async () => {
-      console.log('loadedDni es------------------->:', loadedDni);
-      console.log('DNI en validandoAfiliado------------------->:', dni);
-      try {
-        const respuesta = await verificarAfiliado(loadedDni);
-        console.log('respuesta es------------------->:', respuesta);
-        if (respuesta) {
-          const idAfiliadoVerificado = respuesta.idAfiliado
-          setLoadedAfiliado(idAfiliadoVerificado)
-          console.log('el idAfiliadoVerificado en VALIDATE TEL es: ', idAfiliadoVerificado);
-  
-        } else {
-          console.log('No pasó lo que queríamos, estamos en el ELSE de validando Afiliado');
-        }
-      } catch (error) {
-        console.log('Error al recuperar los datos:', error);
-      } finally {
-     
-      } console.log('===> estamos en el FINALLY viendo si se guardo el id loadedAfiliado en el usestate:', loadedAfiliado);
-    } */
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/guardar-datos`, { 
+        celular: loadedTeléfono,
+        dni: loadedDni,
+        idAfiliado: loadedIdAfiliado,
+        fecha: new Date(), // Genera la fecha en el frontend o backend según prefieras
+      });
 
+      if (response.status === 201) {  //201 es el codigo de estado que se retorna desde el backend, el cual indica que se creo el recurso
+        console.log('Datos guardados en MongoDB:', response.data);
+        return null; // No hay error
+      } else {
+        console.error('Error al guardar datos:', response.data);
+        return new Error('Error al guardar datos'); // Devuelve un error
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      console.error("Error en la solicitud completo:", error.message, error.response?.data)
+      return error; // Devuelve el error de la solicitud (puede ser de red, etc.)
+    }
+  };
+
+  //EDITAR CELULAR EN EL SISTEMA DE FRANCO:
   const editarCelular = async (celular: string | undefined | null, idAfiliado: string | null | undefined) => {
 
     try {
       const resultado = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPActualizaDatosContacto?idAfiliado=${idAfiliado}&mail=&celular=${celular}&calle=&num=&piso=&depto=&idLocalidad=`);
 
-      
-    console.log('el resultado es--->', resultado);
- // Convertir XML a JSON
- const jsonData = xml2js(resultado.data, { compact: true, spaces: 2 });
-    // Verificar si la respuesta está completa (puedes ajustar esta condición según la estructura esperada)
-  
 
-      console.log('Datos JSON convertidos PERRO ---------->>:', jsonData);
+     
+      // Convertir XML a JSON
+      const jsonData = xml2js(resultado.data, { compact: true, spaces: 2 });
+      // Verificar si la respuesta está completa (puedes ajustar esta condición según la estructura esperada)
 
-      if ( jsonData?.Resultado?.fila?.valorDevuelto?._text === '00') {
-        console.log('El celular fue modificado con éxito padre---->>:');
-        return true
+
+     /*  console.log('Datos JSON convertidos PERRO ---------->>:', jsonData); */
+
+      if (jsonData?.Resultado?.fila?.valorDevuelto?._text === '00') {
+        console.log('El celular fue modificado con éxito---->>:');
+        const misDatos: datosMongo = {
+          loadedTeléfono: loadedTeléfono,
+          loadedDni: loadedDni,
+          loadedIdAfiliado: loadedIdAfiliado,
+        };
+        console.log('Empieza el guardado de datos---->>:');
+        const error = await guardarDatosEnMongoDB(misDatos);
+        if (error) {
+          console.error("Error al guardar los datos en MONGO DB:error:", error);
+          return false;
+        } else {
+          console.log("Datos guardados correctamente en MONGO DB! VAMAAAAAA (%(/%(/)(/)%$ ");
+          return true;
+        }
       }
       else {
-        console.log('El celular NO fue modificado---->>:');
+        console.log('El celular NO fue modificado---->>>:');
         return false
       }
     } catch (error) {
-      console.log('Tuvimos inconvenientes inesperados mostri, el error-->>:', error);
+      console.log('Tuvimos inconvenientes inesperados, el error-->>:', error);
       return false
     }
   }
-
+  //CREAR USUARIO (NUMERO DE AFILIADO) Y CONTRASEÑA EN EL SISTEMA DE FRANCO (ESTE ENDPOINT HACE AMBAS):
   const editarContraseña = async (contraseña: string | null, idAfiliado: string | null | undefined) => {
     try {
       const respuesta = await axios.get(`https://srvloc.andessalud.com.ar//WebServicePrestacional.asmx/APPRestablecerPass?idAfiliado=${idAfiliado}&pass=${contraseña}&IMEI=`);
@@ -207,7 +227,7 @@ export const ValidateTel = ({ navigation }: Props) => {
       return false
     }
   }
-
+  //VERIFICAR EL CÓDIGO ENVIADO AL CELULAR, SI ES CORRECTO SE CONCRETAN TODAS LAS ACCIONES:
   const handleVerifyCode = async () => {
     setIsPosting(true)
 
