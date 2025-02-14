@@ -23,6 +23,7 @@ import QRscanner2 from "../../components/shared/QRscanner2";
 import QRscanner4 from "../../components/shared/QRscanner4";
 import QRscanner5gpt from "../../components/shared/QRscanner5gpt";
 import QRscanner6gpt from "../../components/shared/QRscanner6gpt";
+import axios from "axios";
 
 
 
@@ -39,6 +40,12 @@ type DNIData = {
   fecEmision: string;
 };
 
+
+type datosMongo = {
+  loadedTeléfono: string | null | undefined;
+  loadedDni: string | null | undefined;
+  loadedIdAfiliado: string | null | undefined;
+};
 
 export const LoginScreenNew = ({ navigation }: Props) => {
 
@@ -182,6 +189,35 @@ export const LoginScreenNew = ({ navigation }: Props) => {
       console.log('Error durante el login:', error);
     } finally {
       setIsPosting(false);
+    }
+  };
+
+  const guardarDatosEnMongoDB = async (datos: datosMongo) => {
+
+    console.log("ENTRÓ AAA guardarDatosEnMongoDB AHORA A PUNTO DEL POST A GUARDAR-DATOS ========================>:");
+    
+    const { loadedTeléfono, loadedDni, loadedIdAfiliado } = datos;
+    console.log("ENTRÓ AAA guardarDatosEnMongoDB loadedTeléfono, loadedDni y loadedIdAfiliado ========================>:",loadedTeléfono, loadedDni, loadedIdAfiliado);
+    try {
+   /*    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/guardar-datos`, { */ 
+      const response = await axios.post(`https://fincapropia.createch.com.ar/guardarCelular/guardar`, { 
+        celular: '99999999',
+        dni: '9999999',
+        idAfiliado: 'pruebaidAfiliado888',
+        fecha: new Date(), 
+      }  );
+
+      if (response.status === 201) {  //201 es el codigo de estado que se retorna desde el backend, el cual indica que se creo el recurso
+        console.log('Datos guardados en MongoDB:', response.data);
+        return null; // No hay error
+      } else {
+        console.error('Error al guardar datos:', response.data);
+        return new Error('Error al guardar datos'); // Devuelve un error
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      console.error("Error en la solicitud completo:", error.message, error.response?.data)
+      return error; // Devuelve el error de la solicitud (puede ser de red, etc.)
     }
   };
 
@@ -334,6 +370,13 @@ export const LoginScreenNew = ({ navigation }: Props) => {
               >
                 INGRESAR
               </Button>
+
+            {/*   <Button style={styles.customButton}
+                disabled={isPosting}
+               onPress={guardarDatosEnMongoDB}
+              >
+                PRUEBAS
+              </Button> */}
 
 
               {showScanError && (

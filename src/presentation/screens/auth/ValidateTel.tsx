@@ -42,6 +42,13 @@ type datosMongo = {
   loadedTeléfono: string | null | undefined;
   loadedDni: string | null | undefined;
   loadedIdAfiliado: string | null | undefined;
+  error: string | null | undefined;
+};
+type guardarErrorEnMongo = {
+  loadedTeléfono: string | null | undefined;
+  loadedDni: string | null | undefined;
+  loadedIdAfiliado: string | null | undefined;
+  error: string | null | undefined;
 };
 
 
@@ -143,27 +150,58 @@ export const ValidateTel = ({ navigation }: Props) => {
 
 
   const guardarDatosEnMongoDB = async (datos: datosMongo) => {
-    const { loadedTeléfono, loadedDni, loadedIdAfiliado } = datos;
 
+    /* console.log("ENTRÓ AAA guardarDatosEnMongoDB AHORA A PUNTO DEL POST A GUARDAR-DATOS ========================>:");
+    
+    const { loadedTeléfono, loadedDni, loadedIdAfiliado } = datos;
+    console.log("ENTRÓ AAA guardarDatosEnMongoDB loadedTeléfono, loadedDni y loadedIdAfiliado ========================>:",loadedTeléfono, loadedDni, loadedIdAfiliado); */
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/guardar-datos`, { 
+      const response = await axios.post(`https://fincapropia.createch.com.ar/guardarCelular/guardar`, { 
         celular: loadedTeléfono,
         dni: loadedDni,
         idAfiliado: loadedIdAfiliado,
-        fecha: new Date(), // Genera la fecha en el frontend o backend según prefieras
-      });
+        fecha: new Date(), 
+        error: 'Sin errores'
+      } );
 
-      if (response.status === 201) {  //201 es el codigo de estado que se retorna desde el backend, el cual indica que se creo el recurso
-        console.log('Datos guardados en MongoDB:', response.data);
-        return null; // No hay error
+      if (response.status === 201) {  
+        console.log('Datos guardados en MongoDB!!:', response.data);
+        return null; 
       } else {
         console.error('Error al guardar datos:', response.data);
-        return new Error('Error al guardar datos'); // Devuelve un error
+        return new Error('Error al guardar datos'); 
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
       console.error("Error en la solicitud completo:", error.message, error.response?.data)
-      return error; // Devuelve el error de la solicitud (puede ser de red, etc.)
+      return error; 
+    }
+  };
+  const guardarErrorEnMongoDB = async (datos: guardarErrorEnMongo) => {
+
+    console.log("ENTRÓ AAA guardarErrorEnMongoDB ========================>:"); 
+    console.log("datos ========================>:",datos); 
+
+    try {
+      const response = await axios.post(`https://fincapropia.createch.com.ar/guardarCelular/guardar`, { 
+        celular: loadedTeléfono,
+        dni: loadedDni,
+        idAfiliado: loadedIdAfiliado,
+        fecha: new Date(), 
+        error: datos
+      } );
+
+      if (response.status === 201) {  
+        console.log('Datos del error guardados correctamente en MongoDB!!:', response.data);
+        return true; 
+      } else {
+        console.error('Error al guardar datos del error en MongoDB:', response.data);
+        return new Error('Error al guardar datos en mongo db'); 
+      }
+    } catch (error) {
+      console.error('Error en la solicitud a mongo DB:', error);
+      console.error("Error en la solicitud a mongo DB completo:", error.message, error.response?.data)
+      return error; 
     }
   };
 
@@ -171,14 +209,12 @@ export const ValidateTel = ({ navigation }: Props) => {
   const editarCelular = async (celular: string | undefined | null, idAfiliado: string | null | undefined) => {
 
     try {
-      const resultado = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPActualizaDatosContacto?idAfiliado=${idAfiliado}&mail=&celular=${celular}&calle=&num=&piso=&depto=&idLocalidad=`);
+      const pruebaError = '100000'
+      const resultado = await axios.get(`https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPActualizaDatosContacto?idAfiliado=${idAfiliado}&mail=&celular=${pruebaError}&calle=&num=&piso=&depto=&idLocalidad=`);
 
-
-     
       // Convertir XML a JSON
       const jsonData = xml2js(resultado.data, { compact: true, spaces: 2 });
       // Verificar si la respuesta está completa (puedes ajustar esta condición según la estructura esperada)
-
 
      /*  console.log('Datos JSON convertidos PERRO ---------->>:', jsonData); */
 
@@ -188,23 +224,37 @@ export const ValidateTel = ({ navigation }: Props) => {
           loadedTeléfono: loadedTeléfono,
           loadedDni: loadedDni,
           loadedIdAfiliado: loadedIdAfiliado,
+          error: 'Sin errores'
         };
-        console.log('Empieza el guardado de datos---->>:');
+        console.log("ENTRANDO AAA guardarDatosEnMongoDB========================>:");
         const error = await guardarDatosEnMongoDB(misDatos);
         if (error) {
           console.error("Error al guardar los datos en MONGO DB:error:", error);
           return false;
         } else {
-          console.log("Datos guardados correctamente en MONGO DB! VAMAAAAAA (%(/%(/)(/)%$ ");
+          console.log("Datos guardados correctamente en MONGO DB!");
           return true;
         }
       }
       else {
+        console.log("ENTRANDO AL ELSE DE LA FUNCION editarCelular========================>:");
+        const datosError = jsonData?.root?.table?.mensaje?._text || 'no se pudo recolectar el mensaje de error'
+       
+        console.log("A punto de enviar el mensaje recibido con  guardarErrorEnMongoDB========================>:datosError=>", datosError);
+       
+        const resultado = await guardarErrorEnMongoDB(datosError);
+        if (resultado === true) {
+          console.log("Datos del error guardados correctamente en MONGO DB!");
+          return true;
+        } else {
+          console.error("Error al guardar los datos del Error en MONGO DB (guardarErrorEnMongoDB), el resultado de guardarErrorEnMongoDB--->", resultado); 
+        }
         console.log('El celular NO fue modificado---->>>:');
         return false
       }
     } catch (error) {
-      console.log('Tuvimos inconvenientes inesperados, el error-->>:', error);
+      console.log('Tuvimos inconvenientes inesperados, catch error. el error-->>:', error);
+      console.log('El celular NO fue modificado---->>>:');
       return false
     }
   }
