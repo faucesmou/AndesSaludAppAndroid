@@ -108,12 +108,12 @@ export const ValidateTel = ({ navigation }: Props) => {
     setLoadedArea(area);
     setLoadedAfiliado(null)
     /*   setLoadedVerificationCode(verificationCode) */
-    console.log('DNI actualizado------------------->:', dni);
-    console.log('celular actualizado------------------->:', celular);
-    console.log('contraseña actualizado------------------->:', contraseña1);
-    console.log('area actualizado------------------->:', area);
+  /*   console.log('DNI actualizado------------------->:', dni);
+    console.log('celular actualizado------------------->:', celular); */
+   /*  console.log('contraseña actualizado------------------->:', contraseña1); */
+  /*   console.log('area actualizado------------------->:', area);
     console.log('verificationCode actualizado------------------->:', verificationCode);
-    console.log('idAfiliado actualizado------------------->:', idAfiliado);
+    console.log('idAfiliado actualizado------------------->:', idAfiliado); */
 
   }, [dni, celular, contraseña1, area, celular, loadedAfiliado /* verificationCode */]);
 
