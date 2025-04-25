@@ -89,7 +89,7 @@ export const EstudiosMedicosEnvNew = () => {
           IMEI: imei || '',
           idConvenio: idPrestador || '',
         });
-        console.log('LOS PARAMS SON:  ---> ', JSON.stringify(params));
+      /*   console.log('LOS PARAMS SON:  ---> ', JSON.stringify(params)); */
         const response = await axios.post(
           'https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/APPSolicitarPractica',
           params.toString(),

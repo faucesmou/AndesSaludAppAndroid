@@ -74,6 +74,8 @@ export interface AuthState {
   UserName: string | null;
   UserLastName: string | null;
   dni: string | null;
+  sexo: string | null;
+  setSexo: (sexo: string, callback?: () => void) => void; // Añade el callback
   setDni: (dni: string, callback?: () => void) => void; // Añade el callback
   setUser: (user: string) => void;
   pass: string | null;
@@ -84,6 +86,7 @@ export interface AuthState {
   getUserLastName: () => string | null;
   setUserName: (user: string) => void;
   getDni: () => string | null;
+  getSexo: () => string | null;
   setUserLastName: (pass: string) => void;
   actualizarNotificaciones: boolean;
   actualizacionDisponible: boolean;
@@ -214,6 +217,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   UserName: null,
   UserLastName: null,
   dni: null,
+  sexo: null,
   verificationCode: null,
   setVerificationCode: (code) => set({ verificationCode: code }),
   getVerificationCode: () => get().verificationCode,
@@ -224,7 +228,15 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       callback(); // Ejecuta el callback después de actualizar el estado
     }
   },
+  setSexo: (sexo, callback) => { // Usa el callback
+    set({ sexo });
+    console.log('Sexo seteado------------------->:', sexo);
+    if (callback) {
+      callback(); // Ejecuta el callback después de actualizar el estado
+    }
+  },
   getDni: () => get().dni,
+  getSexo: () => get().sexo,
   setUserName: UserName => set({UserName}),
   setUserLastName: UserLastName => set({UserLastName}),
   getUserName: () => get().UserName,
@@ -259,6 +271,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         const dniAfiliado = respuestaFrancoMejorada.data[0].nroDocumento;
         const usuarioAfiliado = respuestaFrancoMejorada.data[0].usuAPP;
         const passAfiliado = respuestaFrancoMejorada.data[0].passAPP;
+        const sexo = respuestaFrancoMejorada.data[0].sexo;
 
         /* Logica para establecer usuario y contraseña:  */
 
@@ -438,11 +451,12 @@ console.log('password---------->' ,password ); */
         const nombreCompleto = respuestaFrancoMejorada.data[0].apellNomb;
         const numeroCredencial = respuestaFrancoMejorada.data[0].nroAfiliado;
         const tipoPlan = respuestaFrancoMejorada.data[0].planPrestacional;
-        const estadoAfiliacion =
-          respuestaFrancoMejorada.data[0].estadoAfiliacion;
+        const estadoAfiliacion = respuestaFrancoMejorada.data[0].estadoAfiliacion;
         const tipoPago = respuestaFrancoMejorada.data[0].tipoPago;
         const numCelular = respuestaFrancoMejorada.data[0].numCelular;
         const mail = respuestaFrancoMejorada.data[0].mail;
+        const sexo = respuestaFrancoMejorada.data[0].sexo;
+        const dni = respuestaFrancoMejorada.data[0].nroDocumento;
 
         if (
           idAfiliado != undefined &&
@@ -460,9 +474,11 @@ console.log('password---------->' ,password ); */
             tipoPago: tipoPago,
             numCelular: numCelular,
             mail: mail,
+            sexo: sexo,
+            dni: dni,
           });
           console.log(
-            'los datos de idAfiliado, idAfiliadoTitular y cuilTitular fueron guardados en el context correctamente',
+            'los datos de idAfiliado, idAfiliadoTitular y cuilTitular fueron guardados en el context correctamente, SEXO ES----->>>> y DNI ess', sexo, dni
           );
           console.log(
             'los datos de nombreCompleto, numeroCredencial, tipoPlan y estadoAfiliacion fueron guardados en el context correctamente',

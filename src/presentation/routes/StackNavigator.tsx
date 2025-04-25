@@ -58,6 +58,8 @@ import { CartillaFarmaciaDepartamentoSeleccionado } from '../screens/MiSalud/car
 import { RegisterDni } from '../screens/auth/RegisterDni';
 import { RegisterTel } from '../screens/auth/RegisterTel';
 import { ValidateTel } from '../screens/auth/ValidateTel';
+import { LlamandoAlDoc } from '../screens/MiGestion/llamandoAlDoctor/LlamandoAlDoc';
+import { IngresoLAD } from '../screens/MiGestion/llamandoAlDoctor/IngresoLAD';
 
 /* import { UserData } from '../screens/auth/userData'; */
 
@@ -80,6 +82,7 @@ export type RootStackParams = {
  /*  "Orden Enviada": undefined, */
   "¡Enviada!": undefined,
   "Enviando": undefined,
+  "Comunicarme": undefined,
   Credencial: undefined,
   Cartilla: undefined,
   "Cartilla Farmacias": undefined,
@@ -100,6 +103,8 @@ export type RootStackParams = {
   ConsultaScreen: undefined,
   Consulta2: undefined,
   "Consulta": undefined,
+  "Llamar al Doctor": undefined,
+  "Ingresando": undefined,
   Formulario:undefined,
   CartillaScreen: undefined,
   Cartillas: undefined,
@@ -261,6 +266,12 @@ export const StackNavigator = () => {
       <Stack.Screen name="Formularios" component={FormulariosEspScreenNuevo} options={{ headerShown: true }} />
 
       <Stack.Screen name="Formulario" component={FormularioElegido} options={{ headerShown: true }} />
+
+{/* Llamando al Doctor*/}
+
+<Stack.Screen name="Llamar al Doctor" component={LlamandoAlDoc} options={{ headerShown: true }} />
+<Stack.Screen name="Ingresando" component={IngresoLAD} options={{ headerShown: true }} />
+
 
 {/* Pagos del usuario */}
 

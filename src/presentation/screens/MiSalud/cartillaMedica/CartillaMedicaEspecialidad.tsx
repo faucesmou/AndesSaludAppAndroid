@@ -258,7 +258,7 @@ const [addressModalVisible, setAddressModalVisible] = useState(false);
             });
           });
           setPrestadores(arrayPrestadores)
-      /*   console.log('prestadores son: --->', prestadores); */
+       /*  console.log('prestadores son: ---------->', prestadores); */
         
           
           setPrestadoresCordoba(arrayPrestadores);
@@ -280,7 +280,7 @@ const [addressModalVisible, setAddressModalVisible] = useState(false);
           idConvenio: cartillasData.idConvenio[index]._text,
           // descripcion: cartillasData.descartar[index]._text || 'No hay descripción', // Si decides usar la descripción
         }));
-
+        console.log('prestadores mappedCartillas: ---------->', mappedCartillas); 
         setCartillas(mappedCartillas);
 
       } catch (error) {
@@ -510,7 +510,8 @@ const filtrarPorMendoza = () => {
       }
       return false; // Si palabra no es ni string ni number
     })
-  );
+  )
+  console.log('los filtrados de mendoza gonchi son los siguientes:--->', filtrados )
 
   if (filtrados.length === 0) {
     setCartillas([{
@@ -521,6 +522,7 @@ const filtrarPorMendoza = () => {
   } else {
     setModalmodalNoSeEncontraron(false)
     setPrestadoresMendoza(filtrados);
+    console.log('los filtrados de mendoza gonchi son los siguientes:--->', filtrados )
     setProvinciaSeleccionada('Mendoza');
     setMostrarFiltrados(true);
   }
@@ -593,6 +595,7 @@ const filtrarPorTodos = () => {
         return prestadoresSanJuan;
       case 'Mendoza':
         console.log('es el caso mendoza ');
+     
         return prestadoresMendoza;
       case 'San Luis':
         console.log('es el caso san luis ');

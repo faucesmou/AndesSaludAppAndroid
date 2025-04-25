@@ -201,6 +201,16 @@ useEffect(() => {
             descriptionSize={buttonDescriptionFontSize}
           />
 
+          <TertiaryButton
+            onPress={() => navigation.navigate('Ingresando')}
+            label="Llamar al Doctor"
+            color={globalColors.profile2}
+            iconName='person-add-outline'
+            description='Comunicate con un especialista'
+            textSize={buttonTextFontSize} 
+            descriptionSize={buttonDescriptionFontSize}
+          />
+
             
         </View>
       

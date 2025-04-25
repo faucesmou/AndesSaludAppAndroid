@@ -478,7 +478,11 @@ export const EstudiosMedicosScreenUx = () => {
               placeholder="Escribe aquí el prestador deseado"
               placeholderTextColor="gray"
               value={busqueda.cadena}
-              onChangeText={(cadena) => setBusqueda({ cadena })}
+              onChangeText={(cadena) => {
+                console.log("Valor de cadena=====>>>==>>>:", cadena); // Agrega este console.log
+                setBusqueda({ cadena });
+              }}
+             /*  onChangeText={(cadena) => setBusqueda({ cadena })} */
             />
           </View>
         </TouchableWithoutFeedback>
