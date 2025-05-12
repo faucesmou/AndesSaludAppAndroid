@@ -50,7 +50,7 @@ export const Afiliados = () => {
     const ProductsRequest = async () => {
       try {
         const response = await axios.get(`https://andessalud.createch.com.ar/api/obtenerFamiliares?idAfiliado=${idAfiliado}`);
-        /*   console.log('EL RESPONSE DE AFILIADOS ES : ---------x-x-x-x-x-x->', response); */
+          console.log('EL RESPONSE DE AFILIADOS ES : ---------x-x-x-x-x-x->', response);
 
         const mappedProducts = response.data.data.map((item: { apellidoYNombre: any; nroAfiliado: any; idAfiliado: any }) => ({
           apellidoYNombre: item.apellidoYNombre,

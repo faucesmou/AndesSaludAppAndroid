@@ -5,4 +5,3 @@ module.exports = {
     'react-native-reanimated/plugin'
   ]
 }
-/*   plugins: ['react-native-reanimated/plugin'], */

@@ -75,7 +75,9 @@ export interface AuthState {
   UserLastName: string | null;
   dni: string | null;
   sexo: string | null;
+  fecNacimiento : string;
   setSexo: (sexo: string, callback?: () => void) => void; // Añade el callback
+  setFecNacimiento: (fecNacimiento: string, callback?: () => void) => void; // Añade el callback
   setDni: (dni: string, callback?: () => void) => void; // Añade el callback
   setUser: (user: string) => void;
   pass: string | null;
@@ -112,6 +114,10 @@ export interface AuthState {
   ObtenerFamiliares: (
     idAfiliado: string /* apellidoYNombre:string */,
   ) => Promise<any[]>;
+  consultarGrupoFamiliarDatos: (
+    idAfiliado: string | undefined | null /* apellidoYNombre:string */,
+  ) => Promise<any[]>;
+
   ObtenerEspecialidades: (
     idAfiliado: string,
     idAfiliadoTitular: string,
@@ -218,6 +224,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   UserLastName: null,
   dni: null,
   sexo: null,
+  fecNacimiento: null,
   verificationCode: null,
   setVerificationCode: (code) => set({ verificationCode: code }),
   getVerificationCode: () => get().verificationCode,
@@ -235,8 +242,16 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       callback(); // Ejecuta el callback después de actualizar el estado
     }
   },
+  setFecNacimiento: (fecNacimiento, callback) => { // Usa el callback
+    set({ fecNacimiento });
+    console.log('fecNacimiento seteado------------------->:', fecNacimiento);
+    if (callback) {
+      callback(); // Ejecuta el callback después de actualizar el estado
+    }
+  },
   getDni: () => get().dni,
   getSexo: () => get().sexo,
+  getFecNacimiento: () => get().fecNacimiento,
   setUserName: UserName => set({UserName}),
   setUserLastName: UserLastName => set({UserLastName}),
   getUserName: () => get().UserName,
@@ -457,6 +472,7 @@ console.log('password---------->' ,password ); */
         const mail = respuestaFrancoMejorada.data[0].mail;
         const sexo = respuestaFrancoMejorada.data[0].sexo;
         const dni = respuestaFrancoMejorada.data[0].nroDocumento;
+        const fecNacimiento = respuestaFrancoMejorada.data[0].fecNac;
 
         if (
           idAfiliado != undefined &&
@@ -476,9 +492,10 @@ console.log('password---------->' ,password ); */
             mail: mail,
             sexo: sexo,
             dni: dni,
+            fecNacimiento: fecNacimiento,
           });
           console.log(
-            'los datos de idAfiliado, idAfiliadoTitular y cuilTitular fueron guardados en el context correctamente, SEXO ES----->>>> y DNI ess', sexo, dni
+            'los datos de idAfiliado, idAfiliadoTitular y cuilTitular fueron guardados en el context correctamente, fecNacimiento ess', fecNacimiento,
           );
           console.log(
             'los datos de nombreCompleto, numeroCredencial, tipoPlan y estadoAfiliacion fueron guardados en el context correctamente',
@@ -641,6 +658,86 @@ console.log('password---------->' ,password ); */
       return [];
     }
   },
+/*   consultarGrupoFamiliarDatos: async (idAfiliado: string) => {
+    try {
+       
+      const respuestaFrancoMejorada = await axios.get(
+        `https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/consultarAfiliadoJson?usuario=${USUARIO}&password=${PASSWORD}&administradora=${ADMINISTRADORA}&datosAfiliado=${idAfiliado}`,
+      );
+  
+      if (
+        respuestaFrancoMejorada &&
+        respuestaFrancoMejorada.data &&
+        respuestaFrancoMejorada.data.length > 0
+      ) {
+        
+        const mail = respuestaFrancoMejorada.data[0].mail; 
+        const nombreCompleto = respuestaFrancoMejorada.data[0].apellNomb;
+        const dni = respuestaFrancoMejorada.data[0].nroDocumento;
+        const fecNacimiento = respuestaFrancoMejorada.data[0].fecNac;
+        const sexo = respuestaFrancoMejorada.data[0].sexo;
+        const numCelular = respuestaFrancoMejorada.data[0].numCelular;
+        const numeroCredencial = respuestaFrancoMejorada.data[0].nroAfiliado;
+       
+        if (
+          nombreCompleto != undefined &&
+          dni != undefined
+        ) {
+
+          return [];
+          
+        } else {
+          console.error(
+            'no se pudo obtener datos de los familiares',
+          );
+          return [];
+        }
+      } else {
+        console.log(
+          'respuestaFrancoMejorada && respuestaFrancoMejorada.data && respuestaFrancoMejorada.data.length no es mayor a 0',
+        );
+        console.error('No se encontraron datos perro');
+        return [];
+      }
+    } catch (error) {
+      console.error(
+        'Error al consultar datos y guardarlos en useState',
+        error,
+      );
+      return [];
+    }
+  }, */
+  consultarGrupoFamiliarDatos: async (idAfiliado: string | undefined | null ) => {
+    try {
+      const respuestaFrancoMejorada = await axios.get(
+        `https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/consultarAfiliadoJson?usuario=${USUARIO}&password=${PASSWORD}&administradora=${ADMINISTRADORA}&datosAfiliado=${idAfiliado}`,
+      );
+  
+      const data = respuestaFrancoMejorada?.data;
+  
+      if (Array.isArray(data) && data.length > 0) {
+        const grupoFamiliar = data.map((familiar: any) => ({
+          nombreCompleto: familiar.apellNomb,
+          dni: familiar.nroDocumento,
+          mail: familiar.mail,
+          fecNacimiento: familiar.fecNac,
+          sexo: familiar.sexo,
+          numCelular: familiar.numCelular,
+          numeroCredencial: familiar.nroAfiliado,
+          parentesco: familiar.parentesco,
+        }));
+  console.log("console log de grupoFamiliar----->", grupoFamiliar);
+  
+        return grupoFamiliar;
+      } else {
+        console.error('No se encontraron datos de familiares');
+        return [];
+      }
+    } catch (error) {
+      console.error('Error al consultar datos del grupo familiar', error);
+      return [];
+    }
+  },  
   ObtenerEspecialidades: async (
     idAfiliado: string,
     idAfiliadoTitular: string,
