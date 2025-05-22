@@ -88,7 +88,7 @@ export const Buzon = () => {
 
         // @ts-ignore
         const notificacionesData = result.Resultado?.tablaDatos;
-        /*       console.log('NotificacionesData es :',notificacionesData ); */
+        console.log('NotificacionesData es :', notificacionesData);
 
 
         if (notificacionesData === undefined) {
@@ -103,20 +103,41 @@ export const Buzon = () => {
         }
 
         // Mapear los datos 
-        const mappedNotificaciones: Notificacion[] = Array.isArray(notificacionesData.idOrden) ? notificacionesData.idOrden.map((_: any, index: number) => ({
-          idOrden: notificacionesData.idOrden[index]?._text || 'pendiente',
-          afiliado: notificacionesData.afiliado[index]?._text || 'pendiente',
-          fecSolicitud: notificacionesData.fecSolicitud[index]?._text || 'pendiente',
-          estado: notificacionesData.estado[index]?._text || 'pendiente',
-          fecFinalizacion: notificacionesData.fecFinalizacion[index]?._text || 'pendiente',
-          comentarioRechazo: notificacionesData.comentarioRechazo[index]?._text || 'pendiente',
-          /*   idOrden: notificacionesData.idOrden[index]._text,
-          afiliado: notificacionesData.afiliado[index]._text,
-          fecSolicitud: notificacionesData.fecSolicitud[index]._text,
-          estado: notificacionesData.estado[index]._text,
-          fecFinalizacion: notificacionesData.fecFinalizacion[index]._text,
-          comentarioRechazo: notificacionesData.comentarioRechazo[index]._text, */
-        })) : [];
+        /*    const mappedNotificaciones: Notificacion[] = Array.isArray(notificacionesData.idOrden) ? notificacionesData.idOrden.map((_: any, index: number) => ({
+             idOrden: notificacionesData.idOrden[index]?._text || 'pendiente',
+             afiliado: notificacionesData.afiliado[index]?._text || 'pendiente',
+             fecSolicitud: notificacionesData.fecSolicitud[index]?._text || 'pendiente',
+             estado: notificacionesData.estado[index]?._text || 'pendiente',
+             fecFinalizacion: notificacionesData.fecFinalizacion[index]?._text || 'pendiente',
+             comentarioRechazo: notificacionesData.comentarioRechazo[index]?._text || 'pendiente',
+        
+           })) : []; */
+
+           /* reemplazamos el antiguo mappedNotificaciones por la siguiente versión más robusta y preparada para recibir además de arrays casos donde llega un sólo  objeto: */
+        let mappedNotificaciones: Notificacion[] = [];
+
+        if (Array.isArray(notificacionesData.idOrden)) {
+          mappedNotificaciones = notificacionesData.idOrden.map((_: any, index: number) => ({
+            idOrden: notificacionesData.idOrden[index]?._text || 'pendiente',
+            afiliado: notificacionesData.afiliado[index]?._text || 'pendiente',
+            fecSolicitud: notificacionesData.fecSolicitud[index]?._text || 'pendiente',
+            estado: notificacionesData.estado[index]?._text || 'pendiente',
+            fecFinalizacion: notificacionesData.fecFinalizacion[index]?._text || 'pendiente',
+            comentarioRechazo: notificacionesData.comentarioRechazo[index]?._text || 'pendiente',
+          }));
+        } else {
+          mappedNotificaciones = [{
+            idOrden: notificacionesData.idOrden?._text || 'pendiente',
+            afiliado: notificacionesData.afiliado?._text || 'pendiente',
+            fecSolicitud: notificacionesData.fecSolicitud?._text || 'pendiente',
+            estado: notificacionesData.estado?._text || 'pendiente',
+            fecFinalizacion: notificacionesData.fecFinalizacion?._text || 'pendiente',
+            comentarioRechazo: notificacionesData.comentarioRechazo?._text || 'pendiente',
+          }];
+        }
+
+        console.log('ESTAS SON LAS MAPPED NOTIFICACIONES====>: ', mappedNotificaciones);
+
 
         // Primero, definimos una función para convertir las fechas a objetos Date
         const parseDate = (dateString: string) => {
@@ -176,8 +197,9 @@ export const Buzon = () => {
           /*  console.log('fecFinalizacionDate: ', fecFinalizacionDate); */
 
           /* MOMENTANEO !!!! PUSE 8 SEMANAS EN VEZ DE 2  !!! REVISAR--->-->-------------------------------------------------------------------->>>*/
+          console.log('ESTAS SON LAS MAPPED NOTIFICACIONES====>: ', mappedNotificaciones);
 
-          return fecFinalizacionDate >= eightWeeksAgo;
+          return fecFinalizacionDate >= eightWeeksAgo; /* eightWeeksAgo - twoWeeksAgo */
           /*  Retenemos solo las notificaciones cuya fecha de vencimiento es igual o posterior a la fecha actual ( return fecFinalizacionDate >= twoWeeksAgo; )
           o a la fecha dos semanas posterior al vencimiento:  return fecFinalizacionDate >= twoWeeksAgo; */
         });
@@ -221,12 +243,12 @@ export const Buzon = () => {
         });
 
 
-        console.log('notificacionesOrdenadas2-->', notificacionesOrdenadas2);
+        /*   console.log('notificacionesOrdenadas2---------acá----->', notificacionesOrdenadas2); */
         // Asignamos las notificaciones filtradas al estado
         setNotificaciones(notificacionesOrdenadas2);
-        console.log('set Notificaciones. Notificaciones:-->', notificaciones);
+        /*  console.log('set Notificaciones. Notificaciones:-->', notificaciones); */
 
-
+        console.log('ESTAS SON LAS notificacionesOrdenadas2====>: ', notificacionesOrdenadas2);
 
         setIsConsulting(false);
 
@@ -242,13 +264,13 @@ export const Buzon = () => {
   }, [/* idAfiliado, */ listadoEstMedicosVisible]);
 
   const PracticaResueltaRequest = async (idOrden: string, estado: string, comentarioRechazo?: string) => {
-    console.log('Se activó PracticaResueltaRequest de Buzon. Id de la Consulta Seleccionada->:', idOrden);
+    /*    console.log('Se activó PracticaResueltaRequest de Buzon. Id de la Consulta Seleccionada->:', idOrden); */
 
     // Importante: no tocar las siguientes constantes llamadas del contexto, son necesarias para contar con la información actualizada del contexto
     const { medicalNotifications, setMedicalNotifications } = useNotificationStore.getState();
 
     if (estado === 'RECHAZOPRACTICA') {
-      console.log('En PracticaResueltaRequest estado === RECHAZOPRACTICA ');
+      /* console.log('En PracticaResueltaRequest estado === RECHAZOPRACTICA '); */
       setIsConsulting(false);
       const rechazoInfo = [{
         idOrden: idOrden,
@@ -299,7 +321,7 @@ export const Buzon = () => {
         return;
       }
 
-      console.log('En PracticaResueltaRequest tiene practicaResueltaData------> ', practicaResueltaData);
+      /*      console.log('En PracticaResueltaRequest tiene practicaResueltaData------> ', practicaResueltaData); */
 
       // Verificar si practicaResueltaData y sus atributos necesarios están definidos
       if (practicaResueltaData && practicaResueltaData.tablaEncabezado && practicaResueltaData.tablaEncabezado.idOrdenENC) {
@@ -335,7 +357,7 @@ export const Buzon = () => {
           console.log('combinedData está vacío o no tiene la estructura esperada.');
         }
         /*  setModalData([combinedData]); */
-        console.log('combinedData -->>>>>>>>:', JSON.stringify(combinedData));
+        /*   console.log('combinedData -->>>>>>>>:', JSON.stringify(combinedData)); */
         /*   console.log('ModalData -->>>>>>>>:', modalData);  */
 
         setModalVisible(true);
@@ -388,8 +410,13 @@ export const Buzon = () => {
   };
 
   const handlePress = (idOrden: string/* url: string */) => {
+
+    /*   console.log('este es el idOrden: ', idOrden);
+      console.log('este es el idAfiliado: ', idAfiliado); */
+
     const url = `https://andessalud.createch.com.ar/documento/estudios?idOrden=${idOrden}&idAfiliado=${idAfiliado}`
-    console.log('este es el URL: ', url);
+    /* console.log('este es el URL: ', url); */
+
 
     Linking.openURL(url).catch((err) => console.error('Error al abrir el enlace del estudio:', err));
   };

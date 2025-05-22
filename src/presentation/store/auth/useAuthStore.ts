@@ -41,6 +41,18 @@ interface AfiliadoData {
 //tal vez tenga que agregar más
 }
 
+interface Familiar {
+  email: string;
+  name: string;
+  documentNumber: string;
+  birthDate: string;
+  gender: string;
+  phone: string;
+  credential: string;
+  tipoPlan: string;
+  parentesco: string;
+}
+
 export interface AuthState {
   status: AuthStatus;
   token?: string;
@@ -54,6 +66,7 @@ export interface AuthState {
   tipoPlan?: string;
   estadoAfiliacion?: string;
   tipoPago?: string;
+  grupoFamiliar: Familiar[];
   mail?: string;
   numCelular?: string;
   idsFamiliares?: string[];
@@ -75,9 +88,12 @@ export interface AuthState {
   UserLastName: string | null;
   dni: string | null;
   sexo: string | null;
-  fecNacimiento : string;
+  fecNacimiento : string | null; 
   setSexo: (sexo: string, callback?: () => void) => void; // Añade el callback
   setFecNacimiento: (fecNacimiento: string, callback?: () => void) => void; // Añade el callback
+ /*  setGrupoFamiliar2: (grupoFamiliar: string, callback?: () => void) => void; */
+   /* setGrupoFamiliar2: (grupoFamiliar: Familiar[]) => void; */
+    setGrupoFamiliar2: (grupoFamiliar: Familiar[], callback?: () => void) => void;
   setDni: (dni: string, callback?: () => void) => void; // Añade el callback
   setUser: (user: string) => void;
   pass: string | null;
@@ -193,8 +209,6 @@ getContraseña2: () => string | null;
    // verificación del teléfono
    verificationCode: string | null;
    setVerificationCode: (code: string | null) => void;
-
-
 }
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
@@ -205,6 +219,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   idAfiliadoTitular: undefined,
   cuilTitular: '',
   idsFamiliares: [],
+  grupoFamiliar: [],
   idsEspecialidades: undefined,
   idPrestacion: undefined,
   idAfiliadoSeleccionado: undefined,
@@ -256,6 +271,10 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   setUserLastName: UserLastName => set({UserLastName}),
   getUserName: () => get().UserName,
   getUserLastName: () => get().UserLastName,
+  setGrupoFamiliar2: (grupoFamiliar, callback) => {
+    set({ grupoFamiliar });
+    if (callback) callback();
+  },
   actualizacionDisponible: false, // Valor inicial
   setActualizacionDisponible: estado => set({actualizacionDisponible: estado}),
   actualizarNotificaciones: false,
@@ -804,7 +823,7 @@ console.log('password---------->' ,password ); */
           /*   const arrayEspecialidad = [especialidad.idPrestacion, especialidad.nombreParaAfiliado,]
                 idsEspecialidades.push(arrayEspecialidad); */
         });
-
+        console.log('infoPrestadores en la funcion obtenerPrestadoresObjeto:', infoPrestadores);
         return infoPrestadores;
       } catch (error) {
         console.log('error en la funcion obtenerPrestadoresObjeto');
@@ -842,8 +861,11 @@ console.log('password---------->' ,password ); */
         //@ts-ignore
         if (
           !result ||
+             //@ts-ignore
           !result.Resultado ||
+             //@ts-ignore
           !result.Resultado.fila ||
+             //@ts-ignore
           !result.Resultado.fila.tablaPrestadores
         ) {
           console.log(
@@ -860,6 +882,7 @@ console.log('password---------->' ,password ); */
 
         if (Array.isArray(prestadoresData.idConvenio)) {
           // Si hay múltiples respuestas
+             //@ts-ignore
           infoPrestadores = prestadoresData.idConvenio.map((_, index) => ({
             idConvenio: prestadoresData.idConvenio[index]._text,
             nombre: prestadoresData.nombre[index]._text,

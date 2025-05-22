@@ -25,10 +25,10 @@ export const ProductScreen = () => {
  const heightWanted = top - 25;
 
 const params = useRoute<RouteProp<RootStackParams, 'Products'>>().params;
-console.log('ESTE ES EL PARAMS: ---->--->', params);
+/* console.log('ESTE ES EL PARAMS: ---->--->', params); */
 
 const idAfiliado = params.idAfiliado;
-console.log('ESTE ES EL idAfiliado: ---->--->',idAfiliado);
+/* console.log('ESTE ES EL idAfiliado: ---->--->',idAfiliado); */
 
 const navigation = useNavigation();
 

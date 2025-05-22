@@ -264,8 +264,11 @@ export const ConsultaScreenUx = () => {
       try {
 
         if (idAfiliado !== undefined && idAfiliadoTitular !== undefined && IdEspecialidadElegida !== undefined) {
+          console.log('empezando LA CONSULTA ObtenerPrestadores------------')
+          
           const PrestadoresObtenidos: any = await ObtenerPrestadores(idAfiliado, idAfiliadoTitular, IdEspecialidadElegida);
           setPrestadoresObtenidosObjeto(PrestadoresObtenidos);
+         
           const nombresPrestadores = PrestadoresObtenidos.map((prestador: any) => prestador.prestador);
           if (nombresPrestadores[0] === "No se encontraron prestadores para la especialidad indicada.") {
             setNombresDePrestadores(["Elija familiar y especialidad"]);

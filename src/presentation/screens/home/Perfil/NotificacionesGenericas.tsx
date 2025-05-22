@@ -90,17 +90,17 @@ export const NotificacionesGenericas = () => {
           data: {}, // Enviar un objeto vacío como body
         });
       
-        console.log("Datos recibidos------>:", response.data);
-        console.log("Tipo de response.data.body:", typeof response.data.body);
-console.log("Contenido de response.data.body:", response.data.body);
+    /*     console.log("Datos recibidos------>:", response.data); */
+     /*    console.log("Tipo de response.data.body:", typeof response.data.body);
+console.log("Contenido de response.data.body:", response.data.body); */
         // Asegúrate de que response.data.body sea un array
      /*  const dataNoti = Array.isArray(response.data.body) ? response.data.body : []; */
      
       const dataNoti = JSON.parse(response.data.body)
-      console.log("dataNoti--------->>>", dataNoti);
+    /*   console.log("dataNoti--------->>>", dataNoti); */
      /*  setNotificaciones(dataNoti); */
       /*   let dataNoti = response.data.body; */
-        console.log("response.data.body--EHEH---->:", response.data.body);
+     /*    console.log("response.data.body--EHEH---->:", response.data.body); */
 
             // Ordenar el array por timestamp en orden descendente
     const sortedNoti = dataNoti.sort(
@@ -110,7 +110,7 @@ console.log("Contenido de response.data.body:", response.data.body);
     // Tomar los primeros 4 objetos más recientes
     const recentNoti = sortedNoti.slice(0, 4);
 
-    console.log("Notificaciones recientes (últimos 4):", recentNoti);
+   /*  console.log("Notificaciones recientes (últimos 4):", recentNoti); */
 
 
         setNotificaciones(recentNoti);
@@ -126,14 +126,14 @@ console.log("Contenido de response.data.body:", response.data.body);
 
   useEffect(() => {
     if (notificaciones.length > 0) {
-      console.log("notificaciones--------->>>", notificaciones);
+   /*    console.log("notificaciones--------->>>", notificaciones); */
       setIsConsulting(false);
     }
   }, [notificaciones]); // Se ejecutará cada vez que notificaciones cambie
 
   useEffect(() => {
     
-    console.log("notificaciones actualizado:", notificaciones);
+ /*    console.log("notificaciones actualizado:", notificaciones); */
     setIsConsulting(false);
   }, [notificaciones]); // Se ejecutará cada vez que `notificaciones` cambie.
 
@@ -221,7 +221,7 @@ console.log("Contenido de response.data.body:", response.data.body);
   const color = globalColors.gray;
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   /*  console.log('estas son las notificaciones:', notificaciones); */
-  console.log("notificaciones--------->>>", notificaciones); //BORRAR ESTOOOOO----------------------zzz
+ /*  console.log("notificaciones--------->>>", notificaciones); */ //BORRAR ESTOOOOO----------------------zzz
 
   return (
       
