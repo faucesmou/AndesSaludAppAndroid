@@ -22,6 +22,8 @@ export const CartillaFarmaciaDepartamento = () => {
   console.log('Entrando a CartillaFarmaciaDepartamento------->');
   const { idAfiliadoTitular, idAfiliado, GuardarIdCartillaSeleccionada, idZona,  GuardarIdDepartamentoSeleccionado, nombreProvincia } = useAuthStore();
  
+   console.log('idZona------->', idZona);
+   console.log('idAfiliado------->', idAfiliado);
 
 
   const { top } = useSafeAreaInsets();
@@ -54,12 +56,13 @@ export const CartillaFarmaciaDepartamento = () => {
 
         const xmlData = response.data;
 
-        // Convertir XML a JSON
+   
         const result = xml2js(xmlData, { compact: true });
+       
 
-        const cartillasData = result.Resultado.fila.tabZonaFarmacias;
-
-        // Verificar si cartillasData es un array o un objeto y procesar en consecuencia
+  const cartillasData = result.Resultado.fila.tabZonaFarmacias;
+console.log('cartillasData es:>>.,', cartillasData);
+      
         const mappedCartillas = Array.isArray(cartillasData.idZona)
           ? cartillasData.idZona.map((_: any, index: number) => ({
             nombre: cartillasData.nombre[index]._text,
@@ -67,12 +70,16 @@ export const CartillaFarmaciaDepartamento = () => {
           })):
           "no coincide el formato"
           
+          
 
-        setCartillas(mappedCartillas);
-       /*  console.log('mappedCartillas es: eeee:---->>.,', mappedCartillas); */
+        setCartillas(mappedCartillas); 
+     
 
 
         setIsConsulting(false);
+
+        //acá hay que modificar la lógica para poder recibir una sola cartilla porque en el caso de que se cargue UNA sola cartilla el formato de cartillaData queda como un objeto en vez de un array de objetos con lo cual al no ser array pasa a  "no coincide el formato" y no se puede hacer map sobre cartillas. Considerar si es necesario y hacer la prueba con casos de una sola cartilla. 
+        
 
         /*   console.log('este es el mappedCartillas DE CARTILLA MEDICA---x--x-x--x->:', mappedCartillas); */
         /*  console.log('este es el cartillas useState:', cartillas); */

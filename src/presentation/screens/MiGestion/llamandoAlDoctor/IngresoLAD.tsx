@@ -32,6 +32,8 @@ export const IngresoLAD = () => {
   } = useAuthStore();
 
 
+
+  
   const navigation = useNavigation<NavigationProp<RootStackParams>>()
 
   const { top } = useSafeAreaInsets();
@@ -40,194 +42,9 @@ export const IngresoLAD = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [botonHabilitado, setBotonHabilitado] = useState(false);
-  const [grupoFamiliarDatos, setGrupoFamiliarDatos] = useState<any>([]); // Estado para 
-  const [grupoFamiliarCargado, setGrupoFamiliarCargado] = useState(false);
 
   
-  // almacenar los datos del grupo familiar
-
-  /* función para adaptar con expresiones regulares la fecha de nacimiento: */
-/*   const fechaNacimientoFormateada = (fechaNacimiento: string): string => {
-    if (!fechaNacimiento || typeof fechaNacimiento !== 'string') return ""; // Validación inicial
-
-    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/; // Expresión regular para el formato dd/mm/yyyy
-    const match = fechaNacimiento.match(regex);
-
-    return match ? `${match[1]}-${match[2]}-${match[3]}` : ""; // Formatea o retorna un string vacío
-  }; */
-
-/*   useEffect(() => {
-
-    console.log('este es el mail:', mail);
-    console.log('este es el nombreCompleto:', nombreCompleto);
-    console.log('este es el dni:', dni);
-    console.log('este es el sexo:', sexo);
-    console.log('este es el numCelular:', numCelular);
-    console.log('este es el tipoPlan:', tipoPlan);
-    console.log('este es el numeroCredencial:', numeroCredencial);
-    console.log('este es el grupoFamiliarDatos:', grupoFamiliarDatos);
-
-    
-    if (!nombreCompleto || !dni || !sexo || !numCelular || !tipoPlan || !numeroCredencial || isConsulting || !fecNacimiento || mounted) {
-      console.log('Esperando que todas las constantes estén definidas para consultar familiar...');
-      return;
-     
-    }
-    console.log('Estan todas las constantes definidas iniciando la primera petición grupo familiar...');
-  
-
-    setIsConsulting(true);
-    setMounted(true);  
-
-
-
-    const ConsultaGrupoFamiliar = async () => {
-
-
-      function quitarPrimerosDosYUltimo(valor: number | string): string {
-        const valorString = String(valor); 
-
-        if (valorString.length <= 3) {
-          return ""; 
-        }
-
-        const nuevoString = valorString.slice(2, -1); 
-
-        return nuevoString;
-      }
-      try {
-
-        console.log('Iniciando consulta para recabar datos del grupo familiar---> ');
-
-        const response = await axios.post(`https://fiscalizacion.createch.com.ar/contratos/identificador?idAfiliado=${idAfiliado}`);
-
-        console.log('consulta  grupo familiar response.data ---> ', response.data);
-        const grupoFamiliarFiltrado = response.data.data.filter(
-          (item: { nroAfiliado: any; IdAfiliado: any }) => item.IdAfiliado !== idAfiliado
-        );
-
-
-        const grupoFamiliarObtenido = grupoFamiliarFiltrado.map((item:
-          {
-            apellnombAfilado: any;
-            nroAfiliado: any;
-            idAfiliado: any
-            CUILAfiliado: any;
-            sexo: any
-            celular: any;
-            planAfiliado: any;
-            mail: any;
-            parentesco: any;
-            fecNac: any;
-          }) => ({
-            email: item.mail,
-            name: item.apellnombAfilado,
-            documentNumber: quitarPrimerosDosYUltimo(item.CUILAfiliado),
-            birthDate: fechaNacimientoFormateada(item.fecNac),
-            gender: item.sexo,
-            phone: item.celular,
-            credential: item.nroAfiliado,
-            tipoPlan: item.planAfiliado,
-            parentesco: item.parentesco,
-                owner: false,
-          }));
-
-
-        setGrupoFamiliarDatos(grupoFamiliarObtenido);
-        setIsConsulting(false);
-        setGrupoFamiliarCargado(true)
-        
-
-
-      } catch (error) {
-        console.error('Error al obtener la info del grupo familiar:', error);
-     
-      } finally {
-        setIsConsulting(false);
-      }
-    };
-    ConsultaGrupoFamiliar()
-
-  }, [idAfiliado, nombreCompleto, dni, sexo, numCelular, tipoPlan, numeroCredencial, mounted]) */
-
-  /* console.log('entrando a ingresoLAD y este es el grupoFamiliar----->>>:', grupoFamiliar); */
-
- /*  useEffect(() => {
-
-    console.log('este es el mail:', mail);
-    console.log('este es el nombreCompleto:', nombreCompleto);
-    console.log('este es el dni:', dni);
-    console.log('este es el sexo:', sexo);
-    console.log('este es el numCelular:', numCelular);
-    console.log('este es el tipoPlan:', tipoPlan);
-    console.log('este es el numeroCredencial:', numeroCredencial);
-    console.log('este es el grupoFamiliar:', grupoFamiliar);
-
-   
-    if (!nombreCompleto || !dni || !sexo || !numCelular || !tipoPlan || !numeroCredencial || isConsulting || !fecNacimiento || !grupoFamiliar ||  mounted) {
-      console.log('Esperando que todas las constantes estén definidas para consultar url de ingreso...');
-      return;
-   
-    }
-    console.log('Estan todas las constantes definidas iniciando la segunda petición ...');
-  
-
-    setIsConsulting(true);
-    setMounted(true); 
-
-    
-
-    const LlamandoAlDocRequest = async () => {
-
-   
-      try {
-        const body = {
-          "provider": "67d9c78739efc64afafe205c",
-          "email": mail,
-          "name": nombreCompleto,
-          "documentNumber": dni,
-          "birthDate": fecNacimiento,
-          "gender": sexo,
-          "phone": numCelular,
-          "plan": tipoPlan,
-          "credential": numeroCredencial,
-            "owner": true,
-          "externalId": "666",
-          "zipCode": "77036",
-          "familyGroup": grupoFamiliarDatos,
-        }
-
-        console.log('El body quedó así======>>>:', body);
-
-        const response = await axios.post(`https://dev.api.llamandoaldoctor.com/patient/token`, body, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-        );
-
-        console.log('este es el response de la obtención del token', response);
-        const token = response.data.token;
-        console.log('este es el token', token);
-      
-        setTokenListo(token);
-        setIsConsulting(false);
-
-      } catch (error: any) {
-        console.error('Error al obtener los datos del afiliado:', error);
-        const errorMessage = error.response?.data || 'no hay mensaje de error'
-        console.log('este es el errorMessage no conseguimos token maestro:', errorMessage);
-        setShowErrorMessage(true);
-
-      } finally {
-        setIsConsulting(false);
-      }
-    };
-    LlamandoAlDocRequest()
-
-  }, [nombreCompleto, dni, sexo, numCelular, tipoPlan, numeroCredencial, grupoFamiliar, mounted]); */
-
-  useEffect(() => {
+   useEffect(() => {
   const ready =
     nombreCompleto &&
     dni &&
@@ -242,6 +59,7 @@ export const IngresoLAD = () => {
 
   if (!ready) {
     console.log('Esperando datos necesarios...');
+     console.log('tipoPlan para solicitud LAD dentro del !ready:=======>', tipoPlan);
     return;
   }
 
@@ -250,10 +68,43 @@ export const IngresoLAD = () => {
 
   const LlamandoAlDocRequest = async () => {
 
+    console.log('tipoPlan para solicitud LAD:=======>', tipoPlan);
+
     const normalizarTelefono = (telefono: string): string => {
   return telefono.startsWith('549') ? telefono.slice(3) : telefono;
 };
-    const body = {
+
+const simplificarTipoPlan = (tipoPlan: string): string => {
+  if (!tipoPlan) return "DESCONOCIDO";
+
+  const palabrasClave = [
+    "TITANIUM",
+    "BLACK",
+    "PLATINUM",
+    "GOLD",
+    "PLAN JOVEN",
+    "GREEN",
+    "PMO",
+    "OTR"
+  ];
+
+  const tipoEnMayusculas = tipoPlan.toUpperCase();
+
+  for (const palabra of palabrasClave) {
+    if (tipoEnMayusculas.includes(palabra)) {
+      return palabra;
+    }
+  }
+
+  return "DESCONOCIDO";
+};
+
+
+const tipoPlanSimple = simplificarTipoPlan(tipoPlan);
+
+    console.log('tipoPlanSimple :=======>', tipoPlanSimple);
+
+    const body: any = {
       provider: '67d9c78739efc64afafe205c',
       email: mail,
       name: nombreCompleto,
@@ -264,11 +115,25 @@ export const IngresoLAD = () => {
       credential: numeroCredencial,
     /*   externalId: '666',
       zipCode: '77036', */
-      familyGroup: grupoFamiliar,
-   /*    plan: tipoPlan, */
+    /*   familyGroup: grupoFamiliar, */
+      /* plan: tipoPlan, */
     };
 
-    /* console.log('Body para solicitud LAD:=======>', body); */
+    console.log('Body para solicitud LAD:=======>', body);
+
+      // Condicionalmente agregar familyGroup si el array no está vacío
+  if (Array.isArray(grupoFamiliar) && grupoFamiliar.length > 0) {
+    body.familyGroup = grupoFamiliar;
+  }
+
+  if (tipoPlanSimple) {
+  body.plan = tipoPlanSimple;
+}
+
+   console.log(
+     'Body para solicitud LAD:=======> después de la verificación: en proceso chequear=======>',
+     body,
+   );
 
     try {
       const response = await axios.post(
@@ -333,7 +198,7 @@ export const IngresoLAD = () => {
 
       if (axios.isAxiosError(error)) {
         console.log('AxiosError.message:', error.message);
-/*         console.log('AxiosError.config:', error.config);
+     /*         console.log('AxiosError.config:', error.config);
         console.log('AxiosError.response:', error.response); */
       } else {
         console.log('Error desconocido:', error);
@@ -596,80 +461,3 @@ const styles = StyleSheet.create({
   },
 })
 
-/* consultarGrupoFamiliarDatos: async idAfiliado => {
-   try {
-     console.log('Iniciando consulta para recabar datos---> ');
-        console.log('USUARIO----------------->', USUARIO);
-     console.log('--> el PASSWORD es:', PASSWORD);
-     console.log('--> el ADMINISTRADORA es:', ADMINISTRADORA);
-     console.log('--> el idAfiliado es:', idAfiliado);
- 
-     const respuestaFrancoMejorada = await axios.get(
-       `https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/consultarAfiliadoJson?usuario=${USUARIO}&password=${PASSWORD}&administradora=${ADMINISTRADORA}&datosAfiliado=${idAfiliado}`,
-     );
- 
-     if (
-       respuestaFrancoMejorada &&
-       respuestaFrancoMejorada.data &&
-       respuestaFrancoMejorada.data.length > 0
-     ) {
-       const idAfiliado = respuestaFrancoMejorada.data[0].idAfiliado;
-       const idAfiliadoTitular =
-         respuestaFrancoMejorada.data[0].idAfiliadoTitular;
-       const cuilTitular = respuestaFrancoMejorada.data[0].cuilTitular;
-       const nombrePila = respuestaFrancoMejorada.data[0].nombre;
- 
-       const nombreCompleto = respuestaFrancoMejorada.data[0].apellNomb;
-       const numeroCredencial = respuestaFrancoMejorada.data[0].nroAfiliado;
-       const tipoPlan = respuestaFrancoMejorada.data[0].planPrestacional;
-       const estadoAfiliacion = respuestaFrancoMejorada.data[0].estadoAfiliacion;
-       const tipoPago = respuestaFrancoMejorada.data[0].tipoPago;
-       const numCelular = respuestaFrancoMejorada.data[0].numCelular;
-       const mail = respuestaFrancoMejorada.data[0].mail;
-       const sexo = respuestaFrancoMejorada.data[0].sexo;
-       const dni = respuestaFrancoMejorada.data[0].nroDocumento;
-       const fecNacimiento = respuestaFrancoMejorada.data[0].fecNac;
- 
-       if (
-         idAfiliado != undefined &&
-         idAfiliadoTitular != undefined &&
-         cuilTitular != undefined
-       ) {
-         
-       } else {
-         console.error(
-           'no se pudo obtener datos de los familiares',
-         );
-         return false;
-       }
-     } else {
-       console.log(
-         'respuestaFrancoMejorada && respuestaFrancoMejorada.data && respuestaFrancoMejorada.data.length no es mayor a 0',
-       );
-       console.error('No se encontraron datos perro');
-       return false;
-     }
-   } catch (error) {
-     console.error(
-       'Error al consultar datos y guardarlos en useState',
-       error,
-     );
-     return false;
-   }
- }, */
-
-
-/* useEffect(() => {
- const obtenerDatosGrupoFamiliar = async () => {
-   console.log('Entrando a obtenerDatosGrupoFamiliar...');
-   try {
-     const grupoFamiliar = await consultarGrupoFamiliarDatos(idAfiliado);
-     setGrupoFamiliarDatos(grupoFamiliar);
-     console.log('Este es el grupo familiar perrito:', grupoFamiliar);
-   } catch (error) {
-     console.error('Error al obtener grupo familiar: error>', error);
-   }
- };
- 
- obtenerDatosGrupoFamiliar();
-}, [idAfiliado]); */

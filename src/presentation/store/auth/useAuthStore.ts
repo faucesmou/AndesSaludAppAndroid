@@ -677,55 +677,6 @@ console.log('password---------->' ,password ); */
       return [];
     }
   },
-/*   consultarGrupoFamiliarDatos: async (idAfiliado: string) => {
-    try {
-       
-      const respuestaFrancoMejorada = await axios.get(
-        `https://srvloc.andessalud.com.ar/WebServicePrestacional.asmx/consultarAfiliadoJson?usuario=${USUARIO}&password=${PASSWORD}&administradora=${ADMINISTRADORA}&datosAfiliado=${idAfiliado}`,
-      );
-  
-      if (
-        respuestaFrancoMejorada &&
-        respuestaFrancoMejorada.data &&
-        respuestaFrancoMejorada.data.length > 0
-      ) {
-        
-        const mail = respuestaFrancoMejorada.data[0].mail; 
-        const nombreCompleto = respuestaFrancoMejorada.data[0].apellNomb;
-        const dni = respuestaFrancoMejorada.data[0].nroDocumento;
-        const fecNacimiento = respuestaFrancoMejorada.data[0].fecNac;
-        const sexo = respuestaFrancoMejorada.data[0].sexo;
-        const numCelular = respuestaFrancoMejorada.data[0].numCelular;
-        const numeroCredencial = respuestaFrancoMejorada.data[0].nroAfiliado;
-       
-        if (
-          nombreCompleto != undefined &&
-          dni != undefined
-        ) {
-
-          return [];
-          
-        } else {
-          console.error(
-            'no se pudo obtener datos de los familiares',
-          );
-          return [];
-        }
-      } else {
-        console.log(
-          'respuestaFrancoMejorada && respuestaFrancoMejorada.data && respuestaFrancoMejorada.data.length no es mayor a 0',
-        );
-        console.error('No se encontraron datos perro');
-        return [];
-      }
-    } catch (error) {
-      console.error(
-        'Error al consultar datos y guardarlos en useState',
-        error,
-      );
-      return [];
-    }
-  }, */
   consultarGrupoFamiliarDatos: async (idAfiliado: string | undefined | null ) => {
     try {
       const respuestaFrancoMejorada = await axios.get(

@@ -165,6 +165,8 @@ export const CartillaFarmaciaProvincias = () => {
 
                             let idZona = cartilla.idProvincia;
                             let nombreProvincia = cartilla.nombre;
+                            console.log('idZona: ', idZona);
+                            console.log('nombreProvincia: ', nombreProvincia);
                             GuardarIdMacroZonaSeleccionada(idZona, nombreProvincia);
                            
                             navigation.navigate('Cartillas Farmacias')

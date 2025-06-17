@@ -292,7 +292,7 @@ export const RegisterTel = ({ navigation }: Props) => {
         },
       });
 
-      if (tokenResponse.status !== 200) { // Verifica el código de estado 200
+      if (tokenResponse.status !== 200) { 
         console.error("Error al obtener el token:", tokenResponse.status);
         callback(false, "Error al obtener el token");
         return;
@@ -318,11 +318,15 @@ export const RegisterTel = ({ navigation }: Props) => {
         callback(true);
       } else {
         console.error("Error al enviar el mensaje:", messageResponse.status);
-        console.error("Detalles del error:", messageResponse.data); // Mostrar detalles del error
+        console.error("Detalles del error:", messageResponse.data); 
         callback(false, "Error al enviar el mensaje");
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
+      if (typeof error === 'object' && error !== null && 'response' in error && (error as any).response?.data) {
+        console.error("Error en la error.response.data----->>:", (error as any).response.data);
+      }
+      
       setErrorSendingCode(true)
       setErrorSendingCodeModal(true)
       callback(false, "Error en la solicitud");
