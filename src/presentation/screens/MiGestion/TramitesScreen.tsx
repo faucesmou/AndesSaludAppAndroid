@@ -27,8 +27,8 @@ interface Familiar {
   gender: string;
   phone: string;
   credential: string;
-  tipoPlan: string;
-  parentesco: string;
+/*   tipoPlan: string;
+  parentesco: string; */
 }
 
 export const TramitesScreen = () => {
@@ -217,8 +217,8 @@ export const TramitesScreen = () => {
       gender: item.sexo,
       phone: item.celular,
       credential: item.nroAfiliado,
-      tipoPlan: item.planAfiliado,
-      parentesco: item.parentesco,
+    /*   tipoPlan: item.planAfiliado, */
+      /* parentesco: item.parentesco, */
     }));
 
     return grupoFamiliarObtenido;

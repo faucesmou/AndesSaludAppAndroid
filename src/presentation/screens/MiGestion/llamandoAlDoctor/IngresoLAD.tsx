@@ -105,7 +105,10 @@ const tipoPlanSimple = simplificarTipoPlan(tipoPlan);
     console.log('tipoPlanSimple :=======>', tipoPlanSimple);
 
     const body: any = {
-      provider: '67d9c78739efc64afafe205c',
+      /* provider para subir a producción: */
+
+ /* provider para entorno de pruebas: */
+ provider: '67d9c78739efc64afafe205c',
       email: mail,
       name: nombreCompleto,
       documentNumber: dni,
@@ -119,7 +122,7 @@ const tipoPlanSimple = simplificarTipoPlan(tipoPlan);
       /* plan: tipoPlan, */
     };
 
-    console.log('Body para solicitud LAD:=======>', body);
+   
 
       // Condicionalmente agregar familyGroup si el array no está vacío
   if (Array.isArray(grupoFamiliar) && grupoFamiliar.length > 0) {
@@ -137,14 +140,33 @@ const tipoPlanSimple = simplificarTipoPlan(tipoPlan);
 
     try {
       const response = await axios.post(
-        'https://dev.api.llamandoaldoctor.com/patient/token',
+        /* endpoint para producción: */
+        'https://api.llamandoaldoctor.com/patient/token ',
+
+        /* endpoint para desarrollo: */
+       /*  'https://dev.api.llamandoaldoctor.com/patient/token', */
         body,
-        { headers: { 'Content-Type': 'application/json' } }
+        {headers: {'Content-Type': 'application/json'}},
       );
       const token = response.data.token;
       setTokenListo(token);
     } catch (error: any) {
       console.error('Error al obtener token LAD:', error);
+
+        if (error.response) {
+      // El servidor respondió con un código de estado fuera del rango 2xx
+      console.error('Detalles de la respuesta de error de la API:');
+      console.error('Código de estado (Status):', error.response.status);
+      console.error('Datos de respuesta (Data):', error.response.data); // Esto es lo más importante para ver el mensaje de error del servidor
+      console.error('Cabeceras de respuesta (Headers):', error.response.headers);
+    } else if (error.request) {
+      // La solicitud fue hecha pero no se recibió respuesta (ej. no hay red, CORS)
+      console.error('La solicitud fue hecha pero no se recibió respuesta:', error.request);
+    } else {
+      // Algo sucedió al configurar la solicitud que disparó un error
+      console.error('Error al configurar la solicitud:', error.message);
+    }
+
       setShowErrorMessage(true);
     } finally {
       setIsConsulting(false);
