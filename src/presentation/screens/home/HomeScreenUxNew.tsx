@@ -673,7 +673,7 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
 
             <View style={styles.rowContainer2}>
               {renderSecondaryButton({
-                onPress: () => navigation.navigate('Pagos'),
+                onPress: () => navigation.navigate('Estado de Mis Pagos'),
                 label: 'Mis Pagos',
                 iconName: 'file-tray-full-outline',
                 description: 'Estados de pago, opciones de pago',
@@ -681,12 +681,14 @@ return texto; // Devolver el texto original si tiene 3 o menos palabras
                 descriptionSize: { DescriptionFontSize }
               })}
               {renderSecondaryButton({
-                onPress: () => navigation.navigate('Facturas'),
-                label: 'Descargá tus Facturas',
-                iconName: 'cloud-download-outline',
-                description: 'Historial y descarga de facturas',
+                onPress: () => navigation.navigate('Doctor Online'),
+                label: 'Doctor Online',
+                iconName: 'call-outline',
+               /*  iconName: 'medkit-outline', */
+                description: 'Comunicate con un especialista',
                 textSize: { buttonsTitleFontSize },
                 descriptionSize: { DescriptionFontSize }
+                /* <ion-icon name="medkit-outline"></ion-icon> */
               })}
             </View>
             <View style={styles.rowContainer2}>

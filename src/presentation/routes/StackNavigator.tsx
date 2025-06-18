@@ -60,6 +60,7 @@ import { RegisterTel } from '../screens/auth/RegisterTel';
 import { ValidateTel } from '../screens/auth/ValidateTel';
 import { LlamandoAlDoc } from '../screens/MiGestion/llamandoAlDoctor/LlamandoAlDoc';
 import { IngresoLAD } from '../screens/MiGestion/llamandoAlDoctor/IngresoLAD';
+import { EstadoDeMisPagos } from '../screens/home/EstadoDeMisPagos/EstadoDeMisPagos';
 
 /* import { UserData } from '../screens/auth/userData'; */
 
@@ -77,6 +78,7 @@ export type RootStackParams = {
   "Buzón": undefined,
   Buzon1: undefined,
   Perfil: undefined,
+  "Estado de Mis Pagos": undefined,
   MiGestión: undefined,
   MisDatos: undefined,
  /*  "Orden Enviada": undefined, */
@@ -104,7 +106,7 @@ export type RootStackParams = {
   Consulta2: undefined,
   "Consulta": undefined,
   "Llamar al Doctor": undefined,
-  "Ingresando": undefined,
+  "Doctor Online": undefined,
   Formulario:undefined,
   CartillaScreen: undefined,
   Cartillas: undefined,
@@ -228,6 +230,8 @@ export const StackNavigator = () => {
       <Stack.Screen name="Credenciales" component={ProductScreen} options={{ headerShown: true }} />
 
                           {/* Settings: */}
+      <Stack.Screen name="Estado de Mis Pagos" component={EstadoDeMisPagos} options={{ headerShown: true }} />
+
       <Stack.Screen name="Perfil" component={SettingsScreen} options={{ headerShown: true }} />
     <Stack.Screen name="Buzón" component={Buzon} options={{ headerShown: true }} /> 
 
@@ -270,7 +274,7 @@ export const StackNavigator = () => {
 {/* Llamando al Doctor*/}
 
 <Stack.Screen name="Llamar al Doctor" component={LlamandoAlDoc} options={{ headerShown: true }} />
-<Stack.Screen name="Ingresando" component={IngresoLAD} options={{ headerShown: true }} />
+<Stack.Screen name="Doctor Online" component={IngresoLAD} options={{ headerShown: true }} />
 
 
 {/* Pagos del usuario */}

@@ -106,7 +106,7 @@ const tipoPlanSimple = simplificarTipoPlan(tipoPlan);
 
     const body: any = {
       /* provider para subir a producción: */
-
+/*  provider: '60b92bbd9a4c6b001210a234', */
  /* provider para entorno de pruebas: */
  provider: '67d9c78739efc64afafe205c',
       email: mail,
@@ -141,10 +141,10 @@ const tipoPlanSimple = simplificarTipoPlan(tipoPlan);
     try {
       const response = await axios.post(
         /* endpoint para producción: */
-        'https://api.llamandoaldoctor.com/patient/token ',
+       /*  'https://api.llamandoaldoctor.com/patient/token ', */
 
         /* endpoint para desarrollo: */
-       /*  'https://dev.api.llamandoaldoctor.com/patient/token', */
+        'https://dev.api.llamandoaldoctor.com/patient/token',
         body,
         {headers: {'Content-Type': 'application/json'}},
       );

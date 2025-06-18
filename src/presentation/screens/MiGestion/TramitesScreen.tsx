@@ -264,7 +264,7 @@ const handlePressLlamarDoctor2 = async () => {
   /*   console.log('Grupo familiar obtenido:', grupoFamiliarObtenido); */
 
     // Navegar siempre, incluso si el grupo es vacío
-    navigation.navigate('Ingresando');
+    navigation.navigate('Doctor Online');
   });
 };
 
@@ -390,7 +390,7 @@ const handlePressLlamarDoctor2 = async () => {
             onPress={() => handlePressLlamarDoctor2()}
             /* onPress={() => ConsultaGrupoFamiliar()} */
             /*    onPress={() => navigation.navigate('Ingresando')} */
-            label="Llamar al Doctor"
+            label="Doctor Online"
             color={globalColors.profile2}
             iconName='person-add-outline'
             description='Comunicate con un especialista'
